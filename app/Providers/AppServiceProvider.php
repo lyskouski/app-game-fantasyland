@@ -20,9 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Only force HTTPS in production, not in local development or mobile apps
-        if ($this->app->isProduction()) {
-            URL::forceHttps();
-        }
+        //
     }
 }
