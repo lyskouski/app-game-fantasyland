@@ -3,9 +3,12 @@
 https://nativephp.com/docs/mobile/3/getting-started/quick-start
 
 Require at least PHP 8.3
+sudo apt install php8.3 php8.3-cli php8.3-zip php8.3-mbstring
+sudo update-alternatives --set php /usr/bin/php8.3
 
 sudo apt install php8.4-xml - required dependency
 sudo apt install php8.4-zip - required dependency
+sudo apt install zip unzip - required dependency
 
 composer create-project laravel/laravel .
 
