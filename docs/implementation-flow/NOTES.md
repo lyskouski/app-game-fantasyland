@@ -15,8 +15,19 @@ composer create-project laravel/laravel .
 ## Install NativePHP for Mobile into a new Laravel app
 composer require nativephp/mobile
 
+composer install
+copy .env.example .env
+php artisan key:generate
+
 ## Ready your app to go native
 php artisan native:install
+
+### Add the following lines in the .env file:
+
+NATIVEPHP_APP_ID=com.tercad.fantasyland
+NATIVEPHP_APP_VERSION=1.0.0
+NATIVEPHP_APP_VERSION_CODE=1
+
 
 ## Run your app on a mobile device
 php artisan native:run
