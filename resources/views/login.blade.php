@@ -14,6 +14,7 @@
         <br />
         <br />
         <form method="POST" action="login.php">
+            @csrf
             <table>
             <tr><td>Логин</td><td><input name=login size="16"></td></tr>
             <tr><td>Пароль</td><td><input type=password name=password size="16"></td></tr>

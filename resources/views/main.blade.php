@@ -14,5 +14,6 @@
         <br />
         <br />
         Done!
+        {!! nl2br(e($strem)) !!}
     </body>
 </html>
