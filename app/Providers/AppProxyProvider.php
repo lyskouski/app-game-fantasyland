@@ -31,12 +31,12 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 60);
         if ($post) {
-            $data = iconv('UTF-8', 'cp1251', http_build_query($post));
             curl_setopt($curl, CURLOPT_POST, 1);
+            $data = iconv('UTF-8', 'cp1251', http_build_query($post));
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         }
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);
-        return curl_exec($curl);
+        return iconv('cp1251', 'UTF-8', curl_exec($curl));
     }
 }

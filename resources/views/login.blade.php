@@ -13,13 +13,15 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         <br />
         <br />
-        <form method="POST" action="login.php">
+        <form method="POST" action="/login.php">
             @csrf
             <table>
-            <tr><td>Логин</td><td><input name=login size="16"></td></tr>
-            <tr><td>Пароль</td><td><input type=password name=password size="16"></td></tr>
-            <tr><td colspan=2 align=right><input type=submit value="Войти"></td></tr>
+            <tr><td>Логин</td><td><input name=login size="16" /></td></tr>
+            <tr><td>Пароль</td><td><input type=password name=password size="16" /></td></tr>
+            <tr><td colspan=2 align=right><input type=submit value="Войти" /></td></tr>
             </table>
         </form>
+        <br />
+        <p>{{ isset($error) ? $error : '' }}</p>
     </body>
 </html>
