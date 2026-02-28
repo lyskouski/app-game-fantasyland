@@ -15,9 +15,9 @@
         <br />
         <native:bottom-nav>
             <native:bottom-nav-item id="profile" icon="person" label="Профиль" url="/cgi/show_info.php" />
-            <native:bottom-nav-item id="chat" icon="chat" label="Чат" url="/chat" badge="3" />
-            <native:bottom-nav-item id="home" icon="home" label="Главная" url="/home" :active="true" />
-            <native:bottom-nav-item id="contacts" icon="contacts" label="Форум" url="/forum" />
+            <native:bottom-nav-item id="chat" icon="chat" label="Чат" url="/ch/chout.php" badge="3" />
+            <native:bottom-nav-item id="home" icon="home" label="Главная" url="/cgi/no_combat.php" :active="true" />
+            <native:bottom-nav-item id="contacts" icon="contacts" label="Форум" url="/cgi/forum_rooms.php" />
             <native:bottom-nav-item id="settings" icon="settings" label="Цитадель" url="/citadel" />
         </native:bottom-nav>
     </body>
