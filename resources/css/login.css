@@ -1,0 +1,44 @@
+body {
+    background: #666666;
+    background-image: url("https://www.fantasyland.ru/images/pic/bg.jpg");
+    padding: 0;
+    margin: 0;
+}
+.header {
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2px;
+    background: #000 url("https://www.fantasyland.ru/img/bg01.gif") 0 0 repeat-x;
+    text-transform: uppercase;
+    color: #F9D3B0;
+}
+.cell_title {
+    background: #898989;
+    background-image: url("https://www.fantasyland.ru/images/buttons/tab_c.gif");
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    border: 0;
+    color: white;
+}
+.cell {
+    color: white;
+}
+.main {
+    background: #898989;
+    background-image: url("https://www.fantasyland.ru/images/pic/bg_title.jpg");
+    padding: 0;
+    margin: 12px;
+    border-radius: 6px;
+    box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
+}
+.main_top {
+    background-image: url("https://www.fantasyland.ru/images/buttons/line_t.gif");
+    background-repeat: repeat-x;
+    height: 10px;
+    margin-top: -14px;
+}
+.main_middle {
+    padding: 12px;
+}

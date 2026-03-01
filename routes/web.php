@@ -6,15 +6,10 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
-Route::get('/', function () {
-    return view('login');
-});
-
-Route::get('/index.php', function () {
-    return view('login');
-});
-
+Route::get('/', [LoginController::class, 'index']);
+Route::get('/index.php', [LoginController::class, 'index']);
 Route::post('/login.php', [LoginController::class, 'login']);
+Route::get('/guestlogin.php', [LoginController::class, 'guestLogin']);
 
 // Navigation: Citadel
 Route::get('/citadel', function () {

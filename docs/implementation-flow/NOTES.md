@@ -21,6 +21,7 @@ php artisan key:generate
 
 ## Ready your app to go native
 php artisan native:install
+npm install
 
 ### Add the following lines in the .env file:
 
@@ -30,6 +31,7 @@ NATIVEPHP_APP_VERSION_CODE=1
 
 
 ## Run your app on a mobile device
+npm run build
 php artisan native:run
 
 # Error during a startup
