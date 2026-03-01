@@ -10,6 +10,10 @@ Route::get('/', [LoginController::class, 'index']);
 Route::get('/index.php', [LoginController::class, 'index']);
 Route::post('/login.php', [LoginController::class, 'login']);
 Route::get('/guestlogin.php', [LoginController::class, 'guestLogin']);
+Route::get('/registration', function () {
+    return view('registry');
+});
+Route::post('/cgi/register.php', [LoginController::class, 'register']);
 
 // Navigation: Citadel
 Route::get('/citadel', function () {

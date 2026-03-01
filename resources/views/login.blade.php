@@ -38,9 +38,6 @@
                     @csrf
                     <table align="center">
                         <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
                             <td class="cell" width="80" align="left">
                                 <b>Логин:</b>
                             </td>
@@ -89,7 +86,7 @@
             <div class="main_middle">
                 <form method="GET" action="/registration">
                     @csrf
-                    <center><input type=submit value="Регистрация" /></center>
+                    <center><input type=submit value="Зарегистрироваться" /></center>
                 </form>
             </div>
         </div>
