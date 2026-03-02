@@ -31,14 +31,14 @@ class LoginController extends Controller
             return view('login', ['error' => $match]);
         }
         $this->curl->boot('https://www.fantasyland.ru/ch/chch.php');
-        return view('main');
+        return view('home');
     }
 
     public function guestLogin() {
         $data = request()->only(['t']);
         $this->curl->boot('https://www.fantasyland.ru/guestlogin.php?t=' . $data['t']);
         $this->curl->boot('https://www.fantasyland.ru/ch/chch.php');
-        return view('main');
+        return view('home');
     }
 
     public function register() { // TBD
@@ -49,6 +49,6 @@ class LoginController extends Controller
             $match = $matches[1];
             return view('registry', ['error' => $match]);
         }
-        return view('main');
+        return view('home');
     }
 }
