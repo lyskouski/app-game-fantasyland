@@ -41,7 +41,7 @@ class LoginController extends Controller
         return view('main');
     }
 
-    public function register() {
+    public function register() { // TBD
         $data = request()->post();
         $registerResult = $this->curl->boot('https://www.fantasyland.ru/cgi/register.php?' . http_build_query($data));
         $reg = '#<div id="alertMsg" style="color:red; font-weight: bold; padding-bottom: 12px; width:290px">(.*?)</div>#is';

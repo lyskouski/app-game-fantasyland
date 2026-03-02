@@ -20,5 +20,6 @@
             <native:bottom-nav-item id="contacts" icon="contacts" label="Форум" url="/cgi/forum_rooms.php" />
             <native:bottom-nav-item id="settings" icon="settings" label="Цитадель" url="/citadel" />
         </native:bottom-nav>
+        <script>window.location = "/cgi/no_combat.php";</script>
     </body>
 </html>
