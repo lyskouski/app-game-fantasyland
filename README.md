@@ -4,6 +4,10 @@
 
 Unofficial client to Liga of Heroes [RU] made by Citadel (https://www.citadel-liga.info/liga)
 
+| --- | --- |
+| <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> | <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> |
+
+
 ## Support (Sponsorship)
 
 As an open-source project, subscribing will not unlock any additional features in the app. However, it would serve as
