@@ -16,11 +16,15 @@ class LoginController extends Controller
         $this->curl = new AppProxyProvider();
     }
 
-    public function index() {
+    private function getTimestamp(): ?string
+    {
         $html = $this->curl->boot('https://www.fantasyland.ru');
         preg_match('/guestlogin\.php\?t=([a-z0-9]+)/i', $html, $matches);
-        $t = $matches[1] ?? null;
-        return view('login', ['timestamp' => $t]);
+        return $matches[1] ?? null;
+    }
+
+    public function index() {
+        return view('login', ['timestamp' => $this->getTimestamp()]);
     }
 
     public function login() {
@@ -28,7 +32,7 @@ class LoginController extends Controller
         $loginResult = $this->curl->boot('https://www.fantasyland.ru/login.php', $data);
         if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $loginResult, $matches)) {
             $match = $matches[1];
-            return view('login', ['error' => $match]);
+            return view('login', ['error' => $match, 'timestamp' => $this->getTimestamp()]);
         }
         $this->curl->boot('https://www.fantasyland.ru/ch/chch.php');
         return view('home');

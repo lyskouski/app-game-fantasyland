@@ -34,7 +34,11 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_TIMEOUT, 60);
         if ($post) {
             curl_setopt($curl, CURLOPT_POST, 1);
-            $data = iconv('UTF-8', 'cp1251', http_build_query($post));
+            $converted = [];
+            foreach ($post as $key => $value) {
+                $converted[$key] = iconv('UTF-8', 'cp1251', $value);
+            }
+            $data = http_build_query($converted);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         }
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);

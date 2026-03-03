@@ -62,7 +62,7 @@
                 </form>
             </div>
             @if(isset($error))
-                <div>{{ $error }}</div>
+                <p class="error">{{ $error }}</p>
             @endif
         </div>
         <br />

@@ -42,3 +42,8 @@ body {
 .main_middle {
     padding: 12px;
 }
+.error {
+    color:bisque;
+    font-size: 12pt;
+    padding: 4px;
+}
