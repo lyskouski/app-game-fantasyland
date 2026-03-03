@@ -17,6 +17,8 @@ class MainController extends Controller
             return view('main_place', $this->onPlace($html));
         } elseif (strpos($html, 'action="work_start.php"') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        } elseif (strpos($html, 'work_stop.php') !== false) {
+            return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
         }
         return view('generic', ['data' => $html]);
     }
@@ -92,6 +94,10 @@ class MainController extends Controller
         if (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {
            $image = str_replace('..', '', $imgMatch[2]);
         }
-        return ['data' => $content, 'image' => $image];
+        $timer = 0;
+        if (preg_match('/InsertTimer2\\s*\\(\\s*(\\d+)/', $html, $matches)) {
+            $timer = (int)$matches[1];
+        }
+        return ['data' => $content, 'image' => $image, 'timer' => $timer];
     }
 }

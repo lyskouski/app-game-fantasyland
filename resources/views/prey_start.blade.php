@@ -41,44 +41,6 @@
                 <table cellpadding="0" cellspacing="0" align="center">
                     <tr>
                         <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Локации для перехода&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
-            </div>
-            <div class="main_middle">
-                @foreach ($place as $location)
-                <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
-                    @csrf
-                    <input type="hidden" name="place_regime" value="{{ $location['id'] }}" />
-                    <input type="hidden" name="addval" value=0 />
-                    <input type="hidden" name="addval1" value=0 />
-                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
-                </form>
-                @endforeach
-                @foreach ($map as $location)
-                <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
-                    @csrf
-                    <input type="hidden" name="locat" value="{{ $location['id'] }}" />
-                    <input type="hidden" name="additional" value="0" />
-                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
-                </form>
-                @endforeach
-            </div>
-        </div>
-        <br />
-        <div class="main">
-            <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
                         </td>
                         <td valign="top" class="cell_title">
@@ -92,9 +54,51 @@
                 <br />
             </div>
             <div class="main_middle">
-                {!! $data !!}
+                <div>{!! $data !!}</div>
+                <br />
+                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}">-- : --</strong></p>
             </div>
         </div>
         <br />
+        <script>
+            const timerElement = document.getElementById('timer');
+            let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
+
+            function updateTimer() {
+                if (seconds > 0) {
+                    seconds--;
+                    timerElement.textContent = getTime(seconds);
+                } else {
+                    clearInterval(timerInterval);
+                    window.location = '/cgi/work_stop.php';
+                }
+            }
+
+            function getTime(a) {
+                h = Math.round( a / 3600 - 0.5 );
+                m = Math.round( ( a / 60 ) % 60 - 0.5 );
+                s = Math.round( a % 60 );
+
+                if (s == 60) {
+                    ++ m;
+                    s = 0;
+                }
+
+                if (h >= 1) {
+                    d = '';
+                    if (h >= 24) {
+                        d = Math.floor(h / 24);
+                        h -= d * 24;
+                        d = d + 'дн. ';
+                    }
+                    res = d + h + ":" + ( ( m < 10 ) ? "0" : "" ) + m + ":" + ( ( s < 10 ) ? "0" : "" ) + s;
+                } else {
+                    res = m + ":" + ( ( s < 10 ) ? "0" : "" ) + s;
+                }
+                return res;
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+        </script>
     </body>
 </html>

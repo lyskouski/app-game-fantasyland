@@ -7,7 +7,19 @@ namespace App\Http\Controllers;
 class PreyController extends MainController
 {
     public function stop() {
-        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_stop.php');
+        $data = request()->all();
+        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_stop.php?' . http_build_query($data));
         return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+    }
+
+    public function run() {
+        $post = request()->post();
+        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_start.php', $post);
+        return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+    }
+
+    public function start() {
+        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_start.php');
+        return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
     }
 }

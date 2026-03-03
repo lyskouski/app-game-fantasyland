@@ -8,7 +8,8 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/login.css',
-                'resources/js/app.js'
+                'resources/js/app.js',
+                'resources/js/ping.js'
             ],
             refresh: true,
         }),

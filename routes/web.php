@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\LoginController;
@@ -31,10 +32,13 @@ Route::get('/cgi/f_show_thread.php', [ForumController::class, 'topic']);
 Route::get('/cgi/no_combat.php', [MainController::class, 'index']);
 Route::post('/cgi/no_combat.php', [MainController::class, 'index']);
 
-// Maning
-Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
-Route::get('/cgi/png.php', [PreyController::class, 'captcha']);
+// Chat
+Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 
+// Maining
+Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
+Route::get('/cgi/work_start.php', [PreyController::class, 'start']);
+Route::post('/cgi/work_start.php', [PreyController::class, 'run']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
