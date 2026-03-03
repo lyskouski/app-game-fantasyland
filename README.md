@@ -4,7 +4,7 @@
 
 Unofficial client to Liga of Heroes [RU] made by Citadel (https://www.citadel-liga.info/liga)
 
-| <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> | <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> |
+| <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> | <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> | <img alt="Mining" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> |
 
 
 ## Support (Sponsorship)
