@@ -8,13 +8,6 @@ use App\Providers\AppProxyProvider;
 
 class MainController extends Controller
 {
-    protected AppProxyProvider $curl;
-
-    public function __construct()
-    {
-        $this->curl = new AppProxyProvider();
-    }
-
     public function index() {
         $post = request()->post();
         $html = $this->curl->boot('https://www.fantasyland.ru/cgi/no_combat.php', $post);

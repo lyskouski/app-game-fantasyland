@@ -5,17 +5,9 @@
 namespace App\Http\Controllers;
 
 use App\Providers\AppProxyProvider;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    protected AppProxyProvider $curl;
-
-    public function __construct()
-    {
-        $this->curl = new AppProxyProvider();
-    }
-
     private function getTimestamp(): ?string
     {
         $html = $this->curl->boot('https://www.fantasyland.ru');
