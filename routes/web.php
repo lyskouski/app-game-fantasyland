@@ -33,7 +33,7 @@ Route::post('/cgi/no_combat.php', [MainController::class, 'index']);
 
 // Maning
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
-// Route::get('/cgi/png.php', [PreyController::class, 'captcha']);
+Route::get('/cgi/png.php', [PreyController::class, 'captcha']);
 
 
 // All other routes

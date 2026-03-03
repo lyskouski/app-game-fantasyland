@@ -78,6 +78,15 @@ class MainController extends Controller
         $content = '';
         if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
             $content = $matches[1];
+            $content = str_replace('action="work_start.php"', 'action="/cgi/work_start.php"', $content);
+            $content = preg_replace_callback(
+                "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
+                function ($m) {
+                    $src = $this->captcha($m[1]);
+                    return "<img src='" . $src . "'" . $m[2] . ">";
+                },
+                $content
+            );
         }
         $image = '';
         if (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {

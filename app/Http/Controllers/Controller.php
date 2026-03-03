@@ -21,4 +21,10 @@ abstract class Controller
         $wrapper = new AppContentWrapper($data);
         return view('generic', ['data' => $wrapper->get()]);
     }
+
+    public function captcha(?string $t) {
+        $t = $t ?? random_int(0, 1000000);
+        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/png.php?c='. $t, null, false);
+        return 'data:image/png;base64,' . base64_encode($html);
+    }
 }

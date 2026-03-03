@@ -10,10 +10,4 @@ class PreyController extends MainController
         $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_stop.php');
         return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
     }
-
-    public function captcha() {
-        $data = request()->all();
-        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/png.php?'. http_build_query($data), null, false);
-        return response($html)->header('Content-Type', 'image/png');
-    }
 }
