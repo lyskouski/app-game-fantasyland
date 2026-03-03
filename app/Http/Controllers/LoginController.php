@@ -42,14 +42,19 @@ class LoginController extends Controller
     }
 
     public function register() {
-        $html = $this->curl->boot('https://www.fantasyland.ru');
-        preg_match('/guestlogin\.php\?t=([a-z0-9]+)/i', $html, $matches);
         $data = request()->post();
-        $data['t'] = $matches[1] ?? null;
+        $data['t'] = $this->getTimestamp();
         $registerResult = $this->curl->boot('https://www.fantasyland.ru/cgi/register.php?' . http_build_query($data));
         if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
             return view('registry', ['error' => $registerResult]);
         }
         return view('home');
+    }
+
+    public function rules() {
+        $html = $this->curl->boot('https://www.fantasyland.ru/rules.php');
+        $html = str_replace('BACKGROUND="images', 'BACKGROUND="https://www.fantasyland.ru/images', $html);
+        $html = str_replace('SRC="images', 'SRC="https://www.fantasyland.ru/images', $html);
+        return view('generic', ['data' => $html]);
     }
 }

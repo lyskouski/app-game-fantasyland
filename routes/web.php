@@ -15,6 +15,7 @@ Route::post('/login.php', [LoginController::class, 'login']);
 Route::get('/guestlogin.php', [LoginController::class, 'guestLogin']);
 Route::get('/registration', [LoginController::class, 'indexRegister']);
 Route::post('/cgi/register.php', [LoginController::class, 'register']);
+Route::get('/rules.php', [LoginController::class, 'rules']);
 
 // Navigation: Citadel
 Route::get('/citadel', function () {
