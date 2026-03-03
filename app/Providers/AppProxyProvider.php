@@ -17,7 +17,7 @@ class AppProxyProvider
         }
     }
 
-    public function boot(string $url, ?array $post = null): string
+    public function boot(string $url, ?array $post = null, bool $convert = true): string
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -43,6 +43,7 @@ class AppProxyProvider
         }
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);
-        return iconv('cp1251', 'UTF-8', curl_exec($curl));
+        $result = curl_exec($curl);
+        return $convert ? iconv('cp1251', 'UTF-8', $result) : $result;
     }
 }

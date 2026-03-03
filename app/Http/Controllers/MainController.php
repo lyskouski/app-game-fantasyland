@@ -15,6 +15,8 @@ class MainController extends Controller
             return view('main_location', $this->onLocation($html));
         } elseif (strpos($html, 'cssLocImage') !== false) {
             return view('main_place', $this->onPlace($html));
+        } elseif (strpos($html, 'action="work_start.php"') !== false) {
+            return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         }
         return view('generic', ['data' => $html]);
     }
@@ -35,7 +37,7 @@ class MainController extends Controller
         return ['map' => $map, 'image' => $image];
     }
 
-    private function onPlace(string $html) {
+    protected function onPlace(string $html) {
         $title = '';
         if (preg_match('/show_title\(["\']([^"\']+)["\']\)/', $html, $titleMatch)) {
             $title = html_entity_decode($titleMatch[1]);
@@ -72,4 +74,15 @@ class MainController extends Controller
         return ['image' => $image, 'title' => $title, 'map' => $map, 'place' => $place];
     }
 
+    protected function onPrey(string $html) {
+        $content = '';
+        if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
+            $content = $matches[1];
+        }
+        $image = '';
+        if (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {
+           $image = str_replace('..', '', $imgMatch[2]);
+        }
+        return ['data' => $content, 'image' => $image];
+    }
 }

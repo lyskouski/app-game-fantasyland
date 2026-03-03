@@ -4,6 +4,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\PreyController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -29,6 +30,10 @@ Route::get('/cgi/f_show_thread.php', [ForumController::class, 'topic']);
 // Main page
 Route::get('/cgi/no_combat.php', [MainController::class, 'index']);
 Route::post('/cgi/no_combat.php', [MainController::class, 'index']);
+
+// Maning
+Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
+// Route::get('/cgi/png.php', [PreyController::class, 'captcha']);
 
 
 // All other routes
