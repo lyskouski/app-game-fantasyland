@@ -13,9 +13,7 @@ Route::get('/', [LoginController::class, 'index']);
 Route::get('/index.php', [LoginController::class, 'index']);
 Route::post('/login.php', [LoginController::class, 'login']);
 Route::get('/guestlogin.php', [LoginController::class, 'guestLogin']);
-Route::get('/registration', function () {
-    return view('registry');
-});
+Route::get('/registration', [LoginController::class, 'indexRegister']);
 Route::post('/cgi/register.php', [LoginController::class, 'register']);
 
 // Navigation: Citadel
@@ -35,7 +33,7 @@ Route::post('/cgi/no_combat.php', [MainController::class, 'index']);
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 
-// Maining
+// Mining
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
 Route::get('/cgi/work_start.php', [PreyController::class, 'start']);
 Route::post('/cgi/work_start.php', [PreyController::class, 'run']);

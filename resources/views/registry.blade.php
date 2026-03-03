@@ -51,15 +51,7 @@
                                 <b>Пароль:</b>
                             </td>
                             <td>
-                                <input type=password name=password1 size="16" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="cell" width="80" align="left">
-                                <b>Повтор пароля:</b>
-                            </td>
-                            <td>
-                                <input type=password name=password2 size="16" />
+                                <input type=password name=pwd size="16" />
                             </td>
                         </tr>
                         <tr>
@@ -76,7 +68,7 @@
                             </td>
                             <td>
                                 <input type="radio" name="sex" value="m" checked="">Мужской
-                                &nbsp;&nbsp;&nbsp;
+                                <br />
                                 <input type="radio" name="sex" value="f">Женский
                             </td>
                         </tr>
@@ -103,7 +95,8 @@
                 </form>
             </div>
             @if(isset($error))
-                <div>{{ $error }}</div>
+                <p>{!! $error !!}</p>
+                <br />
             @endif
         </div>
         <br />

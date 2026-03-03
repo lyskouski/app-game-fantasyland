@@ -37,13 +37,18 @@ class LoginController extends Controller
         return view('home');
     }
 
-    public function register() { // TBD
+    public function indexRegister() {
+        return view('registry');
+    }
+
+    public function register() {
+        $html = $this->curl->boot('https://www.fantasyland.ru');
+        preg_match('/guestlogin\.php\?t=([a-z0-9]+)/i', $html, $matches);
         $data = request()->post();
+        $data['t'] = $matches[1] ?? null;
         $registerResult = $this->curl->boot('https://www.fantasyland.ru/cgi/register.php?' . http_build_query($data));
-        $reg = '#<div id="alertMsg" style="color:red; font-weight: bold; padding-bottom: 12px; width:290px">(.*?)</div>#is';
-        if (preg_match($reg, $registerResult, $matches)) {
-            $match = $matches[1];
-            return view('registry', ['error' => $match]);
+        if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
+            return view('registry', ['error' => $registerResult]);
         }
         return view('home');
     }
