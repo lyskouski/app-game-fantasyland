@@ -30,6 +30,10 @@ Route::get('/cgi/f_show_thread.php', [ForumController::class, 'topic']);
 // Main page
 Route::get('/cgi/no_combat.php', [MainController::class, 'index']);
 Route::post('/cgi/no_combat.php', [MainController::class, 'index']);
+Route::get('/cgi/no_travel.php', [MainController::class, 'index']);
+Route::get('/cgi/map.php', [MainController::class, 'map']);
+Route::post('/cgi/travel_start.php', [MainController::class, 'map']);
+Route::get('/cgi/travel_stop.php', [MainController::class, 'mapStop']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);

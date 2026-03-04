@@ -63,6 +63,7 @@
                     <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
                 </form>
                 @endforeach
+                @if ($map)
                 <br />
                 @foreach ($map as $location)
                 <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
@@ -72,6 +73,14 @@
                     <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
                 </form>
                 @endforeach
+                @endif
+                @if (isset($hasRoad) && $hasRoad)
+                    <br />
+                    <form method="GET" action="/cgi/map.php" style="margin-bottom: 8px;">
+                        @csrf
+                        <input type="submit" value="Покинуть локацию" style="width: 100%;" />
+                    </form>
+                @endif
             </div>
         </div>
         <br />
