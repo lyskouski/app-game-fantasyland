@@ -4,7 +4,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Providers\AppContentWrapper;
 use App\Providers\AppProxyProvider;
 
 abstract class Controller
@@ -18,8 +17,15 @@ abstract class Controller
 
     public function get(string $url, ?array $post = null) {
         $data = $this->curl->boot('https://www.fantasyland.ru/' . $url, $post);
-        $wrapper = new AppContentWrapper($data);
-        return view('generic', ['data' => $wrapper->get()]);
+        $data = str_replace('src="../', 'src="https://www.fantasyland.ru/', $data);
+        $data = str_replace('SRC="../', 'src="https://www.fantasyland.ru/', $data);
+        $data = str_replace('src=../', 'src=https://www.fantasyland.ru/', $data);
+        $data = str_replace('src="/', 'src="https://www.fantasyland.ru/', $data);
+        $data = str_replace('src=/', 'src=https://www.fantasyland.ru/', $data);
+        $data = str_replace("BACKGROUND='../", "background='https://www.fantasyland.ru/", $data);
+        $data = str_replace('BACKGROUND="../', 'background="https://www.fantasyland.ru/', $data);
+        $data = str_replace('background="../', 'background="https://www.fantasyland.ru/', $data);
+        return view('generic', ['data' => $data]);
     }
 
     public function captcha(?string $t) {
