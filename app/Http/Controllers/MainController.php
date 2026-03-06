@@ -11,14 +11,14 @@ class MainController extends Controller
     public function index() {
         $post = request()->post();
         $html = $this->curl->boot('https://www.fantasyland.ru/cgi/no_combat.php', $post);
-        if (strpos($html, 'id="LocTable"') !== false) {
-            return view('main_location', $this->onLocation($html));
-        } elseif (strpos($html, 'cssLocImage') !== false || strpos($html, '<image height=150 width=150') !== false) {
-            return view('main_place', $this->onPlace($html));
-        } elseif (strpos($html, 'action="work_start.php"') !== false) {
+        if (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        } elseif (strpos($html, 'id="LocTable"') !== false) {
+            return view('main_location', $this->onLocation($html));
+        } elseif (strpos($html, 'cssLocImage') !== false || strpos($html, '<image height=150 width=150') !== false) {
+            return view('main_place', $this->onPlace($html));
         } elseif (strpos($html, 'travel_start.php') !== false) {
             return $this->map();
         }
