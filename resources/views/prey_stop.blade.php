@@ -92,6 +92,11 @@
                 <br />
             </div>
             <div class="main_middle">
+                @if ($message)
+                <div class="message">
+                    {!! $message !!}
+                </div>
+                @endif
                 {!! $data !!}
             </div>
         </div>

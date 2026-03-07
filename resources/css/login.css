@@ -47,3 +47,11 @@ body {
     font-size: 12pt;
     padding: 4px;
 }
+.message {
+    color: #F9D3B0;
+    font-size: 12pt;
+    padding: 4px;
+    margin: 4px 4px 12px;
+    border-radius: 2px;
+    box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
+}

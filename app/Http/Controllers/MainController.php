@@ -135,7 +135,11 @@ class MainController extends Controller
         if (preg_match('/InsertTimer2\\s*\\(\\s*(\\d+)/', $html, $matches)) {
             $timer = (int)$matches[1];
         }
-        return ['data' => $content, 'image' => $image, 'timer' => $timer];
+        $message = '';
+        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
+            $message = $matches[1];
+        }
+        return ['data' => $content, 'image' => $image, 'timer' => $timer, 'message' => $message];
     }
 
     protected function onMap(string $html) {

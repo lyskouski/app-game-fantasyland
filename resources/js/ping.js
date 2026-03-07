@@ -1,5 +1,3 @@
-
-
 function checkState() {
     fetch('/cgi/ch_ref.php')
         .then(response => response.text())

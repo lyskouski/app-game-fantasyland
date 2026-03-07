@@ -4,18 +4,11 @@
 
 namespace App\Http\Controllers;
 
-use Native\Mobile\Facades\Dialog;
-
 class PreyController extends MainController
 {
     public function stop() {
         $data = request()->all();
         $html = $this->curl->boot('https://www.fantasyland.ru/cgi/work_stop.php?' . http_build_query($data));
-        preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches);
-        $message = isset($matches[1]) ? strip_tags($matches[1]) : null;
-        if ($message) {
-            Dialog::toast($message);
-        }
         return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
     }
 
