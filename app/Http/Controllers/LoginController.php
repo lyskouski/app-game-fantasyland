@@ -10,7 +10,7 @@ class LoginController extends Controller
 {
     private function getTimestamp(): ?string
     {
-        $html = $this->curl->boot('https://www.fantasyland.ru');
+        $html = $this->curl->boot($this->url);
         preg_match('/guestlogin\.php\?t=([a-z0-9]+)/i', $html, $matches);
         return $matches[1] ?? null;
     }
@@ -21,19 +21,19 @@ class LoginController extends Controller
 
     public function login() {
         $data = request()->only(['login', 'password']);
-        $loginResult = $this->curl->boot('https://www.fantasyland.ru/login.php', $data);
+        $loginResult = $this->curl->boot($this->url . 'login.php', $data);
         if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $loginResult, $matches)) {
             $match = $matches[1];
             return view('login', ['error' => $match, 'timestamp' => $this->getTimestamp()]);
         }
-        $this->curl->boot('https://www.fantasyland.ru/ch/chch.php');
+        $this->curl->boot($this->url . 'ch/chch.php');
         return view('home');
     }
 
     public function guestLogin() {
         $data = request()->only(['t']);
-        $this->curl->boot('https://www.fantasyland.ru/guestlogin.php?t=' . $data['t']);
-        $this->curl->boot('https://www.fantasyland.ru/ch/chch.php');
+        $this->curl->boot($this->url . 'guestlogin.php?t=' . $data['t']);
+        $this->curl->boot($this->url . 'ch/chch.php');
         return view('home');
     }
 
@@ -44,7 +44,7 @@ class LoginController extends Controller
     public function register() {
         $data = request()->post();
         $data['t'] = $this->getTimestamp();
-        $registerResult = $this->curl->boot('https://www.fantasyland.ru/cgi/register.php?' . http_build_query($data));
+        $registerResult = $this->curl->boot($this->url . 'cgi/register.php?' . http_build_query($data));
         if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
             return view('registry', ['error' => $registerResult]);
         }
@@ -52,9 +52,9 @@ class LoginController extends Controller
     }
 
     public function rules() {
-        $html = $this->curl->boot('https://www.fantasyland.ru/rules.php');
-        $html = str_replace('BACKGROUND="images', 'BACKGROUND="https://www.fantasyland.ru/images', $html);
-        $html = str_replace('SRC="images', 'SRC="https://www.fantasyland.ru/images', $html);
+        $html = $this->curl->boot($this->url . 'rules.php');
+        $html = str_replace('BACKGROUND="images', 'BACKGROUND="' . $this->url . 'images', $html);
+        $html = str_replace('SRC="images', 'SRC="' . $this->url . 'images', $html);
         return view('generic', ['data' => $html]);
     }
 }

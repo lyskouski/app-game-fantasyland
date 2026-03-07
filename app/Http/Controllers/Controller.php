@@ -10,27 +10,29 @@ abstract class Controller
 {
     protected AppProxyProvider $curl;
 
+    public string $url = 'https://www.fantasyland.ru/';
+
     public function __construct()
     {
         $this->curl = new AppProxyProvider();
     }
 
     public function get(string $url, ?array $post = null) {
-        $data = $this->curl->boot('https://www.fantasyland.ru/' . $url, $post);
-        $data = str_replace('src="../', 'src="https://www.fantasyland.ru/', $data);
-        $data = str_replace('SRC="../', 'src="https://www.fantasyland.ru/', $data);
-        $data = str_replace('src=../', 'src=https://www.fantasyland.ru/', $data);
-        $data = str_replace('src="/', 'src="https://www.fantasyland.ru/', $data);
-        $data = str_replace('src=/', 'src=https://www.fantasyland.ru/', $data);
-        $data = str_replace("BACKGROUND='../", "background='https://www.fantasyland.ru/", $data);
-        $data = str_replace('BACKGROUND="../', 'background="https://www.fantasyland.ru/', $data);
-        $data = str_replace('background="../', 'background="https://www.fantasyland.ru/', $data);
+        $data = $this->curl->boot($this->url . $url, $post);
+        $data = str_replace('src="../', 'src="' . $this->url, $data);
+        $data = str_replace('SRC="../', 'src="' . $this->url, $data);
+        $data = str_replace('src=../', 'src=' . $this->url, $data);
+        $data = str_replace('src="/', 'src="' . $this->url, $data);
+        $data = str_replace('src=/', 'src=' . $this->url, $data);
+        $data = str_replace("BACKGROUND='../", "background='" . $this->url, $data);
+        $data = str_replace('BACKGROUND="../', 'background="' . $this->url, $data);
+        $data = str_replace('background="../', 'background="' . $this->url, $data);
         return view('generic', ['data' => $data]);
     }
 
     public function captcha(?string $t) {
         $t = $t ?? random_int(0, 1000000);
-        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/png.php?c='. $t, null, false);
+        $html = $this->curl->boot($this->url . 'cgi/png.php?c=' . $t, null, false);
         return 'data:image/png;base64,' . base64_encode($html);
     }
 }

@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 class ChatController extends Controller
 {
     public function index() {
-        $data = $this->curl->boot('https://www.fantasyland.ru//cgi/ch_ref.php');
+        $data = $this->curl->boot($this->url . 'cgi/ch_ref.php');
         return view('empty', ['data' => $data]);
     }
 }

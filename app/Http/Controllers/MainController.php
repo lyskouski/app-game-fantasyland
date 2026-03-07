@@ -4,13 +4,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Providers\AppProxyProvider;
-
 class MainController extends Controller
 {
     public function index() {
         $post = request()->post();
-        $html = $this->curl->boot('https://www.fantasyland.ru/cgi/no_combat.php', $post);
+        $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
         if (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'work_stop.php') !== false) {
@@ -28,15 +26,15 @@ class MainController extends Controller
     public function map() {
         $post = request()->post();
         if (!empty($post)) {
-            $html = $this->curl->boot('https://www.fantasyland.ru/cgi/travel_start.php', $post);
+            $html = $this->curl->boot($this->url . 'cgi/travel_start.php', $post);
         } else {
-            $html = $this->curl->boot('https://www.fantasyland.ru/cgi/map.php');
+            $html = $this->curl->boot($this->url . 'cgi/map.php');
         }
         return view('main_map', $this->onMap($html));
     }
 
     public function mapStop() {
-        $this->curl->boot('https://www.fantasyland.ru/cgi/travel_stop.php');
+        $this->curl->boot($this->url . 'cgi/travel_stop.php');
         return $this->index();
     }
 
