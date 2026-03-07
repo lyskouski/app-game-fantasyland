@@ -9,7 +9,7 @@
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         <native:bottom-nav>
             <native:bottom-nav-item id="profile" icon="person" label="Профиль" url="/cgi/show_info.php" />
-            <native:bottom-nav-item id="chat" icon="chat" label="Чат" url="/ch/chout.php" badge="3" />
+            <!-- native:bottom-nav-item id="chat" icon="chat" label="Чат" url="/ch/chout.php" badge="3" / -->
             <native:bottom-nav-item id="home" icon="home" label="Главная" url="/cgi/no_combat.php" :active="true" />
             <native:bottom-nav-item id="contacts" icon="contacts" label="Форум" url="/cgi/forum_rooms.php" />
             <native:bottom-nav-item id="settings" icon="settings" label="Цитадель" url="/citadel" />
