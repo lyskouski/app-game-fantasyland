@@ -9,7 +9,9 @@ class MainController extends Controller
     public function index() {
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
-        if (strpos($html, 'work_start.php') !== false) {
+        if (strpos($html, 'craft_favorite_ref.php') !== false) {
+            return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
+        } elseif (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
@@ -171,5 +173,87 @@ class MainController extends Controller
             $title = $matches[1];
         }
         return ['map' => $map, 'return' => $return, 'timer' => $timer, 'title' => $title];
+    }
+
+    protected function onCraft(string $html) {
+        $craft = [];
+        if (preg_match_all(
+            '/<BUTTON[^>]+onClick=\'regimeTo\(([^)]+)\)[^>]*>([^<]+)<\/BUTTON>/ui',
+            $html,
+            $matches,
+            PREG_SET_ORDER
+        )) {
+            foreach ($matches as $m) {
+                $expr = $m[1];
+                $title = trim($m[2]);
+                $id = null;
+                if (preg_match('/^\d+$/', $expr)) {
+                    $id = (int)$expr;
+                } else {
+                    if (preg_match('/^(\d+)\s*\+\s*(\d+)$/', $expr, $em)) {
+                        $id = (int)$em[1] + (int)$em[2];
+                    } else {
+                        $id = @eval('return ' . $expr . ';');
+                    }
+                }
+                if ($id !== null) {
+                    $craft[] = ['id' => $id, 'title' => $title];
+                }
+            }
+        }
+
+        $recipes = [];
+        if (preg_match_all('/<TR>(.*?)<\/TR>/is', $html, $rows, PREG_SET_ORDER)) {
+            foreach ($rows as $row) {
+                $tr = $row[1];
+                if (strpos($tr, "startWork(") === false && strpos($tr, "startWorkCount(") === false) {
+                    continue;
+                }
+                $src = '';
+                $title = '';
+                // Always extract src and title from <img ...>
+                if (preg_match('/<img[^>]+title=["\']?([^"\'>]+)["\']?[^>]*src=["\']([^"\'>]+)["\']/i', $tr, $imgMatch)) {
+                    $title = html_entity_decode($imgMatch[1]);
+                    $src = str_replace('../', '/', $imgMatch[2]);
+                }
+                // Get recipe id
+                $id = null;
+                if (preg_match('/startWork\((\d+)\)/', $tr, $idMatch)) {
+                    $id = (int)$idMatch[1];
+                } elseif (preg_match('/startWorkCount\((\d+),/', $tr, $idMatch)) {
+                    $id = (int)$idMatch[1];
+                }
+                // Get count (prefer bracket in title, else button/input value)
+                $count = 1;
+                if (preg_match('/\[(\d+)\]/', $tr, $bracketMatch)) {
+                    $count = (int)$bracketMatch[1];
+                }
+                // Get time
+                $time = '';
+                if (preg_match('/<span[^>]+id=["\']t\d+["\'][^>]*>([^<]+)<\/span>/i', $tr, $timeMatch)) {
+                    $time = trim($timeMatch[1]);
+                }
+                // Get receipt (ingredients)
+                $receipt = [];
+                if (preg_match_all('/<img[^>]+title=["\']?([^"\'>]+)["\']?[^>]*>.*?<b>([^<]+)<\/b>/is', $tr, $ingMatches, PREG_SET_ORDER)) {
+                    foreach ($ingMatches as $ing) {
+                        $receipt[] = $ing[1] . ': ' . $ing[2];
+                    }
+                }
+                $receiptStr = implode(', ', $receipt);
+                // Only add if id and title are found
+                if ($id !== null && $title !== '') {
+                    $recipes[] = [
+                        'title' => $title,
+                        'count' => $count,
+                        'src' => $src,
+                        'id' => $id,
+                        'time' => $time,
+                        'receipt' => $receiptStr
+                    ];
+                }
+            }
+        }
+        return ['craft' => $craft, 'recipes' => $recipes];
     }
 }

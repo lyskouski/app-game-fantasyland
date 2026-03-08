@@ -9,7 +9,11 @@ class PreyController extends MainController
     public function stop() {
         $data = request()->all();
         $html = $this->curl->boot($this->url . 'cgi/work_stop.php?' . http_build_query($data));
-        return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        if (strpos($html, 'craft_favorite_ref.php') !== false) {
+            return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
+        } else {
+            return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        }
     }
 
     public function run() {
