@@ -9,12 +9,12 @@ class MainController extends Controller
     public function index() {
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
-        if (strpos($html, 'craft_favorite_ref.php') !== false) {
+        if (strpos($html, 'work_stop.php') !== false) {
+            return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        } elseif (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
         } elseif (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
-        } elseif (strpos($html, 'work_stop.php') !== false) {
-            return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $this->onLocation($html));
         } elseif (strpos($html, 'cssLocImage') !== false || strpos($html, '<image height=150 width=150') !== false) {
@@ -118,6 +118,7 @@ class MainController extends Controller
         if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
             $content = $matches[1];
             $content = str_replace('action="work_start.php"', 'action="/cgi/work_start.php"', $content);
+            $content = str_replace('../images', $this->url . 'images', $content);
             $content = preg_replace_callback(
                 "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
                 function ($m) {
@@ -257,6 +258,11 @@ class MainController extends Controller
                 }
             }
         }
-        return ['craft' => $craft, 'recipes' => $recipes, 'message' => $message];
+        return [
+            'craft' => $craft,
+            'recipes' => $recipes,
+            'message' => $message,
+            'captcha' => $this->captcha(time())
+        ];
     }
 }
