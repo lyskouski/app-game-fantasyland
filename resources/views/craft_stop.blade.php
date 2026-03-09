@@ -109,6 +109,27 @@
                 @endforeach
                 <div style="clear: both;">&nbsp;</div>
                 <div id="receipt" style="display:none;">
+                    <table>
+                        <tr>
+                            <td>Рецепт:</td>
+                            <td>Время:</td>
+                            <td>Ингредиенты:</td>
+                        </tr>
+                        <tr>
+                            <td><div class="item" id="receipt_item"></div></td>
+                            <td id="receipt_time"></td>
+                            <td id="receipt_value"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <form method="POST" action="/cgi/no_combat.php">
+                                    @csrf
+                                    ...
+                                    <input type="submit" value="Сделать" />
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -141,5 +162,17 @@
             </div>
         </div>
         <br />
+        <script>
+            document.querySelectorAll('.item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.getElementById('receipt_item').innerHTML = item.innerHTML;
+                    const receipt = item.getAttribute('data-receipt');
+                    document.getElementById('receipt_value').textContent = receipt;
+                    const time = item.getAttribute('data-time');
+                    document.getElementById('receipt_time').textContent = time;
+                    document.getElementById('receipt').style.display = 'block';
+                });
+            });
+        </script>
     </body>
 </html>

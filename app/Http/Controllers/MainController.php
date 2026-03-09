@@ -176,6 +176,10 @@ class MainController extends Controller
     }
 
     protected function onCraft(string $html) {
+        $message = '';
+        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
+            $message = $matches[1];
+        }
         $craft = [];
         if (preg_match_all(
             '/<BUTTON[^>]+onClick=\'regimeTo\(([^)]+)\)[^>]*>([^<]+)<\/BUTTON>/ui',
@@ -203,7 +207,7 @@ class MainController extends Controller
         }
 
         $recipes = [];
-        if (preg_match_all('/<TR>(.*?)<\/TR>/is', $html, $rows, PREG_SET_ORDER)) {
+        if (preg_match_all('/<TR>(.*?)<\/TR>/s', $html, $rows, PREG_SET_ORDER)) {
             foreach ($rows as $row) {
                 $tr = $row[1];
                 if (strpos($tr, "startWork(") === false && strpos($tr, "startWorkCount(") === false) {
@@ -235,13 +239,12 @@ class MainController extends Controller
                 }
                 // Get receipt (ingredients)
                 $receipt = [];
-                if (preg_match_all('/<img[^>]+title=["\']?([^"\'>]+)["\']?[^>]*>.*?<b>([^<]+)<\/b>/is', $tr, $ingMatches, PREG_SET_ORDER)) {
-                    foreach ($ingMatches as $ing) {
-                        $receipt[] = $ing[1] . ': ' . $ing[2];
+                if (preg_match_all('/<b>([^<]+)<\/b>/i', $tr, $bMatch)) {
+                    foreach ($bMatch[1] as $value) {
+                        $receipt[] = str_replace('&nbsp;', ' ', $value);
                     }
                 }
-                $receiptStr = implode(', ', $receipt);
-                // Only add if id and title are found
+                $receiptStr = implode("\n", $receipt);
                 if ($id !== null && $title !== '') {
                     $recipes[] = [
                         'title' => $title,
@@ -254,6 +257,6 @@ class MainController extends Controller
                 }
             }
         }
-        return ['craft' => $craft, 'recipes' => $recipes];
+        return ['craft' => $craft, 'recipes' => $recipes, 'message' => $message];
     }
 }
