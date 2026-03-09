@@ -42,6 +42,7 @@ Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
 Route::get('/cgi/work_start.php', [PreyController::class, 'start']);
 Route::post('/cgi/work_start.php', [PreyController::class, 'run']);
+Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

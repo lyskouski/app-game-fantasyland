@@ -111,12 +111,19 @@
                 <div id="receipt" style="display:none;">
                     <table>
                         <tr>
-                            <td>Рецепт:</td>
-                            <td>Время:</td>
-                            <td>Ингредиенты:</td>
+                            <th>Рецепт</th>
+                            <th>Время</th>
+                            <th>Ингредиенты</th>
                         </tr>
                         <tr>
-                            <td><div class="item" id="receipt_item"></div></td>
+                            <td>
+                                <div class="item" id="receipt_item"></div>
+                                <form method="GET" action="/cgi/craft_favorite_ref.php">
+                                    <input type="hidden" name="id" id="receipt_id" value="" />
+                                    <input type="hidden" name="checked" value="1" />
+                                    <input type="submit" value="В избранное" />
+                                </form>
+                            </td>
                             <td id="receipt_time"></td>
                             <td id="receipt_value"></td>
                         </tr>
@@ -171,6 +178,7 @@
                     const time = item.getAttribute('data-time');
                     document.getElementById('receipt_time').textContent = time;
                     document.getElementById('receipt').style.display = 'block';
+                    document.getElementById('receipt_id').value = item.getAttribute('data-id');
                 });
             });
         </script>

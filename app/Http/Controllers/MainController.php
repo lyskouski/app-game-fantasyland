@@ -244,7 +244,7 @@ class MainController extends Controller
                         $receipt[] = str_replace('&nbsp;', ' ', $value);
                     }
                 }
-                $receiptStr = implode("\n", $receipt);
+                $receiptStr = implode(', ', $receipt);
                 if ($id !== null && $title !== '') {
                     $recipes[] = [
                         'title' => $title,
