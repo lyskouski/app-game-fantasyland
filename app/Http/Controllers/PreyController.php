@@ -31,6 +31,6 @@ class PreyController extends MainController
         $data = request()->all();
         $this->curl->boot($this->url . 'cgi/craft_favorite_ref.php?' . http_build_query($data));
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php');
-        return view('craft_favorite', [...$this->onPlace($html), ...$this->onCraft($html)]);
+        return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
     }
 }
