@@ -129,10 +129,21 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <form method="POST" action="/cgi/no_combat.php">
+                                <form method="POST" action="/cgi/work_start.php">
                                     @csrf
-                                    ...
+                                    <div style="clear: both;">&nbsp;</div>
+                                    <table><tr><td valign="bottom">
+                                    <input type="hidden" name="item_id" id="item_id" value="" />
+                                    Количество: <input type="text" name="count" size="4" value="" />
+                                    </td><td valign="bottom">
+                                    <input type="hidden" name="enchant" value="0" />
+                                    <input type="hidden" name="enchant_length" value="1" />
+                                    <img src="{!! $captcha !!}" width="90" height="40" border="1" bordercolor="white" />
+                                    <input type="text" name="value" size="4" autocomplete="off" />
+                                    </td><td valign="bottom">
                                     <input type="submit" value="Сделать" />
+                                    </td></tr></table>
+                                    <div style="clear: both;">&nbsp;</div>
                                 </form>
                             </td>
                         </tr>
@@ -172,13 +183,14 @@
         <script>
             document.querySelectorAll('.item').forEach(item => {
                 item.addEventListener('click', () => {
+                    document.getElementById('receipt').style.display = 'block';
                     document.getElementById('receipt_item').innerHTML = item.innerHTML;
                     const receipt = item.getAttribute('data-receipt');
                     document.getElementById('receipt_value').textContent = receipt;
                     const time = item.getAttribute('data-time');
                     document.getElementById('receipt_time').textContent = time;
-                    document.getElementById('receipt').style.display = 'block';
                     document.getElementById('receipt_id').value = item.getAttribute('data-id');
+                    document.getElementById('item_id').value = item.getAttribute('data-id');
                 });
             });
         </script>
