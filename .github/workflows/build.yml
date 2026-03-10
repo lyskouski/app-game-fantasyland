@@ -92,6 +92,7 @@ jobs:
         env:
           ANDROID_JKS: ${{ secrets.ANDROID_JKS }}
           ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
+          TERM: dumb
         run: |
           echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/key.jks
           php artisan native:package android \
