@@ -104,11 +104,11 @@ jobs:
           --key-password=$ANDROID_KEY \
           --no-tty
 
-      - name: Search for AAB file and copy to workspace
+      - name: Copy AAB file to workspace
         if: matrix.target == 'Android'
         run: |
-          echo "Searching for AAB files in build directory..."
-          APK_PATH=$(find build -name "*.aab" -type f | head -1)
+          echo "Copying AAB file from NativePHP output..."
+          APK_PATH=nativephp/android/app/build/outputs/bundle/release/app-release.aab
           cp "$APK_PATH" "$GITHUB_WORKSPACE/fantasyland_Android.aab"
 
 #
