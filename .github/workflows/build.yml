@@ -51,7 +51,7 @@ jobs:
 
       - name: Update version and build number
         run: |
-          copy .env.example .env
+          cp .env.example .env
           # php artisan key:generate
           sed -i "s/^NATIVEPHP_APP_VERSION=.*/NATIVEPHP_APP_VERSION=${{ needs.release.outputs.version }}/" .env
           sed -i "s/^NATIVEPHP_APP_VERSION_CODE=.*/NATIVEPHP_APP_VERSION_CODE=${{ needs.release.outputs.build_number }}/" .env
