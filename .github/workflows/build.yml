@@ -1,0 +1,120 @@
+name: Project Release Artifacts
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    uses: ./.github/workflows/create_release_page.yml
+    secrets: inherit
+    permissions:
+      contents: write
+    with:
+      draft: false
+
+  build:
+    name: Create ${{ matrix.target }} build
+    permissions:
+      contents: write
+    runs-on: ${{ matrix.os }}
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [Android]
+        include:
+          - os: ubuntu-latest
+            target: Android
+            build_path: build
+            asset_extension: .aab
+            asset_content_type: application/gzip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Install requirements
+        run: |
+          sudo apt-get update
+          sudo apt install zip unzip
+          sudo apt install php8.4 php8.4-xml php8.4-cli php8.4-zip php8.4-mbstring
+          sudo apt-get install -y npm
+
+      - name: Composer install
+        run: composer install
+
+      - name: Update version and build number
+        run: |
+          copy .env.example .env
+          # php artisan key:generate
+          sed -i "s/^NATIVEPHP_APP_VERSION=.*/NATIVEPHP_APP_VERSION=${{ needs.release.outputs.version }}/" .env
+          sed -i "s/^NATIVEPHP_APP_VERSION_CODE=.*/NATIVEPHP_APP_VERSION_CODE=${{ needs.release.outputs.build_number }}/" .env
+
+          echo "Updated .env file:"
+          grep "^NATIVEPHP_APP_VERSION=" .env
+          grep "^NATIVEPHP_APP_VERSION_CODE=" .env
+
+      - name: Setup environment
+        run: |
+          php artisan native:install
+          npm install
+          npm run build
+
+# Android
+      - name: Install Android SDK
+        if: matrix.target == 'Android'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk unzip wget
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$PATH
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Create local.properties
+        if: matrix.target == 'Android'
+        run: |
+          echo "sdk.dir=$HOME/android-sdk" > nativephp/android/local.properties
+
+
+      - name: Create Android build
+        if: matrix.target == 'Android'
+        env:
+          ANDROID_JKS: ${{ secrets.ANDROID_JKS }}
+          ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
+        run: |
+          echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/key.jks
+          php artisan native:package android \
+          --build-type=bundle \
+          --keystore=$GITHUB_WORKSPACE/key.jks \
+          --keystore-password=$ANDROID_KEY \
+          --key-alias=key \
+          --key-password=$ANDROID_KEY
+
+      - name: Search for AAB file and copy to workspace
+        if: matrix.target == 'Android'
+        run: |
+          echo "Searching for AAB files in build directory..."
+          APK_PATH=$(find build -name "*.aab" -type f | head -1)
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/fantasyland_Android.aab"
+
+#
+      - name: Upload ${{ matrix.target }} Artifact
+        id: upload_release_asset
+        uses: actions/upload-release-asset@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./fantasyland_${{ matrix.target }}${{ matrix.asset_extension }}
+          asset_name: fantasyland_${{ matrix.target }}${{ matrix.asset_extension }}
+          asset_content_type: ${{ matrix.asset_content_type }}
