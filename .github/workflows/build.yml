@@ -93,6 +93,7 @@ jobs:
           ANDROID_JKS: ${{ secrets.ANDROID_JKS }}
           ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
           TERM: dumb
+          CI: true
         run: |
           echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/key.jks
           php artisan native:package android \
@@ -100,7 +101,8 @@ jobs:
           --keystore=$GITHUB_WORKSPACE/key.jks \
           --keystore-password=$ANDROID_KEY \
           --key-alias=key \
-          --key-password=$ANDROID_KEY
+          --key-password=$ANDROID_KEY \
+          --no-tty
 
       - name: Search for AAB file and copy to workspace
         if: matrix.target == 'Android'
