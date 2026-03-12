@@ -153,3 +153,23 @@ IOS_API_KEY_ID: From the generated App Store Connect API key
 IOS_API_ISSUER_ID: Your organization's Issuer ID (visible in App Store Connect API section)
 IOS_API_KEY: The .p8 file you download (base64 encoded as shown in line 139)
 These should be added as secrets in your GitHub repository settings under Settings → Secrets and variables → Actions.
+
+Option 1: Create a new Provisioning Profile for com.tercad.fantasyland
+Go to Apple Developer
+Certificates, Identifiers & Profiles → Identifiers
+Click + to register a new App ID if com.tercad.fantasyland doesn't exist
+App ID: com.tercad.fantasyland
+Description: Fantasyland
+Go to Profiles
+Click + to create a new provisioning profile
+Select App Store
+Select the com.tercad.fantasyland App ID
+Select your distribution certificate
+Name it: Fantasyland Distribution
+Download the profile
+Base64 encode and add to GitHub Secrets as IOS_PROVISIONING_PROFILE
+Option 2: Update .env to match existing profile (Quickest)
+If you want to keep using the existing com.tercad.fingrom profile, update your .env:
+
+Recommended: Use Option 1 if this app should be com.tercad.fantasyland. The provisioning profile you currently have is for a different app (fingrom).
+

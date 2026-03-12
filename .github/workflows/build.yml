@@ -64,8 +64,8 @@ jobs:
         run: |
           cp .env.example .env
           # php artisan key:generate
-          sed -i '' "s/^NATIVEPHP_APP_VERSION=.*/NATIVEPHP_APP_VERSION=${{ needs.release.outputs.version }}/" .env
-          sed -i '' "s/^NATIVEPHP_APP_VERSION_CODE=.*/NATIVEPHP_APP_VERSION_CODE=${{ needs.release.outputs.build_number }}/" .env
+          sed "s/^NATIVEPHP_APP_VERSION=.*/NATIVEPHP_APP_VERSION=${{ needs.release.outputs.version }}/" .env > .env.tmp && mv .env.tmp .env
+          sed "s/^NATIVEPHP_APP_VERSION_CODE=.*/NATIVEPHP_APP_VERSION_CODE=${{ needs.release.outputs.build_number }}/" .env > .env.tmp && mv .env.tmp .env
 
           echo "Updated .env file:"
           grep "^NATIVEPHP_APP_VERSION=" .env
