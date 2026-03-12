@@ -4,10 +4,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ForumHtmlParser;
+
 class ForumController extends Controller
 {
     public function index() {
-        return $this->get('cgi/forum_rooms.php');
+        $html = $this->curl->boot($this->url . 'cgi/forum_rooms.php');
+        $parser = new ForumHtmlParser();
+        return view('forum_rooms', ['data' => $parser->parse($html)]);
     }
 
     public function room() {
