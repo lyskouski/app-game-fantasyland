@@ -2,7 +2,11 @@
 
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-Unofficial client to Liga of Heroes [RU] made by Citadel (https://www.citadel-liga.info/liga)
+Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://www.citadel-liga.info/liga)
+
+| Type                     | Alpha Version         | Pre-Release                   | Release                       |
+| ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
+| Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | Not released |
 
 <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> . <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> . <img alt="Mining" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> . <img alt="Map" style="border-width:0;width:200px" src="./docs/design-flow/map.jpg" />
 <img alt="Craft (initial page)" style="border-width:0;width:200px" src="./docs/design-flow/craft_1.jpg" /> . <img alt="Craft (chosen recept)" style="border-width:0;width:200px" src="./docs/design-flow/craft_2.jpg" /> .
