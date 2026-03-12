@@ -23,13 +23,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Android]
+        target: [Android, iOS]
         include:
           - os: ubuntu-latest
             target: Android
             build_path: build
             asset_extension: .aab
             asset_content_type: application/gzip
+          - os: macos-latest
+            target: iOS
+            build_path: build
+            asset_extension: .ipa
+            asset_content_type: application/octet-stream
 
     steps:
       - uses: actions/checkout@v4
@@ -39,12 +44,18 @@ jobs:
         with:
           php-version: '8.4'
 
-      - name: Install requirements
+      - name: Install requirements (Ubuntu)
+        if: matrix.target == 'Android'
         run: |
           sudo apt-get update
           sudo apt install zip unzip
           sudo apt install php8.4 php8.4-xml php8.4-cli php8.4-zip php8.4-mbstring
           sudo apt-get install -y npm
+
+      - name: Install requirements (macOS)
+        if: matrix.target == 'iOS'
+        run: |
+          brew install node
 
       - name: Composer install
         run: composer install
@@ -86,7 +97,6 @@ jobs:
         run: |
           echo "sdk.dir=$HOME/android-sdk" > nativephp/android/local.properties
 
-
       - name: Create Android build
         if: matrix.target == 'Android'
         env:
@@ -111,7 +121,53 @@ jobs:
           APK_PATH=nativephp/android/app/build/outputs/bundle/release/app-release.aab
           cp "$APK_PATH" "$GITHUB_WORKSPACE/fantasyland_Android.aab"
 
-#
+# iOS
+      - name: Setup iOS signing credentials
+        if: matrix.target == 'iOS'
+        env:
+          IOS_API_KEY: ${{ secrets.IOS_API_KEY }}
+          IOS_CERTIFICATE: ${{ secrets.IOS_CERTIFICATE }}
+          IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/ios-credentials
+          echo -n "$IOS_API_KEY" | base64 -d > $GITHUB_WORKSPACE/ios-credentials/api-key.p8
+          echo -n "$IOS_CERTIFICATE" | base64 -d > $GITHUB_WORKSPACE/ios-credentials/distribution.p12
+          echo -n "$IOS_PROVISIONING_PROFILE" | base64 -d > $GITHUB_WORKSPACE/ios-credentials/distribution.mobileprovision
+
+      - name: Create iOS build
+        if: matrix.target == 'iOS'
+        env:
+          API_KEY_PATH: ${{ github.workspace }}/ios-credentials/api-key.p8
+          API_KEY_ID: ${{ secrets.IOS_API_KEY_ID }}
+          API_ISSUER_ID: ${{ secrets.IOS_API_ISSUER_ID }}
+          CERTIFICATE_PATH: ${{ github.workspace }}/ios-credentials/distribution.p12
+          CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          PROVISIONING_PROFILE_PATH: ${{ github.workspace }}/ios-credentials/distribution.mobileprovision
+          TEAM_ID: 8PVKPQ758L
+          CI: true
+        run: |
+          php artisan native:package ios \
+          --export-method=app-store \
+          --api-key-path="$API_KEY_PATH" \
+          --api-key-id="$API_KEY_ID" \
+          --api-issuer-id="$API_ISSUER_ID" \
+          --certificate-path="$CERTIFICATE_PATH" \
+          --certificate-password="$CERTIFICATE_PASSWORD" \
+          --provisioning-profile-path="$PROVISIONING_PROFILE_PATH" \
+          --team-id="$TEAM_ID" \
+          --upload-to-app-store \
+          --no-tty
+
+      - name: Locate and copy IPA file to workspace
+        if: matrix.target == 'iOS'
+        run: |
+          echo "Finding and copying IPA file from Xcode output..."
+          find $GITHUB_WORKSPACE -name "*.ipa" -type f | while read ipa; do
+            echo "Found IPA: $ipa"
+            cp "$ipa" "$GITHUB_WORKSPACE/fantasyland_iOS.ipa"
+            break
+          done
+
       - name: Upload ${{ matrix.target }} Artifact
         id: upload_release_asset
         uses: actions/upload-release-asset@latest

@@ -128,3 +128,28 @@ DEBUG: Request handling error: Illuminate\Routing\UrlGenerator::__construct(): A
 
 https://github.com/NativePHP/mobile-starter/issues/1
 https://stackoverflow.com/questions/79894147/nativephp-new-android-application/79895048
+
+
+# Apple Distribution
+
+These credentials are generated in App Store Connect. Here's where to find them:
+
+IOS_API_KEY_ID
+Go to App Store Connect
+Click Users and Access → Integrations → App Store Connect API
+Click the + button to create a new API key
+Select the role (usually Developer or App Manager)
+Click Generate
+Copy the Key ID (this is your IOS_API_KEY_ID)
+Download the .p8 file (this is the private key you're base64-encoding as IOS_API_KEY)
+IOS_API_ISSUER_ID
+In the same App Store Connect API section
+Look at the top of the page for Issuer ID (appears above the API keys table)
+Copy this value (this is your IOS_API_ISSUER_ID)
+Note: The Issuer ID is the same for all API keys in your organization and is essentially your Team ID.
+
+Summary for your workflow:
+IOS_API_KEY_ID: From the generated App Store Connect API key
+IOS_API_ISSUER_ID: Your organization's Issuer ID (visible in App Store Connect API section)
+IOS_API_KEY: The .p8 file you download (base64 encoded as shown in line 139)
+These should be added as secrets in your GitHub repository settings under Settings → Secrets and variables → Actions.
