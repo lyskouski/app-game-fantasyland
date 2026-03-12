@@ -6,6 +6,7 @@ Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://ww
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
+| iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Not released |
 | Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | Not released |
 
 <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> . <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> . <img alt="Mining" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> . <img alt="Map" style="border-width:0;width:200px" src="./docs/design-flow/map.jpg" />
