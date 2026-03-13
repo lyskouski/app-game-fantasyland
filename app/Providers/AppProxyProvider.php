@@ -11,7 +11,11 @@ class AppProxyProvider
 
     public function __construct()
     {
-        $this->fcurl = storage_path('app/cookie.txt');
+        $this->fcurl = storage_path('cookie.txt');
+        $dir = dirname($this->fcurl);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
         if (!file_exists($this->fcurl)) {
             touch($this->fcurl);
         }
