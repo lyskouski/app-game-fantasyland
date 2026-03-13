@@ -8,15 +8,23 @@ use App\Services\ForumHtmlParser;
 
 class ForumController extends Controller
 {
+    protected ForumHtmlParser $parser;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->parser = new ForumHtmlParser();
+    }
+
     public function index() {
         $html = $this->curl->boot($this->url . 'cgi/forum_rooms.php');
-        $parser = new ForumHtmlParser();
-        return view('forum_rooms', ['data' => $parser->parse($html)]);
+        return view('forum_rooms', ['data' => $this->parser->parse($html)]);
     }
 
     public function room() {
         $data = request()->all();
-        return $this->get('cgi/forum.php?' . http_build_query($data));
+        $html = $this->curl->boot($this->url . 'cgi/forum.php?' . http_build_query($data));
+        return view('forum', $this->parser->parseForum($html));
     }
 
     public function topic() {

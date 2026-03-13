@@ -29,36 +29,23 @@ class ForumHtmlParser
     private function parseItems(string $content): array
     {
         $items = [];
-
-        // Split by item rows: <TR><TD width=400>
         $itemRows = preg_split('/<TR><TD width=400>/', $content);
-
         foreach ($itemRows as $row) {
-            // Skip empty rows
             if (empty(trim($row))) {
                 continue;
             }
-
-            // Extract link and name from: <A HREF='...'>{name}</A>
             if (!preg_match('/<A\s+HREF=[\'"]([^\'"]+)[\'"]\s*>([^<]+)<\/A>/i', $row, $linkMatch)) {
                 continue;
             }
-
-            // Extract description from: <br><sub>...description...</sub>
             if (!preg_match('/<br><sub>\s*(.+?)\s*<\s*\/\s*sub>/is', $row, $descMatch)) {
                 continue;
             }
-
-            // Extract author from: Автор последнего сообщения: <b>{author}</b>
             if (!preg_match('/Автор\s+последнего\s+сообщения:\s*<b>([^<]+)<\/b>/i', $row, $authorMatch)) {
                 continue;
             }
-
-            // Extract date from: Дата: {date}
             if (!preg_match('/Дата:\s*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/i', $row, $dateMatch)) {
                 continue;
             }
-
             $items[] = [
                 'link' => $linkMatch[1],
                 'name' => $linkMatch[2],
@@ -67,7 +54,38 @@ class ForumHtmlParser
                 'time' => $dateMatch[1],
             ];
         }
-
         return $items;
+    }
+
+    public function parseForum(string $html): array
+    {
+        $result = [];
+        $rowPattern = '/<TR><TD>(.*?)<span id=\'tn(\d+)\'><\/span><\/TD><\/TR>/si';
+        preg_match_all($rowPattern, $html, $rowMatches, PREG_SET_ORDER);
+        $scriptPattern = '/f\(([^)]+)\);/s';
+        preg_match_all($scriptPattern, $html, $scriptMatches);
+        $scriptData = $scriptMatches[1] ?? [];
+        foreach ($rowMatches as $row) {
+            $topicHtml = trim($row[1]);
+            $index = (int)$row[2];
+            $author = '';
+            $description = '';
+            if (isset($scriptData[$index])) {
+                $args = explode(',', $scriptData[$index]);
+                $args = array_map(function($v) {
+                    return trim(trim($v), "'\"");
+                }, $args);
+                $author = $args[16] ?? '';
+                $descCount = $args[17] ?? '';
+                $descAuthor = $args[18] ?? '';
+                $description = "Количество ответов: $descCount. Автор последнего сообщения: $descAuthor.";
+            }
+            $result[] = [
+                'topic' => $topicHtml,
+                'author' => $author,
+                'description' => $description,
+            ];
+        }
+        return ['items' => $result, 'title' => 'Форум'];
     }
 }
