@@ -109,41 +109,51 @@
                 @endforeach
                 <div style="clear: both;">&nbsp;</div>
                 <div id="receipt" style="display:none;">
-                    <table>
+                    <table width="100%">
                         <tr>
-                            <th>Рецепт</th>
-                            <th>Время</th>
-                            <th>Ингредиенты</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="item" id="receipt_item"></div>
+                            <td valign="top">
                                 <form method="GET" action="/cgi/craft_favorite_ref.php">
                                     <input type="hidden" name="id" id="receipt_id" value="" />
                                     <input type="hidden" name="checked" value="1" />
                                     <input type="submit" value="В избранное" />
                                 </form>
+                                <div class="item" id="receipt_item"></div>
+                                <div style="clear: both;">&nbsp;</div>
+                                <strong>Рецепт:</strong><br />
+                                <small id="receipt_value"></small>
                             </td>
-                            <td id="receipt_time"></td>
-                            <td id="receipt_value"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
+                            <td valign="top">
                                 <form method="POST" action="/cgi/work_start.php">
                                     @csrf
-                                    <div style="clear: both;">&nbsp;</div>
-                                    <table><tr><td valign="bottom">
                                     <input type="hidden" name="item_id" id="item_id" value="" />
-                                    Количество: <input type="text" name="count" size="4" value="" />
-                                    </td><td valign="bottom">
                                     <input type="hidden" name="enchant" value="0" />
                                     <input type="hidden" name="enchant_length" value="1" />
-                                    <img src="{!! $captcha !!}" width="90" height="40" border="1" bordercolor="white" />
-                                    <input type="text" name="value" size="4" autocomplete="off" />
-                                    </td><td valign="bottom">
-                                    <input type="submit" value="Сделать" />
-                                    </td></tr></table>
-                                    <div style="clear: both;">&nbsp;</div>
+                                    <table>
+                                        <tr>
+                                            <td>Время:</td>
+                                            <td><input type="text" size="4" id="receipt_time" disabled /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Кол-во:</td>
+                                            <td><input type="text" name="count" size="4" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <img src="{!! $captcha !!}" width="90" height="40" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <input type="text" name="value" size="6" autocomplete="off" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right">
+                                                <br />
+                                                <input type="submit" value="Сделать" />
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </form>
                             </td>
                         </tr>
@@ -188,7 +198,7 @@
                     const receipt = item.getAttribute('data-receipt');
                     document.getElementById('receipt_value').textContent = receipt;
                     const time = item.getAttribute('data-time');
-                    document.getElementById('receipt_time').textContent = time;
+                    document.getElementById('receipt_time').value = time;
                     document.getElementById('receipt_id').value = item.getAttribute('data-id');
                     document.getElementById('item_id').value = item.getAttribute('data-id');
                 });
