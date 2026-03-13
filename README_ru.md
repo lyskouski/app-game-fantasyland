@@ -43,7 +43,7 @@
 
 Всё содержание данного репозитория является собственностью &copy; 2026 **terCAD** Команды (Вячеслав Лысковский).
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br / >Эта работа лицензирована в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">лицензией Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License</a>:
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />Эта работа лицензирована в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">лицензией Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License</a>:
 - **Атрибуция**: предоставьте ссылку на лицензию и укажите, были ли внесены изменения
 - **Некоммерческое использование**: не может быть использовано в составе коммерческого решения
 - **Без производных работ**: любые модификации (ремиксы, преобразования или доработки материала) не могут распространяться самостоятельно.
