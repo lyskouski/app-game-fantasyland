@@ -1,3 +1,5 @@
+[ English | [Русский](./README_ru.md) ]
+
 # Liga of Heroes (powered by Citadel)
 
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -37,11 +39,12 @@ that already, but I just wanted to be extra clear on that.
 
 ## License & Copyright
 
-The content herein are all &copy; 2023 **terCAD** Team (Viachaslau Lyskouski).
+The content herein are all &copy; 2026 **terCAD** Team (Viachaslau Lyskouski).
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License</a>:
 - **Attribution**: provide a link to the license, and indicate if changes were made
 - **NonCommercial**: cannot be used as a part of a commercial solution
 - **NoDerivatives**: any modification (remix, transform, or build upon the material) cannot be distributed by your own.
-  Push it back to the main repository (https://github.com/lyskouski/app-finance) to unblock the distribution for made
-  changes.
+
+Push it back to the main repository (https://github.com/lyskouski/app-game-fantasyland) to unblock the distribution
+for made changes.
