@@ -5,13 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        <link rel="stylesheet" href="https://www.fantasyland.ru/css/f-style.css" type="text/css" />
-        <link rel="stylesheet" href="https://www.fantasyland.ru/css/styles1.css" type="text/css" />
-        <style type="text/css">TD {border-color:#555555;}</style>
+        @vite(['resources/css/login.css'])
     </head>
     <body>
-        @foreach ($data as $header)
         <br />
+        @foreach ($data as $header)
         <br />
         <div class="main">
             <div class="main_top">
@@ -39,14 +37,14 @@
                         <sub>{{ $item['description'] }}</sub>
                     </td>
                     <td width="250" valign="top">
-                        Автор последнего сообщения: <b>{{ $item['author'] }}</b><br />
+                        <small>Автор последнего сообщения: <strong>{{ $item['author'] }}</strong></small><br />
                         <sub>Дата: {{ $item['time'] }}</sub>
                     </td>
                 @endforeach
                 </table>
             </div>
-            @endforeach
         </div>
+        @endforeach
         <br />
     </body>
 </html>

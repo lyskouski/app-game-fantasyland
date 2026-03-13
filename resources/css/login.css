@@ -55,3 +55,6 @@ body {
     border-radius: 2px;
     box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
 }
+a:visited {
+    color: #1d1610;
+}
