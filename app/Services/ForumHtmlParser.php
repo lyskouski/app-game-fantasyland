@@ -62,16 +62,15 @@ class ForumHtmlParser
         $result = [];
         $rowPattern = '/<TR><TD>(.*?)<span id=\'tn(\d+)\'><\/span><\/TD><\/TR>/si';
         preg_match_all($rowPattern, $html, $rowMatches, PREG_SET_ORDER);
-        $scriptPattern = '/f\(([^)]+)\);/s';
+        $scriptPattern = '/f\(([^;]+)\);/s';
         preg_match_all($scriptPattern, $html, $scriptMatches);
         $scriptData = $scriptMatches[1] ?? [];
-        foreach ($rowMatches as $row) {
+        foreach ($rowMatches as $i => $row) {
             $topicHtml = trim($row[1]);
-            $index = (int)$row[2];
             $author = '';
             $description = '';
-            if (isset($scriptData[$index])) {
-                $args = explode(',', $scriptData[$index]);
+            if (isset($scriptData[$i])) {
+                $args = explode(',', $scriptData[$i]);
                 $args = array_map(function($v) {
                     return trim(trim($v), "'\"");
                 }, $args);
