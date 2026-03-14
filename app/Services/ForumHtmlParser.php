@@ -141,8 +141,8 @@ class ForumHtmlParser
             $afterScript = substr($part, $scriptEnd + 9);
             $endMarker = strpos($afterScript, "</td></tr><tr align='right' valign='bottom'>");
             $postContent = str_replace(
-                'src="../images/',
-                'src="https://www.fantasyland.ru/images/',
+                ['src="../images/', 'src="/images/'],
+                ['src="https://www.fantasyland.ru/images/', 'src="https://www.fantasyland.ru/images/'],
                 substr($afterScript, 0, $endMarker)
             );
             $items[] = [
@@ -151,11 +151,16 @@ class ForumHtmlParser
                 'content' => $postContent,
             ];
         }
+        preg_match('/tn\(([^;]+)\)/', $html, $match);
+        $args = explode(',', str_replace(['"', "'"], '', $match[1]));
+        $args = array_map('trim', $args);
         return [
             'items' => $items,
             'pages' => $this->parsePagingBlock($html),
             'title' => htmlspecialchars($title),
-            'author' => $author
+            'author' => $author,
+            'back' => "/cgi/forum.php?rid={$args[15]}&p={$args[16]}",
+            'hasForm' => strpos($html, '<SCRIPT>jj(') !== false
         ];
     }
 

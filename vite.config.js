@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/craft.css',
                 'resources/css/index.css',
                 'resources/js/app.js',
+                'resources/js/forum.js',
                 'resources/js/ping.js'
             ],
             refresh: true,

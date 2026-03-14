@@ -22,14 +22,23 @@ class ForumController extends Controller
     }
 
     public function room() {
-        $data = request()->all();
-        $html = $this->curl->boot($this->url . 'cgi/forum.php?' . http_build_query($data));
+        $data = request()->input();
+        $post = request()->post();
+        $html = $this->curl->boot($this->url . 'cgi/forum.php?' . http_build_query($data), $post);
         return view('forum', $this->parser->parseForum($html));
     }
 
     public function topic() {
-        $data = request()->all();
-        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data));
-        return view('forum_topic', $this->parser->parseTopic($html));
+        $data = request()->input();
+        $post = request()->post();
+        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data), $post);
+        return view('forum_topic', [...$this->parser->parseTopic($html), ...$data]);
+    }
+
+    public function topicPost() {
+        $data = request()->input();
+        $post = request()->post();
+        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data), $post);
+        return view('forum', $this->parser->parseForum($html));
     }
 }

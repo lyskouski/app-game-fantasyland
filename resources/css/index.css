@@ -61,6 +61,9 @@ body {
 a:visited {
     color: #1d1610;
 }
+a:active {
+    font-weight: 600;
+}
 .shadow {
     text-shadow: 1px 1px rgba(0,0,0,0.1), -1px -1px rgba(0,0,0,0.1), 1px -1px rgba(0,0,0,0.1), -1px 1px rgba(0,0,0,0.1);
 }
