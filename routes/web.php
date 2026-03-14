@@ -25,7 +25,7 @@ Route::get('/citadel', function () {
 // Forum
 Route::get('/cgi/forum_rooms.php', [ForumController::class, 'index']);
 Route::get('/cgi/forum.php', [ForumController::class, 'room']);
-// Route::post('/cgi/forum.php', [ForumController::class, 'roomPost']);
+Route::post('/cgi/forum.php', [ForumController::class, 'room']);
 Route::get('/cgi/f_show_thread.php', [ForumController::class, 'topic']);
 Route::post('/cgi/f_show_thread.php', [ForumController::class, 'topicPost']);
 

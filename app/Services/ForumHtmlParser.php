@@ -107,7 +107,8 @@ class ForumHtmlParser
             'items' => $result,
             'title' => $title,
             'pages' => $pages,
-            'id' => $id
+            'id' => $id,
+            'hasForm' => strpos($html, '<SCRIPT>ii(') !== false
         ];
     }
 

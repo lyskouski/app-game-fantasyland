@@ -25,13 +25,12 @@ class ForumController extends Controller
         $data = request()->input();
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/forum.php?' . http_build_query($data), $post);
-        return view('forum', $this->parser->parseForum($html));
+        return view('forum', [...$this->parser->parseForum($html), ...$data]);
     }
 
     public function topic() {
         $data = request()->input();
-        $post = request()->post();
-        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data), $post);
+        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data));
         return view('forum_topic', [...$this->parser->parseTopic($html), ...$data]);
     }
 
@@ -39,6 +38,6 @@ class ForumController extends Controller
         $data = request()->input();
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data), $post);
-        return view('forum', $this->parser->parseForum($html));
+        return view('forum', [...$this->parser->parseForum($html), 'p' => 1, ...$data]);
     }
 }

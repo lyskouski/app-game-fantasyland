@@ -49,7 +49,7 @@
                     <br />
                     <br />
                     <input type="button" value="Персонаж" onClick="f1('[и=',']')" />
-                    <input type="button" name="quoteselected" value="Цитировать выделенное" onclick="quoteSelection()">
+                    <!-- input type="button" name="quoteselected" value="Цитировать выделенное" onclick="quoteSelection()" -->
                     <br />
                     <br />
                     <input type="submit" name="ans" value="Ответить" />
