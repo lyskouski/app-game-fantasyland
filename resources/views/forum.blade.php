@@ -29,7 +29,6 @@
             </div>
             <div class="main_middle">
                 @foreach ($items as $item)
-                <tr>
                     {!! $item['topic'] !!} <small>{!! $item['author'] !!}</small><br />
                     <small>{{ $item['description'] }}</small>
                     <hr />

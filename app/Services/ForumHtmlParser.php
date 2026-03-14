@@ -113,16 +113,98 @@ class ForumHtmlParser
 
     function parseTopic(string $html): array
     {
-        $posts = [];
-        $postPattern = '/<TR><TD><B>([^<]+)<\/B><\/TD><TD>(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})<\/TD><\/TR><TR><TD colspan=2>(.*?)<\/TD><\/TR>/si';
-        preg_match_all($postPattern, $html, $matches, PREG_SET_ORDER);
-        foreach ($matches as $match) {
-            $posts[] = [
-                'author' => trim($match[1]),
-                'time' => trim($match[2]),
-                'content' => trim($match[3]),
+        $title = '';
+        $author = '';
+        if (preg_match("/<H1 class='ThreadTitle'>(.*?)<\/H1>/s", $html, $topicMatch)) {
+            $title = trim($topicMatch[1]);
+        }
+        if (preg_match('/tn\(([^;]+)\)/', $html, $tnMatch)) {
+            $args = explode(',', str_replace(['"', "'"], '', $tnMatch[1]));
+            $args = array_map('trim', $args);
+            if (count($args) >= 15) {
+                $author = "<font color='white'>[Lvl:&nbsp;$args[2]]</font>&nbsp;" .
+                    "<font color='#$args[4]' class='shadow'>$args[0]</font>&nbsp;" .
+                    "<img src='/images/info_{$args[14]}.gif' alt='[$args[14]]' />";
+            }
+        }
+        $items = [];
+        $parts = preg_split('/<SCRIPT>z\(/i', $html);
+        array_shift($parts);
+        foreach ($parts as $part) {
+            $args = explode(',', str_replace(['"', "'"], '', $part));
+            $args = array_map('trim', $args);
+            $postAuthor = "<font color='white'>[Lvl:&nbsp;$args[3]]</font>&nbsp;" .
+                    "<font color='#$args[5]' class='shadow'>$args[1]</font>&nbsp;" .
+                    "<img src='/images/info_{$args[15]}.gif' alt='[$args[15]]' />";
+
+            $scriptEnd = strpos($part, '</SCRIPT>');
+            $afterScript = substr($part, $scriptEnd + 9);
+            $endMarker = strpos($afterScript, "</td></tr><tr align='right' valign='bottom'>");
+            $postContent = str_replace(
+                'src="../images/',
+                'src="https://www.fantasyland.ru/images/',
+                substr($afterScript, 0, $endMarker)
+            );
+            $items[] = [
+                'time' => $args[0],
+                'author' => $postAuthor,
+                'content' => $postContent,
             ];
         }
-        return $posts;
+        return [
+            'items' => $items,
+            'pages' => $this->parsePagingBlock($html),
+            'title' => htmlspecialchars($title),
+            'author' => $author
+        ];
+    }
+
+    private function parsePagingBlock(string $html): array
+    {
+        $pages = [];
+        if (!preg_match('/paging\s*\(([^)]+)\)/', $html, $match)) {
+            return $pages;
+        }
+        $args = explode(',', $match[1]);
+        $args = array_map('trim', $args);
+        if (count($args) < 6) return $pages;
+        list($posts_num, $per_page, $curr, $rid, $direction, $thread_id) = $args;
+        $posts_num = (int)$posts_num;
+        $per_page = (int)$per_page;
+        $curr = (int)$curr;
+        $rid = (int)$rid;
+        $direction = (int)$direction;
+        $thread_id = (int)$thread_id;
+        $pages_num = ($posts_num % $per_page == 0) ? intval($posts_num / $per_page) : intval($posts_num / $per_page) + 1;
+        $local_mod = $curr % 20;
+        $min = 1;
+        $max = $pages_num;
+        $script_name = '';
+        if ($direction === 0) {
+            $script_name = 'forum.php?';
+            if ($local_mod == 0) {
+                $min = $curr - 19;
+                $max = $curr;
+            } else {
+                $min = $curr - $local_mod + 1;
+                $max = $min + 19;
+                $max = ($max > $pages_num) ? $pages_num : $max;
+            }
+        } else {
+            $script_name = 'f_show_thread.php?id=' . $thread_id . '&';
+            $celix = intval(($pages_num - $curr) / 20);
+            $max = $curr + $celix * 20;
+            $min = $max - 19;
+            $min = ($min < 1) ? 1 : $min;
+            $max = ($max > $pages_num) ? $pages_num : $max;
+        }
+        for ($i = $min; $i <= $max; $i++) {
+            $url = $script_name . 'rid=' . $rid . '&p=' . $i;
+            $pages[] = [
+                'title' => (string)$i,
+                'url' => $url,
+            ];
+        }
+        return $pages;
     }
 }
