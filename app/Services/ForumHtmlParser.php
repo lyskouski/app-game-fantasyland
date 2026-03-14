@@ -180,6 +180,7 @@ class ForumHtmlParser
         $min = 1;
         $max = $pages_num;
         $script_name = '';
+        $celix = (int)floor(($pages_num - $curr) / 20);
         if ($direction === 0) {
             $script_name = 'forum.php?';
             if ($local_mod == 0) {
@@ -192,19 +193,39 @@ class ForumHtmlParser
             }
         } else {
             $script_name = 'f_show_thread.php?id=' . $thread_id . '&';
-            $celix = intval(($pages_num - $curr) / 20);
             $max = $curr + $celix * 20;
             $min = $max - 19;
             $min = ($min < 1) ? 1 : $min;
             $max = ($max > $pages_num) ? $pages_num : $max;
         }
+        $navLinks = [];
+        if (($direction === 0 && $curr > 20) || ($direction === 1 && $celix != intval($pages_num / 20))) {
+            $navLinks[] = [
+                'title' => 'Начало',
+                'url' => $script_name . 'rid=' . $rid . '&p=1',
+            ];
+            $navLinks[] = [
+                'title' => '<<',
+                'url' => $script_name . 'rid=' . $rid . '&p=' . ($min - 1),
+            ];
+        }
         for ($i = $min; $i <= $max; $i++) {
             $url = $script_name . 'rid=' . $rid . '&p=' . $i;
-            $pages[] = [
+            $navLinks[] = [
                 'title' => (string)$i,
                 'url' => $url,
             ];
         }
-        return $pages;
+        if (($direction === 0 && $curr <= $pages_num - ($pages_num % 20)) || ($direction === 1 && $celix > 0)) {
+            $navLinks[] = [
+                'title' => '>>',
+                'url' => $script_name . 'rid=' . $rid . '&p=' . ($max + 1),
+            ];
+            $navLinks[] = [
+                'title' => 'Конец',
+                'url' => $script_name . 'rid=' . $rid . '&p=' . $pages_num,
+            ];
+        }
+        return $navLinks;
     }
 }
