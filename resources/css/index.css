@@ -33,6 +33,9 @@ body {
     border-radius: 6px;
     box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
 }
+.main--light {
+    background-image: url("https://www.fantasyland.ru/images/pic.new/battle_bg.jpg");
+}
 .main_top {
     background-image: url("https://www.fantasyland.ru/images/buttons/line_t.gif");
     background-repeat: repeat-x;
@@ -59,5 +62,5 @@ a:visited {
     color: #1d1610;
 }
 .shadow {
-    text-shadow: 1px 1px rgba(0,0,0,0.2), -1px -1px rgba(0,0,0,0.2), 1px -1px rgba(0,0,0,0.2), -1px 1px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px rgba(0,0,0,0.1), -1px -1px rgba(0,0,0,0.1), 1px -1px rgba(0,0,0,0.1), -1px 1px rgba(0,0,0,0.1);
 }

@@ -18,7 +18,7 @@ class ForumController extends Controller
 
     public function index() {
         $html = $this->curl->boot($this->url . 'cgi/forum_rooms.php');
-        return view('forum_rooms', ['data' => $this->parser->parse($html)]);
+        return view('forum_rooms', $this->parser->parse($html));
     }
 
     public function room() {
@@ -29,6 +29,7 @@ class ForumController extends Controller
 
     public function topic() {
         $data = request()->all();
-        return $this->get('cgi/f_show_thread.php?' . http_build_query($data));
+        $html = $this->curl->boot($this->url . 'cgi/f_show_thread.php?' . http_build_query($data));
+        return view('forum_topic', $this->parser->parseTopic($html));
     }
 }

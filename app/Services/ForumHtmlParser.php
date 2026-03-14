@@ -23,7 +23,7 @@ class ForumHtmlParser
             }
         }
 
-        return $sections;
+        return ['data' => $sections];
     }
 
     private function parseItems(string $content): array
@@ -109,5 +109,20 @@ class ForumHtmlParser
             'pages' => $pages,
             'id' => $id
         ];
+    }
+
+    function parseTopic(string $html): array
+    {
+        $posts = [];
+        $postPattern = '/<TR><TD><B>([^<]+)<\/B><\/TD><TD>(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})<\/TD><\/TR><TR><TD colspan=2>(.*?)<\/TD><\/TR>/si';
+        preg_match_all($postPattern, $html, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $posts[] = [
+                'author' => trim($match[1]),
+                'time' => trim($match[2]),
+                'content' => trim($match[3]),
+            ];
+        }
+        return $posts;
     }
 }
