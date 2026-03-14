@@ -21,6 +21,17 @@ class AppProxyProvider
         }
     }
 
+    protected function convertEncoding($string, $from, $to)
+    {
+        if (function_exists('iconv')) {
+            return iconv($from, $to, $string);
+        } elseif (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($string, $to, $from);
+        } else {
+            return $string;
+        }
+    }
+
     public function boot(string $url, ?array $post = null, bool $convert = true): string
     {
         $curl = curl_init();
@@ -30,7 +41,7 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         curl_setopt($curl, CURLOPT_USERAGENT, $this->browser);
-        $loc = iconv('UTF-8', 'cp1251', $url);
+        $loc = $this->convertEncoding($url, 'UTF-8', 'cp1251');
         curl_setopt($curl, CURLOPT_URL, $loc);
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
@@ -40,7 +51,7 @@ class AppProxyProvider
             curl_setopt($curl, CURLOPT_POST, 1);
             $converted = [];
             foreach ($post as $key => $value) {
-                $converted[$key] = iconv('UTF-8', 'cp1251', $value);
+                $converted[$key] = $this->convertEncoding($value, 'UTF-8', 'cp1251');
             }
             $data = http_build_query($converted);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
@@ -48,6 +59,6 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);
         $result = curl_exec($curl);
-        return $convert ? iconv('cp1251', 'UTF-8', $result) : $result;
+        return $convert ? $this->convertEncoding($result, 'cp1251', 'UTF-8') : $result;
     }
 }
