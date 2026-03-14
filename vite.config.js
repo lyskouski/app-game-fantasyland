@@ -8,7 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/craft.css',
-                'resources/css/login.css',
+                'resources/css/index.css',
                 'resources/js/app.js',
                 'resources/js/ping.js'
             ],
