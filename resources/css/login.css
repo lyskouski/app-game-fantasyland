@@ -58,3 +58,6 @@ body {
 a:visited {
     color: #1d1610;
 }
+.shadow {
+    text-shadow: 1px 1px rgba(0,0,0,0.2), -1px -1px rgba(0,0,0,0.2), 1px -1px rgba(0,0,0,0.2), -1px 1px rgba(0,0,0,0.2);
+}

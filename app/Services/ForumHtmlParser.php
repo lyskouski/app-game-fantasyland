@@ -65,18 +65,36 @@ class ForumHtmlParser
         $scriptPattern = '/f\(([^;]+)\);/s';
         preg_match_all($scriptPattern, $html, $scriptMatches);
         $scriptData = $scriptMatches[1] ?? [];
+
+        $title = '';
+        $pages = null;
+        $id = null;
+
+        if (preg_match('/<TR ALIGN=CENTER HEIGHT=40 CLASS=Sub_FTableTitle><TD><B>([^<]+)<\/B><\/TD>/', $html, $titleMatch)) {
+            $title = trim($titleMatch[1]);
+        }
+        if (preg_match('/for \s*\(.*i\s*=\s*1;\s*i\s*<=\s*(\d+)/', $html, $pagesMatch)) {
+            $pages = (int)$pagesMatch[1];
+        }
+        if (preg_match("/forum\.php\?rid=(\d+)/", $html, $idMatch)) {
+            $id = (int)$idMatch[1];
+        }
+
         foreach ($rowMatches as $i => $row) {
-            $topicHtml = trim($row[1]);
+            $topicHtml = str_replace('../', '/', $row[1]);
             $author = '';
             $description = '';
             if (isset($scriptData[$i])) {
-                $args = explode(',', $scriptData[$i]);
-                $args = array_map(function($v) {
-                    return trim(trim($v), "'\"");
-                }, $args);
-                $author = $args[16] ?? '';
-                $descCount = $args[17] ?? '';
-                $descAuthor = $args[18] ?? '';
+                $args = explode(',', str_replace(['"', "'"], '', $scriptData[$i]));
+                $args = array_map('trim', $args);
+                if (count($args) < 18) {
+                    continue;
+                }
+                $author = "<font color='white'>[Lvl:&nbsp;$args[3]]</font>&nbsp;" .
+                    "<font color='#$args[5]' class='shadow'>$args[1]</font>&nbsp;" .
+                    "<img src='/images/info_{$args[15]}.gif' alt='[$args[15]]' />";
+                $descCount = $args[16] ?? '';
+                $descAuthor = $args[17] ?? '';
                 $description = "Количество ответов: $descCount. Автор последнего сообщения: $descAuthor.";
             }
             $result[] = [
@@ -85,6 +103,11 @@ class ForumHtmlParser
                 'description' => $description,
             ];
         }
-        return ['items' => $result, 'title' => 'Форум'];
+        return [
+            'items' => $result,
+            'title' => $title,
+            'pages' => $pages,
+            'id' => $id
+        ];
     }
 }

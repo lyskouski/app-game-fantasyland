@@ -30,10 +30,14 @@
             <div class="main_middle">
                 @foreach ($items as $item)
                 <tr>
-                    {!! $item['topic'] !!} <strong>{{ $item['author'] }}</strong><br />
-                    {{ $item['description'] }}
+                    {!! $item['topic'] !!} <small>{!! $item['author'] !!}</small><br />
+                    <small>{{ $item['description'] }}</small>
                     <hr />
                 @endforeach
+                <a href="/cgi/forum_rooms.php">Назад</a>
+                @for ($i = 1; $i <= $pages; $i++)
+                |&nbsp;<a href="/cgi/forum.php?rid={{ $id }}&p={{ $i }}">&nbsp;{{ $i }}&nbsp;</a>&nbsp;
+                @endfor
             </div>
         </div>
         <br />
