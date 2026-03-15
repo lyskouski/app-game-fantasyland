@@ -4,20 +4,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LocationParser;
+
 class PreyController extends MainController
 {
     public function stop() {
         $data = request()->all();
         $html = $this->curl->boot($this->url . 'cgi/work_stop.php?' . http_build_query($data));
+        $loc = new LocationParser();
         if (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
-                ...$this->onPlace($html),
+                ...$loc->onPlace($html),
                 ...$this->onCraft($html),
                 'captcha' => $this->captcha(time())
             ]);
         } else {
             return view('prey_stop', [
-                ...$this->onPlace($html),
+                ...$loc->onPlace($html),
                 ...$this->onPrey($html, $this->captcha(time()))
             ]);
         }
@@ -27,7 +30,7 @@ class PreyController extends MainController
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/work_start.php', $post);
         return view('prey_start', [
-            ...$this->onPlace($html),
+            ...(new LocationParser)->onPlace($html),
             ...$this->onPrey($html, $this->captcha(time()))
         ]);
     }
@@ -35,7 +38,7 @@ class PreyController extends MainController
     public function start() {
         $html = $this->curl->boot($this->url . 'cgi/work_start.php');
         return view('prey_start', [
-            ...$this->onPlace($html),
+            ...(new LocationParser)->onPlace($html),
             ...$this->onPrey($html, $this->captcha(time()))
         ]);
     }
@@ -45,7 +48,7 @@ class PreyController extends MainController
         $this->curl->boot($this->url . 'cgi/craft_favorite_ref.php?' . http_build_query($data));
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php');
         return view('craft_stop', [
-            ...$this->onPlace($html),
+            ...(new LocationParser)->onPlace($html),
             ...$this->onCraft($html),
             'captcha' => $this->captcha(time())
         ]);
