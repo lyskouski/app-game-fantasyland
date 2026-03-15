@@ -4,16 +4,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ForumHtmlParser;
+use App\Services\ForumParser;
 
 class ForumController extends Controller
 {
-    protected ForumHtmlParser $parser;
+    protected ForumParser $parser;
 
     public function __construct()
     {
         parent::__construct();
-        $this->parser = new ForumHtmlParser();
+        $this->parser = new ForumParser();
     }
 
     public function index() {

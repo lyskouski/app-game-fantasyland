@@ -4,7 +4,7 @@
 
 namespace App\Services;
 
-class ForumHtmlParser
+class ForumParser
 {
     public function parse(string $html): array
     {
