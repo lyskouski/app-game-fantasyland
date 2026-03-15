@@ -42,7 +42,7 @@
                                 <b>Логин:</b>
                             </td>
                             <td>
-                                <input name=login size="16" />
+                                <input name="login" size="16" value="{{ $login }}" />
                             </td>
                         </tr>
                         <tr>
@@ -50,12 +50,17 @@
                                 <b>Пароль:</b>
                             </td>
                             <td>
-                                <input type=password name=password size="16" />
+                                <input type="password" name="password" size="16" value="{{ $password }}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell" colspan="2" align="right">
+                                <input type="checkbox" name="save" />&nbsp;Запомнить меня
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="cell" width="100" align="right">
-                                <input type=submit value="Войти" />
+                                <input type="submit" value="Войти" />
                             </td>
                         </tr>
                     </table>

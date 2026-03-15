@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Providers\AppProxyProvider;
+use App\Services\SecureStorage;
 
 class LoginController extends Controller
 {
@@ -16,7 +16,11 @@ class LoginController extends Controller
     }
 
     public function index() {
-        return view('login', ['timestamp' => $this->getTimestamp()]);
+        return view('login', [
+            'timestamp' => $this->getTimestamp(),
+            'login' => SecureStorage::get('login'),
+            'password' => SecureStorage::get('password'),
+        ]);
     }
 
     public function login() {
@@ -24,9 +28,19 @@ class LoginController extends Controller
         $loginResult = $this->curl->boot($this->url . 'login.php', $data);
         if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $loginResult, $matches)) {
             $match = $matches[1];
-            return view('login', ['error' => $match, 'timestamp' => $this->getTimestamp()]);
+            return view('login', [
+                'error' => $match,
+                'timestamp' => $this->getTimestamp(),
+                'login' => '',
+                'password' => '',
+            ]);
         }
         $this->curl->boot($this->url . 'ch/chch.php');
+        $opt = request()->only(['save']);
+        if (isset($opt['save']) && $opt['save']) {
+            SecureStorage::set('login', $data['login']);
+            SecureStorage::set('password', $data['password']);
+        }
         return view('home');
     }
 
