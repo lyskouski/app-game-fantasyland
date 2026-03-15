@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PreyController;
@@ -45,6 +46,10 @@ Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);
 Route::get('/cgi/work_start.php', [PreyController::class, 'start']);
 Route::post('/cgi/work_start.php', [PreyController::class, 'run']);
 Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
+
+// Personal info
+Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
+Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

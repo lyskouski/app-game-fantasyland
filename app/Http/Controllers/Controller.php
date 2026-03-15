@@ -25,9 +25,12 @@ abstract class Controller
         $data = str_replace('src=../', 'src=' . $this->url, $data);
         $data = str_replace('src="/', 'src="' . $this->url, $data);
         $data = str_replace('src=/', 'src=' . $this->url, $data);
+        $data = str_replace('src="images/', 'src="' . $this->url . 'images/', $data);
         $data = str_replace("BACKGROUND='../", "background='" . $this->url, $data);
         $data = str_replace('BACKGROUND="../', 'background="' . $this->url, $data);
         $data = str_replace('background="../', 'background="' . $this->url, $data);
+        $data = str_replace('target="_BLANK"', '', $data);
+        $data = str_replace("window.open('help','_blank','scrollbars=yes,width=900,height=560,resizable=yes')", "document.location.href='/help/enc.php?type=menu'", $data);
         return view('generic', ['data' => $data]);
     }
 
