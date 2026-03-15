@@ -161,7 +161,8 @@ class ForumParser
             'title' => htmlspecialchars($title),
             'author' => $author,
             'back' => "/cgi/forum.php?rid={$args[15]}&p={$args[16]}",
-            'hasForm' => strpos($html, '<SCRIPT>jj(') !== false
+            'hasForm' => strpos($html, '<SCRIPT>jj(') !== false,
+            'hasModeration' => strpos($html, "alt='Закрыть тему'") !== false,
         ];
     }
 

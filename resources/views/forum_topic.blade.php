@@ -58,6 +58,35 @@
             </div>
         </div>
         @endif
+        @if ($hasModeration)
+        <br />
+        <script language="JAVASCRIPT">
+            function set_mark(old_mark_text, tid, rid) {
+                var set_mark_text = prompt('Укажите заметку', '');
+                if (set_mark_text) {
+                    document.location.href = '/cgi/f_show_thread.php?id=' + tid + '&rid=' + rid + '&mode=mark&text=' + set_mark_text;
+                }
+            }
+        </script>
+        <div class="main main--light">
+            <div class="main_middle">
+                <center>
+                    <a href="/cgi/f_show_thread.php?id={{ $id }}&rid={{ $rid }}&mode=close">
+                        Закрыть
+                    </a>
+                    | <a href="/cgi/f_show_thread.php?id={{ $id }}&rid={{ $rid }}&mode=stick">
+                        Закрепить
+                    </a>
+                    | <a href="/cgi/f_show_thread.php?id={{ $id }}&rid={{ $rid }}&mode=delete">
+                        Удалить
+                    </a>
+                    | <a href="javascript:set_mark('', {{ $id }}, {{ $rid }});">
+                        Поставить заметку
+                    </a>
+                </center>
+            </div>
+        </div>
+        @endif
         <br />
     </body>
 </html>
