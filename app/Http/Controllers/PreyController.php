@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CraftParser;
 use App\Services\LocationParser;
 
 class PreyController extends MainController
@@ -15,7 +16,7 @@ class PreyController extends MainController
         if (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
                 ...$loc->onPlace($html),
-                ...$this->onCraft($html),
+                ...(new CraftParser)->parse($html),
                 'captcha' => $this->captcha(time())
             ]);
         } else {
@@ -49,7 +50,7 @@ class PreyController extends MainController
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php');
         return view('craft_stop', [
             ...(new LocationParser)->onPlace($html),
-            ...$this->onCraft($html),
+            ...(new CraftParser)->parse($html),
             'captcha' => $this->captcha(time())
         ]);
     }
