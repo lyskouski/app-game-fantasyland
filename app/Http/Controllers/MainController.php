@@ -10,7 +10,10 @@ class MainController extends Controller
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
         if (strpos($html, 'work_stop.php') !== false) {
-            return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+            return view('prey_start', [
+                ...$this->onPlace($html),
+                ...$this->onPrey($html, $this->captcha(time()))
+            ]);
         } elseif (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
                 ...$this->onPlace($html),
@@ -18,7 +21,10 @@ class MainController extends Controller
                 'captcha' => $this->captcha(time())
             ]);
         } elseif (strpos($html, 'work_start.php') !== false) {
-            return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+            return view('prey_stop', [
+                ...$this->onPlace($html),
+                ...$this->onPrey($html, $this->captcha(time()))
+            ]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $this->onLocation($html));
         } elseif (strpos($html, 'cssLocImage') !== false || strpos($html, '<image height=150 width=150') !== false) {
@@ -117,7 +123,7 @@ class MainController extends Controller
         ];
     }
 
-    protected function onPrey(string $html) {
+    protected function onPrey(string $html, string $captcha) {
         $content = '';
         if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
             $content = $matches[1];
@@ -125,9 +131,8 @@ class MainController extends Controller
             $content = str_replace('../images', $this->url . 'images', $content);
             $content = preg_replace_callback(
                 "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
-                function ($m) {
-                    $src = $this->captcha($m[1]);
-                    return "<img src='" . $src . "'" . $m[2] . ">";
+                function ($m) use ($captcha) {
+                    return "<img src='" . $captcha . "'" . $m[2] . ">";
                 },
                 $content
             );

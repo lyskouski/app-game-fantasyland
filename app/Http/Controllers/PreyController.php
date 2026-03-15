@@ -16,19 +16,28 @@ class PreyController extends MainController
                 'captcha' => $this->captcha(time())
             ]);
         } else {
-            return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
+            return view('prey_stop', [
+                ...$this->onPlace($html),
+                ...$this->onPrey($html, $this->captcha(time()))
+            ]);
         }
     }
 
     public function run() {
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/work_start.php', $post);
-        return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        return view('prey_start', [
+            ...$this->onPlace($html),
+            ...$this->onPrey($html, $this->captcha(time()))
+        ]);
     }
 
     public function start() {
         $html = $this->curl->boot($this->url . 'cgi/work_start.php');
-        return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
+        return view('prey_start', [
+            ...$this->onPlace($html),
+            ...$this->onPrey($html, $this->captcha(time()))
+        ]);
     }
 
     public function favorite() {
