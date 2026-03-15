@@ -12,7 +12,11 @@ class MainController extends Controller
         if (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'craft_favorite_ref.php') !== false) {
-            return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
+            return view('craft_stop', [
+                ...$this->onPlace($html),
+                ...$this->onCraft($html),
+                'captcha' => $this->captcha(time())
+            ]);
         } elseif (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
@@ -258,11 +262,6 @@ class MainController extends Controller
                 }
             }
         }
-        return [
-            'craft' => $craft,
-            'recipes' => $recipes,
-            'message' => $message,
-            'captcha' => $this->captcha(time())
-        ];
+        return ['craft' => $craft, 'recipes' => $recipes, 'message' => $message];
     }
 }

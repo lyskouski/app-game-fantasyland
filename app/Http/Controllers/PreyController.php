@@ -10,7 +10,11 @@ class PreyController extends MainController
         $data = request()->all();
         $html = $this->curl->boot($this->url . 'cgi/work_stop.php?' . http_build_query($data));
         if (strpos($html, 'craft_favorite_ref.php') !== false) {
-            return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
+            return view('craft_stop', [
+                ...$this->onPlace($html),
+                ...$this->onCraft($html),
+                'captcha' => $this->captcha(time())
+            ]);
         } else {
             return view('prey_stop', [...$this->onPlace($html), ...$this->onPrey($html)]);
         }
@@ -31,6 +35,10 @@ class PreyController extends MainController
         $data = request()->all();
         $this->curl->boot($this->url . 'cgi/craft_favorite_ref.php?' . http_build_query($data));
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php');
-        return view('craft_stop', [...$this->onPlace($html), ...$this->onCraft($html)]);
+        return view('craft_stop', [
+            ...$this->onPlace($html),
+            ...$this->onCraft($html),
+            'captcha' => $this->captcha(time())
+        ]);
     }
 }
