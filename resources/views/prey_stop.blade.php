@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css', 'resources/js/ping.js'])
+        @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
     </head>
     <body>
         <br />
@@ -104,33 +104,10 @@
                 <script>
                     const timerElement = document.getElementById('timer');
                     let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
-                    function getTime(a) {
-                        h = Math.round( a / 3600 - 0.5 );
-                        m = Math.round( ( a / 60 ) % 60 - 0.5 );
-                        s = Math.round( a % 60 );
-
-                        if (s == 60) {
-                            ++ m;
-                            s = 0;
-                        }
-
-                        if (h >= 1) {
-                            d = '';
-                            if (h >= 24) {
-                                d = Math.floor(h / 24);
-                                h -= d * 24;
-                                d = d + 'дн. ';
-                            }
-                            res = d + h + ":" + ( ( m < 10 ) ? "0" : "" ) + m + ":" + ( ( s < 10 ) ? "0" : "" ) + s;
-                        } else {
-                            res = m + ":" + ( ( s < 10 ) ? "0" : "" ) + s;
-                        }
-                        return res;
-                    }
                     function updateTimer() {
                         if (seconds > 0) {
                             seconds--;
-                            timerElement.textContent = getTime(seconds);
+                            timerElement.textContent = window.getTime(seconds);
                         } else {
                             clearInterval(timerInterval);
                             window.location = '/cgi/work_stop.php';
