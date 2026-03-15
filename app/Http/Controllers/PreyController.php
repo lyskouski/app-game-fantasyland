@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CraftParser;
 use App\Services\LocationParser;
+use App\Services\PreyParser;
 
 class PreyController extends MainController
 {
@@ -22,7 +23,7 @@ class PreyController extends MainController
         } else {
             return view('prey_stop', [
                 ...$loc->onPlace($html),
-                ...$this->onPrey($html, $this->captcha(time()))
+                ...(new PreyParser)->parse($html, $this->captcha(time()))
             ]);
         }
     }
@@ -32,7 +33,7 @@ class PreyController extends MainController
         $html = $this->curl->boot($this->url . 'cgi/work_start.php', $post);
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
-            ...$this->onPrey($html, $this->captcha(time()))
+            ...(new PreyParser)->parse($html, $this->captcha(time()))
         ]);
     }
 
@@ -40,7 +41,7 @@ class PreyController extends MainController
         $html = $this->curl->boot($this->url . 'cgi/work_start.php');
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
-            ...$this->onPrey($html, $this->captcha(time()))
+            ...(new PreyParser)->parse($html, $this->captcha(time()))
         ]);
     }
 

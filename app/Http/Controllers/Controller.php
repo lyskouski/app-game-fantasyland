@@ -5,12 +5,13 @@
 namespace App\Http\Controllers;
 
 use App\Providers\AppProxyProvider;
+use App\Settings\Defines;
 
 abstract class Controller
 {
     protected AppProxyProvider $curl;
 
-    public string $url = 'https://www.fantasyland.ru/';
+    public string $url = Defines::URL;
 
     public function __construct()
     {

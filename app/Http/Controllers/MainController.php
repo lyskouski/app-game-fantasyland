@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CraftParser;
 use App\Services\LocationParser;
+use App\Services\PreyParser;
 
 class MainController extends Controller
 {
@@ -13,10 +14,11 @@ class MainController extends Controller
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
         $loc = new LocationParser();
+        $prey = new PreyParser();
         if (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [
                 ...$loc->onPlace($html),
-                ...$this->onPrey($html, $this->captcha(time()))
+                ...$prey->parse($html, $this->captcha(time()))
             ]);
         } elseif (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
@@ -27,7 +29,7 @@ class MainController extends Controller
         } elseif (strpos($html, 'work_start.php') !== false) {
             return view('prey_stop', [
                 ...$loc->onPlace($html),
-                ...$this->onPrey($html, $this->captcha(time()))
+                ...$prey->parse($html, $this->captcha(time()))
             ]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
@@ -52,34 +54,5 @@ class MainController extends Controller
     public function mapStop() {
         $this->curl->boot($this->url . 'cgi/travel_stop.php');
         return $this->index();
-    }
-
-    protected function onPrey(string $html, string $captcha) {
-        $content = '';
-        if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
-            $content = $matches[1];
-            $content = str_replace('action="work_start.php"', 'action="/cgi/work_start.php"', $content);
-            $content = str_replace('../images', $this->url . 'images', $content);
-            $content = preg_replace_callback(
-                "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
-                function ($m) use ($captcha) {
-                    return "<img src='" . $captcha . "'" . $m[2] . ">";
-                },
-                $content
-            );
-        }
-        $image = '';
-        if (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {
-           $image = str_replace('..', '', $imgMatch[2]);
-        }
-        $timer = 0;
-        if (preg_match('/InsertTimer2\\s*\\(\\s*(\\d+)/', $html, $matches)) {
-            $timer = (int)$matches[1];
-        }
-        $message = '';
-        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
-            $message = $matches[1];
-        }
-        return ['data' => $content, 'image' => $image, 'timer' => $timer, 'message' => $message];
     }
 }
