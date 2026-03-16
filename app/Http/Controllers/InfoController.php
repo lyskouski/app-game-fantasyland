@@ -14,9 +14,14 @@ class InfoController extends Controller
     }
 
     public function indexPost(?array $post = null) {
-        if ($post === null) {
-            $post = request()->post();
+        $post = request()->post();
+        $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
+        $parser = new InfoParser();
+        switch ($post['option'] ?? '') {
+            case '4':
+                return view('info_diary', $parser->getDiary($html));
+            default:
+                return $this->get('cgi/change_info.php', $post);
         }
-        return $this->get('/cgi/change_info.php', $post);
     }
 }

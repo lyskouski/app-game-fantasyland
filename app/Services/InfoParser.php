@@ -40,4 +40,9 @@ class InfoParser
             'user' => $userInfo,
         ];
     }
+
+    public function getDiary(string $html): array
+    {
+        return [];
+    }
 }
