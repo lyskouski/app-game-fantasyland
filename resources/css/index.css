@@ -45,6 +45,18 @@ body {
 .main_middle {
     padding: 12px;
 }
+.main_middle img.location {
+    float: left;
+    width: 100px;
+    height: 100px;
+    margin: 4px 12px 4px 0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
+}
+.clear {
+    clear: both;
+}
 .error {
     color:bisque;
     font-size: 12pt;

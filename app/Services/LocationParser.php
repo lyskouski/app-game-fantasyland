@@ -70,9 +70,14 @@ class LocationParser
                 $place[] = ['loc' => $loc, 'id' => $id];
             }
         }
+        $description = '';
+        if (preg_match('/<TD[^>]*>(.*?)<TABLE>/is', $html, $descMatch)) {
+            $description = strip_tags($descMatch[1]);
+        }
         return [
             'image' => $image,
             'title' => $title,
+            'description' => $description,
             'map' => $map,
             'place' => $place,
             'hasRoad' => strpos($html, 'map.php') !== false

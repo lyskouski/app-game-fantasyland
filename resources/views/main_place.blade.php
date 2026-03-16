@@ -32,7 +32,9 @@
                 <br />
             </div>
             <div class="main_middle">
-                <img src="https://www.fantasyland.ru/{{ $image }}" width="100%" />
+                <img src="https://www.fantasyland.ru/{{ $image }}" class="location" />
+                <small>{{ $description }}</small>
+                <div class="clear"></div>
             </div>
         </div>
         <br />

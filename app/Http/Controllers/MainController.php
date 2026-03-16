@@ -33,7 +33,11 @@ class MainController extends Controller
             ]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
-        } elseif (strpos($html, 'cssLocImage') !== false || strpos($html, '<image height=150 width=150') !== false) {
+        } elseif (
+            strpos($html, 'cssLocImage') !== false ||
+            strpos($html, '<image height=150 width=150') !== false ||
+            strpos($html, "window.open('loc_desc.php") !== false
+        ) {
             return view('main_place', $loc->onPlace($html));
         } elseif (strpos($html, 'travel_start.php') !== false) {
             return $this->map();
