@@ -14,7 +14,7 @@ class LocationParser
                 $id = (int)$m[4];
                 $map[] = ['loc' => $loc, 'id' => $id];
             }
-        } elseif (preg_match_all('/<area[^>]+href=["\']javascript:\s*goTo\((\d+)\)["\'][^>]+onmousemove=["\']ToolTipShow\(([^)]*)\)/i', $html, $matches, PREG_SET_ORDER)) {
+        } elseif (preg_match_all('/<area[^>]+href=["\']javascript:\s*goTo\((\d+)\);?["\'][^>]+onmousemove=["\']ToolTipShow\(([^)]*)\)/i', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
                 $id = (int)$m[1];
                 $args = $m[2];
