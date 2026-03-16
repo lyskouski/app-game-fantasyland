@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
+        @vite(['resources/css/index.css', 'resources/js/ping.js'])
     </head>
     <body>
         <br />
@@ -60,13 +60,14 @@
             </div>
         </div>
         <br />
+        <script src="/js/timer.js"></script>
         <script>
             const timerElement = document.getElementById('timer');
             let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
             function updateTimer() {
                 if (seconds > 0) {
                     seconds--;
-                    timerElement.textContent = getTime(seconds);
+                    timerElement.textContent = window.getTime(seconds);
                 } else {
                     clearInterval(timerInterval);
                     window.location = '/cgi/travel_stop.php';
