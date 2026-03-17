@@ -59,15 +59,24 @@
                 <br />
             </div>
             <div class="main_middle">
-                <a href="#" class="mail_active">Входящие</a> |
-                <a href="#">Исходящие</a> |
-                <a href="#">Написать</a>
-                <br />
+                <script>
+                    function toggleMailTab(tab) {
+                        document.querySelectorAll('#mail_income, #mail_sent').forEach(t => {
+                            t.style.display = 'none';
+                        });
+                        document.querySelector(tab).style.display = 'block';
+                    }
+                </script>
+                <center>
+                    <a href="#" onclick="toggleMailTab('#mail_income')">Входящие</a> |
+                    <a href="#" onclick="toggleMailTab('#mail_sent')">Исходящие</a> |
+                    <a href="/cgi/send_letter.php?id=2956">Написать</a>
+                </center>
                 <br />
                 <div id="mail_income">
                     <table width="100%" style="table-layout: fixed;">
                         @foreach($income as $i => $mail)
-                        <tr class="{{ $i % 2 == 0 ? 'main--light' : '' }} {{ $mail['toRead'] ? 'unread' : 'read' }}">
+                        <tr class="{{ $i % 2 == 0 ? 'light' : '' }} {{ $mail['toRead'] ? 'unread' : 'read' }}">
                             <td width="15" style="flex-shrink: 0;">
                                 <img src="https://www.fantasyland.ru/images/miscellaneous/post_{{ $mail['toRead'] ? 'new' : 'old' }}.gif" width="15" height="15" />
                             </td>
@@ -85,6 +94,7 @@
                     </table>
                 </div>
                 <div id="mail_sent" class="hidden">
+                    TBD
                 </div>
             </div>
         </div>

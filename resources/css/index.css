@@ -36,6 +36,9 @@ body {
 .main--light {
     background-image: url("https://www.fantasyland.ru/images/pic.new/battle_bg.jpg");
 }
+.light {
+    background: rgba(255, 255, 255, 0.2);
+}
 .main_top {
     background-image: url("https://www.fantasyland.ru/images/buttons/line_t.gif");
     background-repeat: repeat-x;
