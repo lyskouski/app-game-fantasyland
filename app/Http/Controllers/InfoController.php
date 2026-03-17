@@ -14,10 +14,14 @@ class InfoController extends Controller
     }
 
     public function indexPost(?array $post = null) {
-        $post = request()->post();
+        $opt = request()->post('option');
+        $post = [
+            $opt . '.x' => rand(1, 10),
+            $opt . '.y' => rand(1, 10),
+        ];
         $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
         $parser = new InfoParser();
-        switch ($post['option'] ?? '') {
+        switch ($opt) {
             case '4':
                 return view('info_diary', $parser->getDiary($html));
             default:

@@ -43,6 +43,21 @@ class InfoParser
 
     public function getDiary(string $html): array
     {
-        return [];
+        $calendar = [
+            ['images/clans/hunters_small.gif', 'Неделя Охотника (+1 к охоте)', ''],
+            ['images/clans/druids_small.gif', 'Неделя Собирателя (+1 к добыче)', ''],
+            ['images/clans/fighters_small.gif', 'Неделя Бойца (+1 монета)', ''],
+            ['images/clans/thinkers_small.gif', 'Неделя Мудреца (+1 монета)', ''],
+            ['images/clans/merch_small.gif', 'Неделя Купца (+1 к торговле)', ''],
+            ['images/clans/miners_capital_small.gif', 'Неделя Шахтёра (+1 к добыче)', '']
+        ];
+        foreach ($calendar as &$item) {
+            if (strpos($html, $item[0]) !== false) {
+                $item[2] = 'main--light';
+            }
+            $item[0] = Defines::URL . $item[0];
+        }
+
+        return ['calendar' => $calendar];
     }
 }

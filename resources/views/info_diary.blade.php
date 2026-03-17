@@ -22,7 +22,100 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Дневник&nbsp;</b></small>
+                            <small><b>&nbsp;Календарь&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                @foreach($calendar as $item)
+                <div class="{{ $item[2] }}">
+                    <img src="{{ $item[0] }}" width="15" height="15" />&nbsp;
+                    <small>{{ $item[1] }}</small>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        <br />
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Почта&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                ...
+            </div>
+        </div>
+        <br />
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;История&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                ...
+            </div>
+        </div>
+        <br />
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Дневник заданий&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                ...
+            </div>
+        </div>
+        <br />
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Блокнот&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">

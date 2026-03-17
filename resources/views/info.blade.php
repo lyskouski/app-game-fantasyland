@@ -35,8 +35,6 @@
                 @foreach($data as $option)
                 <form method="POST" action="/cgi/change_info.php">
                     @csrf
-                    <input type="hidden" name="{{ $option['key'] }}.x" value="5" />
-                    <input type="hidden" name="{{ $option['key'] }}.y" value="5" />
                     <input type="hidden" name="option" value="{{ $option['key'] }}" />
                     <table width="100%"><tr><td width="25">
                     <input width="20" height="20" type="image" src="{{ $option['image'] }}" />&nbsp;
