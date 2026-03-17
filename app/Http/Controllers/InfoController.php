@@ -23,7 +23,8 @@ class InfoController extends Controller
         $parser = new InfoParser();
         switch ($opt) {
             case '4':
-                return view('info_diary', $parser->getDiary($html));
+                $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
+                return view('info_diary', $parser->getDiary($html . $mails));
             default:
                 return $this->get('cgi/change_info.php', $post);
         }
