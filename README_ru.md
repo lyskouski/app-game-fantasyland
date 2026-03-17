@@ -14,7 +14,7 @@
 
 <img alt="Логин" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> . <img alt="Переходы" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> . <img alt="Добыча" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> . <img alt="Карта" style="border-width:0;width:200px" src="./docs/design-flow/map.jpg" />
 <img alt="Крафт (выбор)" style="border-width:0;width:200px" src="./docs/design-flow/craft_1.jpg" /> . <img alt="Крафт (выбор рецепта)" style="border-width:0;width:200px" src="./docs/design-flow/craft_2.jpg" /> . <img alt="Разделы форума" style="border-width:0;width:200px" src="./docs/design-flow/forum.jpg" /> . <img alt="Форум" style="border-width:0;width:200px" src="./docs/design-flow/forum_2.jpg" />
-<img alt="Тема форума" style="border-width:0;width:200px" src="./docs/design-flow/forum_3.jpg" /> . <img alt="Профиль" style="border-width:0;width:200px" src="./docs/design-flow/info_1.jpg" /> . <img alt="Профиль - Помощь" style="border-width:0;width:200px" src="./docs/design-flow/info_2.jpg" /> .
+<img alt="Тема форума" style="border-width:0;width:200px" src="./docs/design-flow/forum_3.jpg" /> . <img alt="Профиль" style="border-width:0;width:200px" src="./docs/design-flow/info_1.jpg" /> . <img alt="Профиль - Помощь" style="border-width:0;width:200px" src="./docs/design-flow/info_2.jpg" /> . <img alt="Профиль - Почта" style="border-width:0;width:200px" src="./docs/design-flow/info_diary_mail.jpg" />
 
 
 ## Поддержка (Спонсорство)
