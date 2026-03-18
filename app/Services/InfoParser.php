@@ -160,18 +160,13 @@ class InfoParser
         if (preg_match("/Syst\s*\(\s*'(.*?)'\s*\);?/su", $html, $matches)) {
             $content = $matches[1];
             $content = str_replace("\\'", "'", $content);
-
-            // Extract URL from <a> tag's onclick attribute before removing the tag
-            if (preg_match('/<a[^>]*onclick=[\'"]window\.open\([\'"]([^\'"]+)[\'"][^)]*\)/u', $content, $linkMatches)) {
-                $result['url'] = $linkMatches[1];
-            }
-
-            // Remove <a>...</a> tags and remaining HTML
             $content = preg_replace('/<a[^>]*>.*?<\/a>/su', '', $content);
             $content = strip_tags($content);
             $result['text'] = trim($content);
         }
-
+        if (preg_match('/window\.open\(\"([^"]+)/u', $html, $linkMatches)) {
+            $result['url'] = $linkMatches[1];
+        }
         return $result;
     }
 }
