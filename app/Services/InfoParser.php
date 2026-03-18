@@ -46,6 +46,8 @@ class InfoParser
         return [
             'calendar' => $this->getCalendar($html),
             'income' => $this->getIncomeMailbox($html),
+            'outcome' => $this->getOutcomeMailbox($html),
+            'test' => $html,
         ];
     }
 
@@ -91,6 +93,33 @@ class InfoParser
                     'author' => $author,
                     'content' => $content,
                     'toRead' => $toRead,
+                    'id' => $id,
+                ];
+            }
+        }
+        usort($mailbox, function ($a, $b) {
+            return strcmp($b['date'], $a['date']);
+        });
+
+        return $mailbox;
+    }
+
+    private function getOutcomeMailbox(string $html): array
+    {
+        $mailbox = [];
+        $pattern = '/<span[^>]*title=["\'](\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\s+Письмо\s+(\d+)\s+к\s+([^:]+):\s*([^"\']*)["\'][^>]*>/u';
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $date = $matches[1][$key];
+                $id = $matches[2][$key];
+                $author = trim($matches[3][$key]);
+                $content = trim($matches[4][$key]);
+
+                $mailbox[] = [
+                    'date' => $date,
+                    'ndate' => $this->formatDate($date),
+                    'author' => $author,
+                    'content' => $content,
                     'id' => $id,
                 ];
             }
