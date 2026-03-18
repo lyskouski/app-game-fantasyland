@@ -29,4 +29,16 @@ class InfoController extends Controller
                 return $this->get('cgi/change_info.php', $post);
         }
     }
+
+    public function mailIncome() {
+        $data = request()->input();
+        $html = $this->curl->boot($this->url . 'cgi/msgs_read.php?' . http_build_query($data));
+        return view('info_diary_mail', (new InfoParser)->getMessage($html));
+    }
+
+    public function mailOutcome() {
+        $data = request()->input();
+        $html = $this->curl->boot($this->url . 'cgi/letters_read.php?' . http_build_query($data));
+        return view('info_diary_mail', (new InfoParser)->getMessage($html));
+    }
 }

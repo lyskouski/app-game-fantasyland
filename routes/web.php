@@ -50,6 +50,8 @@ Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
 // Personal info
 Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
 Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
+Route::get('/cgi/msgs_read.php', [InfoController::class, 'mailIncome']);
+Route::get('/cgi/letters_read.php', [InfoController::class, 'mailOutcome']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

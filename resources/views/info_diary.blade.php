@@ -76,7 +76,7 @@
                 <div id="mail_income">
                     <table width="100%" style="table-layout: fixed;">
                         @foreach($income as $i => $mail)
-                        <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
+                        <tr class="{{ $i % 2 == 0 ? 'light' : '' }}" onclick="window.location.href='/cgi/msgs_read.php?dt={{ $mail['date'] }}&m=0'">
                             <td style="width: 15px; flex-shrink: 0;">
                                 <img src="https://www.fantasyland.ru/images/miscellaneous/post_{{ $mail['toRead'] ? 'new' : 'old' }}.gif" width="15" height="15" />
                             </td>
@@ -96,7 +96,7 @@
                 <div id="mail_sent" class="hidden">
                     <table width="100%" style="table-layout: fixed;">
                         @foreach($outcome as $i => $mail)
-                        <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
+                        <tr class="{{ $i % 2 == 0 ? 'light' : '' }}" onclick="window.location.href='/cgi/letters_read.php?id={{ $mail['id'] }}'">
                             <td class="nowrap" style="width: 70px; flex-shrink: 0; overflow: hidden;">
                                 <small><b>{{ $mail['author'] }}</b></small>
                             </td>
