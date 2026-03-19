@@ -169,4 +169,22 @@ class InfoParser
         }
         return $result;
     }
+
+    public function getMailForm(string $html): array
+    {
+        $result = ['text' => '', 'timer' => 0, 'title' => '', 'message' => ''];
+        if (preg_match('/<\/SCRIPT>(.+?)<script>/su', $html, $matches)) {
+            $result['text'] = trim(strip_tags($matches[1]));
+        }
+        if (preg_match('/InsertTimer\(\s*(\d+)\s*,/u', $html, $matches)) {
+            $result['timer'] = (int)$matches[1];
+        }
+        if (preg_match("/GetBlockTitle\('([^']+)'\)[^<]*?<\/SCRIPT>\s*<div[^>]*style=\"text-align: left\"/su", $html, $matches)) {
+            $result['title'] = $matches[1];
+        }
+        if (preg_match('/<div[^>]*style="text-align: left"[^>]*>(.+?)<\/div>/su', $html, $matches)) {
+            $result['message'] = trim($matches[1]);
+        }
+        return $result;
+    }
 }

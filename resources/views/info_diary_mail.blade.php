@@ -44,10 +44,7 @@
                         </td>
                         @if($url)
                         <td align="right">
-                            <form method="GET" action="{{ $url }}">
-                                @csrf
-                                <button type="submit">Ответить</button>
-                            </form>
+                            <button onclick="window.location.href='{{ $url }}'">Ответить</button>
                         </td>
                         @endif
                     </tr>
