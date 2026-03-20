@@ -47,7 +47,7 @@ class InfoParser
             'calendar' => $this->getCalendar($html),
             'income' => $this->getIncomeMailbox($html),
             'outcome' => $this->getOutcomeMailbox($html),
-            'test' => $html,
+            'notes' => $this->getNotes($html)
         ];
     }
 
@@ -129,6 +129,12 @@ class InfoParser
         });
 
         return $mailbox;
+    }
+
+    private function getNotes(string $html): string
+    {
+        $pattern = '<textarea name="notes" id="notes" class="textarea" maxlength="25000" style="width:550px; height: 400px;">';
+        return explode('</textarea>', explode($pattern, $html)[1])[0];
     }
 
     private function formatDate(string $date): string

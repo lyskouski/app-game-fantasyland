@@ -115,7 +115,7 @@
             </div>
         </div>
         <br />
-        <div class="main">
+        <!-- div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
                     <tr>
@@ -133,11 +133,17 @@
                 <br />
             </div>
             <div class="main_middle">
-                ...
+                <a href="/cgi/deal_info.php?myself">Сделки</a><br />
+                <a href="/cgi/combats_info.php?myself">Бои</a><br />
+                <a href="/cgi/last_visits.php?myself">Визиты</a><br />
+                <a href="/cgi/last_punishments.php?myself">Наказания</a><br />
+                <a href="/cgi/deal_arend.php?me&type=1">Взятое в аренду</a><br />
+                <a href="/cgi/deal_arend.php?me&type=2">Выданное в аренду</a><br />
+                <a href="/cgi/deal_arend.php?me&type=3">Взятое в клане</a>
             </div>
         </div>
-        <br />
-        <div class="main">
+        <br / -->
+        <!-- div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
                     <tr>
@@ -158,7 +164,7 @@
                 ...
             </div>
         </div>
-        <br />
+        <br / -->
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -177,7 +183,10 @@
                 <br />
             </div>
             <div class="main_middle">
-                ...
+                <form action="/cgi/pl_notebook.php" method="POST">
+                    <textarea name="notes" maxlength="25000" style="width:100%; height: 200px;">{{ $notes }}</textarea>
+                    <input type="submit" class="button" value="Сохранить" />
+                </form>
             </div>
         </div>
         <br />

@@ -50,10 +50,18 @@ Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
 // Personal info
 Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
 Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
+// Personal info: Mail
 Route::get('/cgi/msgs_read.php', [InfoController::class, 'mailIncome']);
 Route::get('/cgi/letters_read.php', [InfoController::class, 'mailOutcome']);
 Route::any('/cgi/send_letter.php', [InfoController::class, 'mail']);
 Route::get('/cgi/msgs_del.php', [InfoController::class, 'deleteMessage']);
+Route::post('/cgi/pl_notebook.php', [InfoController::class, 'notePost']);
+// Personal info: History
+//Route::get('/cgi/deal_info.php', [InfoController::class, 'dealInfo']);
+//Route::get('/cgi/combats_info.php', [InfoController::class, 'combatsInfo']);
+//Route::get('/cgi/last_visits.php', [InfoController::class, 'lastVisits']);
+//Route::get('/cgi/last_punishments.php', [InfoController::class, 'lastPunishments']);
+//Route::get('/cgi/deal_arend.php', [InfoController::class, 'dealArend']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

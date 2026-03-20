@@ -34,7 +34,8 @@ class InfoController extends Controller
         switch ($opt) {
             case '4':
                 $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
-                return view('info_diary', $this->parser->getDiary($html . $mails));
+                $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
+                return view('info_diary', $this->parser->getDiary($html . $mails . $notebook));
             default:
                 return $this->get('cgi/change_info.php', $post);
         }
@@ -62,6 +63,12 @@ class InfoController extends Controller
     public function deleteMessage() {
         $data = request()->input();
         $this->curl->boot($this->url . 'cgi/msgs_del.php?' . http_build_query($data));
+        return $this->indexPost(['option' => '4']);
+    }
+
+    public function notePost() {
+        $post = request()->post();
+        $this->curl->boot($this->url . 'cgi/pl_notebook.php', $post);
         return $this->indexPost(['option' => '4']);
     }
 }
