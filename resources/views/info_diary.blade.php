@@ -92,6 +92,8 @@
                         </tr>
                         @endforeach
                     </table>
+                    <button style="float:right" onclick="window.location.href='/cgi/msgs_del.php?dt=-1'">Очистить почту</button>
+                    <br />
                 </div>
                 <div id="mail_sent" class="hidden">
                     <table width="100%" style="table-layout: fixed;">
