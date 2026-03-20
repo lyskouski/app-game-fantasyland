@@ -112,7 +112,7 @@ class ForumParser
         ];
     }
 
-    function parseTopic(string $html): array
+    public function parseTopic(string $html): array
     {
         $title = '';
         $author = '';
@@ -152,15 +152,18 @@ class ForumParser
                 'content' => $postContent,
             ];
         }
-        preg_match('/tn\(([^;]+)\)/', $html, $match);
-        $args = explode(',', str_replace(['"', "'"], '', $match[1]));
-        $args = array_map('trim', $args);
+        $back = '';
+        if (preg_match('/tn\(([^;]+)\)/', $html, $match)) {
+            $args = explode(',', str_replace(['"', "'"], '', $match[1]));
+            $args = array_map('trim', $args);
+            $back = "/cgi/forum.php?rid={$args[15]}&p={$args[16]}";
+        }
         return [
             'items' => $items,
             'pages' => $this->parsePagingBlock($html),
             'title' => htmlspecialchars($title),
             'author' => $author,
-            'back' => "/cgi/forum.php?rid={$args[15]}&p={$args[16]}",
+            'back' => $back,
             'hasForm' => strpos($html, '<SCRIPT>jj(') !== false,
             'hasModeration' => strpos($html, "alt='Закрыть тему'") !== false,
         ];
@@ -182,13 +185,15 @@ class ForumParser
         $rid = (int)$rid;
         $direction = (int)$direction;
         $thread_id = (int)$thread_id;
+
         $pages_num = ($posts_num % $per_page == 0) ? intval($posts_num / $per_page) : intval($posts_num / $per_page) + 1;
         $local_mod = $curr % 20;
         $min = 1;
         $max = $pages_num;
         $script_name = '';
-        $celix = (int)floor(($pages_num - $curr) / 20);
+
         if ($direction === 0) {
+            // Forum direction
             $script_name = 'forum.php?';
             if ($local_mod == 0) {
                 $min = $curr - 19;
@@ -199,14 +204,29 @@ class ForumParser
                 $max = ($max > $pages_num) ? $pages_num : $max;
             }
         } else {
+            // Thread direction
             $script_name = 'f_show_thread.php?id=' . $thread_id . '&';
-            $max = $curr + $celix * 20;
+            $celix = intval(($pages_num - $curr - ($pages_num - $curr) % 20) / 20);
+            $max = $pages_num - $celix * 20;
             $min = $max - 19;
             $min = ($min < 1) ? 1 : $min;
-            $max = ($max > $pages_num) ? $pages_num : $max;
+
+            // Store celix for later condition checks
+            $celix_pages_total = intval(($pages_num - ($pages_num % 20)) / 20);
         }
+
         $navLinks = [];
-        if (($direction === 0 && $curr > 20) || ($direction === 1 && $celix != intval($pages_num / 20))) {
+
+        // First navigation (Начало and <<)
+        if ($direction === 0) {
+            $show_first = $curr > 20;
+        } else {
+            $celix = intval(($pages_num - $curr - ($pages_num - $curr) % 20) / 20);
+            $celix_pages_total = intval(($pages_num - ($pages_num % 20)) / 20);
+            $show_first = $celix != $celix_pages_total;
+        }
+
+        if ($show_first) {
             $navLinks[] = [
                 'title' => 'Начало',
                 'url' => $script_name . 'rid=' . $rid . '&p=1',
@@ -216,14 +236,24 @@ class ForumParser
                 'url' => $script_name . 'rid=' . $rid . '&p=' . ($min - 1),
             ];
         }
+
+        // Page numbers
         for ($i = $min; $i <= $max; $i++) {
-            $url = $script_name . 'rid=' . $rid . '&p=' . $i;
             $navLinks[] = [
                 'title' => (string)$i,
-                'url' => $url,
+                'url' => $script_name . 'rid=' . $rid . '&p=' . $i,
             ];
         }
-        if (($direction === 0 && $curr <= $pages_num - ($pages_num % 20)) || ($direction === 1 && $celix > 0)) {
+
+        // Last navigation (>> and Конец)
+        if ($direction === 0) {
+            $show_last = $curr <= $pages_num - ($pages_num % 20);
+        } else {
+            $celix = intval(($pages_num - $curr - ($pages_num - $curr) % 20) / 20);
+            $show_last = $celix > 0;
+        }
+
+        if ($show_last) {
             $navLinks[] = [
                 'title' => '>>',
                 'url' => $script_name . 'rid=' . $rid . '&p=' . ($max + 1),
@@ -233,6 +263,7 @@ class ForumParser
                 'url' => $script_name . 'rid=' . $rid . '&p=' . $pages_num,
             ];
         }
+
         return $navLinks;
     }
 }
