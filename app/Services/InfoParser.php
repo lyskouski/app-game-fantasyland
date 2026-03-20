@@ -172,9 +172,10 @@ class InfoParser
 
     public function getMailForm(string $html): array
     {
-        $result = ['text' => '', 'timer' => 0, 'title' => '', 'message' => ''];
-        if (preg_match('/<\/SCRIPT>(.+?)<script>/su', $html, $matches)) {
-            $result['text'] = trim(strip_tags($matches[1]));
+        $result = ['notification' => '', 'timer' => 0, 'title' => '', 'message' => ''];
+        $data = explode('</SCRIPT>', explode('<script>st = InsertTimer(', $html)[0]);
+        if (sizeof($data) > 1) {
+            $result['notification'] = trim(strip_tags($data[sizeof($data) - 1]));
         }
         if (preg_match('/InsertTimer\(\s*(\d+)\s*,/u', $html, $matches)) {
             $result['timer'] = (int)$matches[1];
