@@ -52,8 +52,7 @@ Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
 Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
 Route::get('/cgi/msgs_read.php', [InfoController::class, 'mailIncome']);
 Route::get('/cgi/letters_read.php', [InfoController::class, 'mailOutcome']);
-Route::get('/cgi/send_letter.php', [InfoController::class, 'mail']);
-Route::post('/cgi/send_letter.php', [InfoController::class, 'mail']);
+Route::any('/cgi/send_letter.php', [InfoController::class, 'mail']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
