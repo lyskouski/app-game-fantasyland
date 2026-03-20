@@ -23,6 +23,9 @@ class InfoController extends Controller
 
     public function indexPost(?array $post = null) {
         $opt = request()->post('option');
+        if (isset($post['option'])) {
+            $opt = $post['option'];
+        }
         $post = [
             $opt . '.x' => rand(1, 10),
             $opt . '.y' => rand(1, 10),
@@ -54,5 +57,11 @@ class InfoController extends Controller
         $post = request()->post();
         $html = $this->curl->boot($this->url . 'cgi/send_letter.php?' . http_build_query($data), $post);
         return view('mail', ['id' => 2956, 'name' => '', ...$this->parser->getMailForm($html), ...$data]);
+    }
+
+    public function deleteMessage() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/msgs_del.php?' . http_build_query($data));
+        return $this->indexPost(['option' => '4']);
     }
 }

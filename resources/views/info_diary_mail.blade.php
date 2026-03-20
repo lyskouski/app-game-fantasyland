@@ -43,6 +43,9 @@
                             </form>
                         </td>
                         @if($url)
+                        <td>
+                            <button onclick="window.location.href='/cgi/msgs_del.php?dt={{ $date }}'">Удалить</button>
+                        </td>
                         <td align="right">
                             <button onclick="window.location.href='{{ $url }}'">Ответить</button>
                         </td>

@@ -156,9 +156,12 @@ class InfoParser
 
     public function getMessage(string $html): array
     {
-        $result = ['text' => null, 'url' => null];
+        $result = ['text' => null, 'url' => null, 'date' => null];
         if (preg_match("/Syst\s*\(\s*'(.*?)'\s*\);?/su", $html, $matches)) {
             $content = $matches[1];
+            if (preg_match('/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/u', $content, $dateMatches)) {
+                $result['date'] = $dateMatches[1];
+            }
             $content = str_replace("\\'", "'", $content);
             $content = preg_replace('/<a[^>]*>.*?<\/a>/su', '', $content);
             $content = strip_tags($content);
