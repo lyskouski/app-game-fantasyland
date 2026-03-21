@@ -10,6 +10,9 @@ class InfoController extends Controller
 {
     protected InfoParser $parser;
 
+    public const OPTION = 'option';
+    public const TYPE_DIARY = '4';
+
     public function __construct()
     {
         parent::__construct();
@@ -22,9 +25,9 @@ class InfoController extends Controller
     }
 
     public function indexPost(?array $post = null) {
-        $opt = request()->post('option');
-        if (isset($post['option'])) {
-            $opt = $post['option'];
+        $opt = request()->post(self::OPTION);
+        if (isset($post[self::OPTION])) {
+            $opt = $post[self::OPTION];
         }
         $post = [
             $opt . '.x' => rand(1, 10),
@@ -32,7 +35,7 @@ class InfoController extends Controller
         ];
         $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
         switch ($opt) {
-            case '4':
+            case self::TYPE_DIARY:
                 $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
                 $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
                 return view('info_diary', $this->parser->getDiary($html . $mails . $notebook));
@@ -63,12 +66,12 @@ class InfoController extends Controller
     public function deleteMessage() {
         $data = request()->input();
         $this->curl->boot($this->url . 'cgi/msgs_del.php?' . http_build_query($data));
-        return $this->indexPost(['option' => '4']);
+        return $this->indexPost([self::OPTION => self::TYPE_DIARY]);
     }
 
     public function notePost() {
         $post = request()->post();
         $this->curl->boot($this->url . 'cgi/pl_notebook.php', $post);
-        return $this->indexPost(['option' => '4']);
+        return $this->indexPost([self::OPTION => self::TYPE_DIARY]);
     }
 }
