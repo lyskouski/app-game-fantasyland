@@ -62,6 +62,7 @@ Route::post('/cgi/pl_notebook.php', [InfoController::class, 'notePost']);
 //Route::get('/cgi/last_visits.php', [InfoController::class, 'lastVisits']);
 //Route::get('/cgi/last_punishments.php', [InfoController::class, 'lastPunishments']);
 //Route::get('/cgi/deal_arend.php', [InfoController::class, 'dealArend']);
+Route::get('/cgi/army_needcombat_ref.php', [InfoController::class, 'armySelection']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

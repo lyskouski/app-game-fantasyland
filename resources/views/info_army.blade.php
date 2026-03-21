@@ -40,15 +40,28 @@
                             <img src="{{ $item['image'] }}" width="70" height="70" />
                         </td>
                         <td valign="top">
+                            <input style="position:relative;float:right;" class="army_selection" type="checkbox" data-id="{{ $item['id'] }}" @if($item['selected']) checked @endif />
                             <small>
                                 <strong>{!! $item['name'] !!}</strong><br />
                                 {{ $item['lvl'] }}<br />
                             </small>
-                            <font size="8px">{!! $item['effects'] !!}</font>
+                            <small class="tiny">{!! $item['effects'] !!}</small>
                         </td>
                     </tr>
                 </table>
                 @endforeach
+                <script>
+                    document.querySelectorAll('.army_selection').forEach(el => {
+                        el.addEventListener('change', function() {
+                            fetch('/cgi/army_needcombat_ref.php?id=' + this.dataset.id, {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        });
+                    });
+                </script>
             </div>
         </div>
         <br />

@@ -99,3 +99,6 @@ a:active {
     white-space: nowrap;
     overflow: hidden;
 }
+.tiny {
+    font-size: 8px;
+}

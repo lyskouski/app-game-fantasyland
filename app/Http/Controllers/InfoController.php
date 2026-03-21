@@ -90,4 +90,10 @@ class InfoController extends Controller
         $this->curl->boot($this->url . 'cgi/pl_notebook.php', $post);
         return $this->indexPost([self::OPTION => self::TYPE_DIARY]);
     }
+
+    public function armySelection() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/army_needcombat_ref.php?' . http_build_query($data));
+        return view('empty', ['data' => '']);
+    }
 }
