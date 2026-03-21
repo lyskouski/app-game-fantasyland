@@ -12,6 +12,7 @@ class InfoController extends Controller
 
     public const OPTION = 'option';
     public const TYPE_DIARY = '4';
+    public const TYPE_EFFECTS = '5';
 
     public function __construct()
     {
@@ -39,6 +40,8 @@ class InfoController extends Controller
                 $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
                 $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
                 return view('info_diary', $this->parser->getDiary($html . $mails . $notebook));
+            case self::TYPE_EFFECTS:
+                return view('info_effects', $this->parser->getEffects($html));
             default:
                 return $this->get('cgi/change_info.php', $post);
         }

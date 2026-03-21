@@ -5,6 +5,7 @@
 namespace App\Services;
 
 use App\Settings\Defines;
+use App\Settings\Effects;
 
 class InfoParser
 {
@@ -194,6 +195,65 @@ class InfoParser
         }
         if (preg_match('/<div[^>]*style="text-align: left"[^>]*>(.+?)<\/div>/su', $html, $matches)) {
             $result['message'] = trim($matches[1]);
+        }
+        return $result;
+    }
+
+    public function getEffects(string $html): array
+    {
+        $awards = [];
+        $effects = [];
+        if (preg_match('/<TABLE><TR><TD><b>Награды:<\/b>.*?<\/TABLE>/s', $html, $awardsSection)) {
+            $awards = $this->parseAwardsOrEffects($awardsSection[0], false);
+        }
+        if (preg_match('/<TABLE><TR><TD><b>Эффекты:<\/b>.*?<\/TABLE>/s', $html, $effectsSection)) {
+            $effects = $this->parseAwardsOrEffects($effectsSection[0], true);
+        }
+        return [
+            'awards' => $awards,
+            'effects' => $effects,
+        ];
+    }
+
+    private function parseAwardsOrEffects(string $content, bool $isEffects = false): array
+    {
+        $result = [];
+        if (preg_match_all('/<IMG\s+src="([^"]+)"\s+title="([^"]+)"/s', $content, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $src = $matches[1][$key];
+                $titleText = $matches[2][$key];
+                $image = str_replace('../', '', $src);
+                $lines = array_map('trim', preg_split('/\r?\n/', $titleText));
+                $lines = array_filter($lines);
+                $lines = array_values($lines);
+                // First line is the title
+                $title = isset($lines[0]) ? rtrim($lines[0], ':') : '';
+                // Find the effect line (starts with + or -)
+                $effect = '';
+                $time = '';
+                foreach ($lines as $line) {
+                    if (preg_match('/^[+\-]/', $line)) {
+                        $effect = $line;
+                        break;
+                    }
+                }
+                $item = [
+                    'image' => Defines::URL . $image,
+                    'title' => $title,
+                    'effect' => Effects::getImage($effect),
+                    'time' => null,
+                ];
+                if ($isEffects) {
+                    foreach ($lines as $line) {
+                        if (preg_match('/Закончится через\s+(.+)/u', $line, $timeMatches)) {
+                            $time = $timeMatches[1];
+                            break;
+                        }
+                    }
+                    $item['time'] = $time;
+                }
+                $result[] = $item;
+            }
         }
         return $result;
     }
