@@ -291,4 +291,33 @@ class InfoParser
         }
         return ['ratings' => $ratings];
     }
+
+    public function getInfo(string $html): array
+    {
+        $info = [
+            [
+                'image' => Defines::URL . 'images/miscellaneous/hp.gif',
+                'title' => 'Жизнь',
+                'value' => null,
+            ]
+        ];
+        $hpPattern = "/<TD id=hp1><font[^>]*>\\[<\\/font>([^<]+)<font[^>]*>\\]<\\/font><\\/TD>/u";
+        if (preg_match($hpPattern, $html, $hpMatches)) {
+            $info[0]['value'] = trim($hpMatches[1]);
+        }
+        $pattern = "/<image[^>]*src='([^']+)'[^>]*title='([^']+)'[^>]*><\\/td><td[^>]*>([^<]+)<\\/td>/u";
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $imagePath = $matches[1][$key];
+                $title = $matches[2][$key];
+                $value = trim($matches[3][$key]);
+                $info[] = [
+                    'image' => Defines::URL . str_replace('../', '', $imagePath),
+                    'title' => $title,
+                    'value' => $value,
+                ];
+            }
+        }
+        return ['info' => $info];
+    }
 }

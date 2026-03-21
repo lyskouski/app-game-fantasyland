@@ -11,6 +11,9 @@ class InfoController extends Controller
     protected InfoParser $parser;
 
     public const OPTION = 'option';
+    public const TYPE_STUFF = '0';
+    public const TYPE_INFO = '1';
+    public const TYPE_ARMY = '3';
     public const TYPE_DIARY = '4';
     public const TYPE_EFFECTS = '5';
     public const TYPE_RUNES = '6';
@@ -38,6 +41,8 @@ class InfoController extends Controller
         ];
         $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
         switch ($opt) {
+            case self::TYPE_INFO:
+                return view('info_info', $this->parser->getInfo($html));
             case self::TYPE_DIARY:
                 $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
                 $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
