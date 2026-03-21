@@ -320,4 +320,44 @@ class InfoParser
         }
         return ['info' => $info];
     }
+
+    public function getArmy(string $html): array
+    {
+        $army = [];
+        $pattern = "/InvArmyShow\\((\\d+),\\s*'([^']+)',\\s*\"(.*?)\"\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*'',\\s*'',\\s*(\\d+)\\s*\\)/s";
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $image = $matches[2][$key];
+                $effectsHtml = $matches[3][$key];
+                $count = $matches[4][$key];
+                $id = $matches[5][$key];
+                $selected = $matches[6][$key];
+                $name = '';
+                if (preg_match('/<b>([^<]+)<\/b>/', $effectsHtml, $nameMatch)) {
+                    $name = $nameMatch[1];
+                }
+                $lvl = '';
+                if (preg_match('/<b>(Уровень: \\d+)<\/b>/', $effectsHtml, $lvlMatch)) {
+                    $lvl = $lvlMatch[1];
+                }
+                $effectsHtml = explode('<br>', $effectsHtml);
+                array_shift($effectsHtml);
+                array_shift($effectsHtml);
+                $army[] = [
+                    'name' => $name,
+                    'image' => Defines::URL . 'images/armies/' . $image,
+                    'lvl' => $lvl,
+                    'count' => $count,
+                    'id' => $id,
+                    'selected' => $selected,
+                    'effects' => str_replace(
+                        ['src=/', '%ba%', '%oa%', '%sa%'],
+                        ['src=' . Defines::URL],
+                        implode(', ', $effectsHtml)
+                    ),
+                ];
+            }
+        }
+        return ['army' => $army];
+    }
 }

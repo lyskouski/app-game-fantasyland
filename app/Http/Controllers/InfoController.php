@@ -43,6 +43,8 @@ class InfoController extends Controller
         switch ($opt) {
             case self::TYPE_INFO:
                 return view('info_info', $this->parser->getInfo($html));
+            case self::TYPE_ARMY:
+                return view('info_army', $this->parser->getArmy($html));
             case self::TYPE_DIARY:
                 $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
                 $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
