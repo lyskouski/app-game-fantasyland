@@ -257,4 +257,38 @@ class InfoParser
         }
         return $result;
     }
+
+    public function getRatings(string $html): array
+    {
+        $ratings = [];
+        $sections = preg_split('/<i>([^<]+):<\/i>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $currentTitle = '';
+        for ($i = 0; $i < count($sections); $i++) {
+            if ($i % 2 == 1) {
+                $currentTitle = $sections[$i];
+            } else {
+                $content = $sections[$i];
+                $pattern = "/OutpR\(\s*'([^']*)',\s*'[^']*',\s*'([^']*)',\s*'[^']*',\s*[\\d.]+,\s*'([^']*)'\s*(?:,\s*'([^']*)'\s*)?\)/u";
+                if (preg_match_all($pattern, $content, $matches)) {
+                    foreach (array_keys($matches[0]) as $key) {
+                        $imageInitial = $matches[1][$key];
+                        $imageFinal = $matches[2][$key];
+                        $rating = $matches[3][$key];
+                        $extension = isset($matches[4][$key]) && $matches[4][$key] ? $matches[4][$key] : '.gif';
+                        if ($imageInitial === 'no_medal') {
+                            $imageInitial = '';
+                        }
+                        $ratings[] = [
+                            'title' => $currentTitle,
+                            'rating' => $rating,
+                            'image_initial' => $imageInitial ? Defines::URL . 'images/medals/' . $imageInitial . '.gif' : '',
+                            'image_final' => Defines::URL . 'images/medals/' . $imageFinal . $extension,
+                        ];
+                        $currentTitle = '';
+                    }
+                }
+            }
+        }
+        return ['ratings' => $ratings];
+    }
 }

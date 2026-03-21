@@ -13,6 +13,7 @@ class InfoController extends Controller
     public const OPTION = 'option';
     public const TYPE_DIARY = '4';
     public const TYPE_EFFECTS = '5';
+    public const TYPE_RATINGS = '10';
 
     public function __construct()
     {
@@ -42,6 +43,8 @@ class InfoController extends Controller
                 return view('info_diary', $this->parser->getDiary($html . $mails . $notebook));
             case self::TYPE_EFFECTS:
                 return view('info_effects', $this->parser->getEffects($html));
+            case self::TYPE_RATINGS:
+                return view('info_ratings', $this->parser->getRatings($html));
             default:
                 return $this->get('cgi/change_info.php', $post);
         }
