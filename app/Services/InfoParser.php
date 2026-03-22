@@ -363,6 +363,30 @@ class InfoParser
 
     public function getStuff(string $html): array
     {
+        $playerImage = '';
+        if (preg_match('/<img[^>]*src="([^"]*\/images\/players\/[^"]*)"[^>]*>/u', $html, $playerImageMatch)) {
+            $playerImage = Defines::URL . $playerImageMatch[1];
+        }
+        $playerMoney = '';
+        if (preg_match('/<span id="playerMoney">([^<]+)<\/span>/u', $html, $moneyMatch)) {
+            $playerMoney = trim($moneyMatch[1]);
+        }
+        $playerUM = '';
+        if (preg_match('/<span id="playerUM">([^<]+)<\/span>/u', $html, $umMatch)) {
+            $playerUM = trim($umMatch[1]);
+        }
+        return [
+            'stuff' => $this->getStuffSlots($html),
+            'set' => $this->getStuffSets($html),
+            'scrolls' => '',
+            'image' => $playerImage,
+            'playerMoney' => $playerMoney,
+            'playerUM' => $playerUM,
+        ];
+    }
+
+    private function getStuffSlots(string $html): array
+    {
         $stuff = [];
         $pattern = "/<img[^>]*?onClick='unwear\\((\\d+)\\)'[^>]*?>/s";
         if (preg_match_all($pattern, $html, $matches)) {
@@ -377,41 +401,37 @@ class InfoParser
                 if (preg_match("/src=[\"']([^\"']+)[\"']/", $imgTag, $srcMatch)) {
                     $image = Defines::URL . str_replace('../', '', $srcMatch[1]);
                 }
-
-                if ($title && $image) {
-                    $stuff[$id] = [
-                        'id' => $id,
-                        'title' => $title,
-                        'image' => $image,
-                    ];
-                }
+                $stuff[$id] = [
+                    'id' => $id,
+                    'title' => $title,
+                    'image' => $image,
+                ];
             }
         }
-        $playerImage = '';
-        if (preg_match('/<img[^>]*src="([^"]*\/images\/players\/[^"]*)"[^>]*>/u', $html, $playerImageMatch)) {
-            $playerImage = Defines::URL . $playerImageMatch[1];
+        return $stuff;
+    }
+
+    private function getStuffSets(string $html): array
+    {
+        $sets = [];
+        $pattern = "/<span class='invClick'[^>]*onClick='wear_set\\((\\d+)\\)'[^>]*>([^<]+)<\/span>/s";
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $id = $matches[1][$key];
+                $title = trim($matches[2][$key]);
+                $sets[] = [
+                    'title' => $title,
+                    'id' => $id,
+                ];
+            }
         }
-        $playerMoney = '';
-        if (preg_match('/<span id="playerMoney">([^<]+)<\/span>/u', $html, $moneyMatch)) {
-            $playerMoney = trim($moneyMatch[1]);
-        }
-        $playerUM = '';
-        if (preg_match('/<span id="playerUM">([^<]+)<\/span>/u', $html, $umMatch)) {
-            $playerUM = trim($umMatch[1]);
-        }
-        return [
-            'stuff' => $stuff,
-            'image' => $playerImage,
-            'playerMoney' => $playerMoney,
-            'playerUM' => $playerUM,
-        ];
+        return $sets;
     }
 
     public function getStuffItems(string $html): array
     {
         $items = [];
         $pattern = "/InvItemShow\\('([^']+)',\\s*'(.*?(?<!\\\\))',\\s*(\\d+),\\s*(\\d+),\\s*'[^']*',\\s*'([^']*)'/s";
-
         if (preg_match_all($pattern, $html, $matches)) {
             foreach (array_keys($matches[0]) as $key) {
                 $image = $matches[1][$key];
@@ -425,7 +445,7 @@ class InfoParser
                 }
                 $level = '';
                 if (isset($parts[1]) && !empty($parts[1])) {
-                    $level = strip_tags($parts[1]);
+                    $level = $parts[1];
                 }
                 $description = '';
                 if (count($parts) > 2) {

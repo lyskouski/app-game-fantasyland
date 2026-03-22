@@ -68,6 +68,8 @@ Route::get('/cgi/army_needcombat_ref.php', [InfoController::class, 'armySelectio
 Route::get('/cgi/inv_unwear.php', [InfoController::class, 'unwear']);
 Route::get('/cgi/inv_wear.php', [InfoController::class, 'wear']);
 Route::get('/cgi/inv_load_items.php', [InfoController::class, 'loadItems']);
+Route::get('/cgi/set_wear.php', [InfoController::class, 'setWear']);
+Route::get('/cgi/set_save.php', [InfoController::class, 'setSave']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

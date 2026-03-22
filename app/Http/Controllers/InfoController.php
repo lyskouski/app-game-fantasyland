@@ -42,15 +42,17 @@ class InfoController extends Controller
         $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
         switch ($opt) {
             case self::TYPE_STUFF:
+                $html .= $this->curl->boot($this->url . 'cgi/set_load.php');
+                $html .= $this->curl->boot($this->url . 'cgi/scrolls_set_load.php');
                 return view('info_stuff', $this->parser->getStuff($html));
             case self::TYPE_INFO:
                 return view('info_info', $this->parser->getInfo($html));
             case self::TYPE_ARMY:
                 return view('info_army', $this->parser->getArmy($html));
             case self::TYPE_DIARY:
-                $mails = $this->curl->boot($this->url . 'cgi/e_show_letters.php');
-                $notebook = $this->curl->boot($this->url . 'cgi/pl_notebook.php');
-                return view('info_diary', $this->parser->getDiary($html . $mails . $notebook));
+                $html .= $this->curl->boot($this->url . 'cgi/e_show_letters.php');
+                $html .= $this->curl->boot($this->url . 'cgi/pl_notebook.php');
+                return view('info_diary', $this->parser->getDiary($html));
             case self::TYPE_EFFECTS:
                 return view('info_effects', $this->parser->getEffects($html));
             case self::TYPE_RUNES:
@@ -108,6 +110,18 @@ class InfoController extends Controller
     public function wear() {
         $data = request()->input();
         $this->curl->boot($this->url . 'cgi/inv_wear.php?' . http_build_query($data));
+        return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
+    }
+
+    public function setWear() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/set_wear.php?' . http_build_query($data));
+        return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
+    }
+
+    public function setSave() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/set_save.php?' . http_build_query($data));
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 

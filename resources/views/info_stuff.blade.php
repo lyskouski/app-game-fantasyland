@@ -10,6 +10,24 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css'])
+
+        <script>
+            function unwear(slot) {
+                window.location.href = '/cgi/inv_unwear.php?id=' + slot;
+            }
+            function wear(tp, dv) {
+                window.location.href = '/cgi/inv_load_items.php?tp=' + tp + '&dv=' + dv + '&expand';
+            }
+            function wear_set(a) {
+                window.location.href = '/cgi/set_wear.php?id=' + a;
+            }
+            function save_set() {
+                const name = prompt('Введите название для комплекта вещей');
+                if (name) {
+                    window.location.href = '/cgi/set_save.php?name=' + name;
+                }
+            }
+        </script>
     </head>
     <body>
         <br />
@@ -217,14 +235,37 @@
                     </tr>
                 </table>
                 </center>
-                <script>
-                    function unwear(slot) {
-                        window.location.href = '/cgi/inv_unwear.php?id=' + slot;
-                    }
-                    function wear(tp, dv) {
-                        window.location.href = '/cgi/inv_load_items.php?tp=' + tp + '&dv=' + dv + '&expand';
-                    }
-                </script>
+            </div>
+        </div>
+        <br />
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Комплекты вещей&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                <ul>
+                    @foreach($set as $item)
+                    <li>
+                        <a href="#{{ $item['id'] }}" onclick="wear_set({{ $item['id'] }})">{{ $item['title'] }}</a>
+                    </li>
+                    @endforeach
+                </ul>
+                <br />
+                <a style="float:right" href="#-1" onclick="save_set()">Сохранить текущий</a>
+                <a href="#0" onclick="wear_set(0)">Снять все</a>
             </div>
         </div>
         <br />
