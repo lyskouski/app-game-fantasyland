@@ -66,6 +66,8 @@ Route::post('/cgi/pl_notebook.php', [InfoController::class, 'notePost']);
 Route::get('/cgi/army_needcombat_ref.php', [InfoController::class, 'armySelection']);
 // Personal info: Stuff
 Route::get('/cgi/inv_unwear.php', [InfoController::class, 'unwear']);
+Route::get('/cgi/inv_wear.php', [InfoController::class, 'wear']);
+Route::get('/cgi/inv_load_items.php', [InfoController::class, 'loadItems']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

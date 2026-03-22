@@ -406,4 +406,43 @@ class InfoParser
             'playerUM' => $playerUM,
         ];
     }
+
+    public function getStuffItems(string $html): array
+    {
+        $items = [];
+        $pattern = "/InvItemShow\\('([^']+)',\\s*'(.*?(?<!\\\\))',\\s*(\\d+),\\s*(\\d+),\\s*'[^']*',\\s*'([^']*)'/s";
+
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $image = $matches[1][$key];
+                $count = (int)$matches[3][$key];
+                $id = (int)$matches[4][$key];
+                $wearArgument = $matches[5][$key];
+                $parts = preg_split('/<br>/i', $matches[2][$key]);
+                $title = '';
+                if (isset($parts[0]) && !empty($parts[0])) {
+                    $title = strip_tags($parts[0]);
+                }
+                $level = '';
+                if (isset($parts[1]) && !empty($parts[1])) {
+                    $level = strip_tags($parts[1]);
+                }
+                $description = '';
+                if (count($parts) > 2) {
+                    $descriptionParts = array_slice($parts, 2);
+                    $description = implode('<br>', $descriptionParts);
+                }
+                $items[] = [
+                    'id' => $id,
+                    'image' => Defines::URL . 'images/items/' . $image,
+                    'name' => $title,
+                    'lvl' => $level,
+                    'effects' => str_replace('src=/', 'src=' . Defines::URL, $description),
+                    'count' => $count,
+                    'wearable' => $wearArgument === 'wear',
+                ];
+            }
+        }
+        return ['items' => $items];
+    }
 }
