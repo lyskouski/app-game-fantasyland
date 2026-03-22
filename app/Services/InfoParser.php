@@ -360,4 +360,50 @@ class InfoParser
         }
         return ['army' => $army];
     }
+
+    public function getStuff(string $html): array
+    {
+        $stuff = [];
+        $pattern = "/<img[^>]*?onClick='unwear\\((\\d+)\\)'[^>]*?>/s";
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $imgTag = $matches[0][$key];
+                $id = (int)$matches[1][$key];
+                $title = '';
+                if (preg_match("/title='(.*?)'/s", $imgTag, $titleMatch)) {
+                    $title = $titleMatch[1];
+                }
+                $image = '';
+                if (preg_match("/src=[\"']([^\"']+)[\"']/", $imgTag, $srcMatch)) {
+                    $image = Defines::URL . str_replace('../', '', $srcMatch[1]);
+                }
+
+                if ($title && $image) {
+                    $stuff[$id] = [
+                        'id' => $id,
+                        'title' => $title,
+                        'image' => $image,
+                    ];
+                }
+            }
+        }
+        $playerImage = '';
+        if (preg_match('/<img[^>]*src="([^"]*\/images\/players\/[^"]*)"[^>]*>/u', $html, $playerImageMatch)) {
+            $playerImage = Defines::URL . $playerImageMatch[1];
+        }
+        $playerMoney = '';
+        if (preg_match('/<span id="playerMoney">([^<]+)<\/span>/u', $html, $moneyMatch)) {
+            $playerMoney = trim($moneyMatch[1]);
+        }
+        $playerUM = '';
+        if (preg_match('/<span id="playerUM">([^<]+)<\/span>/u', $html, $umMatch)) {
+            $playerUM = trim($umMatch[1]);
+        }
+        return [
+            'stuff' => $stuff,
+            'image' => $playerImage,
+            'playerMoney' => $playerMoney,
+            'playerUM' => $playerUM,
+        ];
+    }
 }

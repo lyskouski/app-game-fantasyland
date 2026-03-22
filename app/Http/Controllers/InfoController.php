@@ -41,6 +41,8 @@ class InfoController extends Controller
         ];
         $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
         switch ($opt) {
+            case self::TYPE_STUFF:
+                return view('info_stuff', $this->parser->getStuff($html));
             case self::TYPE_INFO:
                 return view('info_info', $this->parser->getInfo($html));
             case self::TYPE_ARMY:
@@ -95,5 +97,11 @@ class InfoController extends Controller
         $data = request()->input();
         $this->curl->boot($this->url . 'cgi/army_needcombat_ref.php?' . http_build_query($data));
         return view('empty', ['data' => '']);
+    }
+
+    public function unwear() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/inv_unwear.php?' . http_build_query($data));
+        return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 }
