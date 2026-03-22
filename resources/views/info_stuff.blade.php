@@ -242,6 +242,19 @@
                             @endif
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <a href="#" onclick="wear('25', 'd125')">Зелья</a>
+                        </td>
+                        <td colspan="2">
+                            @foreach($potions as $item)
+                            <div class="tiny" style="float:left;color:white;margin-right:10px;">
+                                <img hspace=2 src="{{ $item['image'] }}" width='25' height='25' border='0' title="{{ $item['title'] }}"/><br />
+                                {{ $item['time'] }}
+                            </div>
+                            @endforeach
+                        </td>
+                    </tr>
                 </table>
                 </center>
             </div>
@@ -286,7 +299,7 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Комплекты вещей&nbsp;</b></small>
+                            <small><b>&nbsp;Комплекты свитков&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">

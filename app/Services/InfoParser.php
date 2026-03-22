@@ -379,6 +379,7 @@ class InfoParser
             'stuff' => $this->getStuffSlots($html),
             'set' => $this->getStuffSets($html),
             'scrolls' => $this->getScrollsSet($html),
+            'potions' => $this->getPotions($html),
             'image' => $playerImage,
             'playerMoney' => $playerMoney,
             'playerUM' => $playerUM,
@@ -443,6 +444,33 @@ class InfoParser
             }
         }
         return $scrolls;
+    }
+
+    private function getPotions(string $html): array
+    {
+        $potions = [];
+        $tablePattern = "/<TABLE>.*?<TD>Зелья:<\/TD>(.*?)<\/TABLE>/s";
+        if (preg_match($tablePattern, $html, $tableMatch)) {
+            $tableContent = $tableMatch[1];
+            $imgPattern = "/<img[^>]*src='([^']+)'[^>]*title='(.*?)'[^>]*>/s";
+            if (preg_match_all($imgPattern, $tableContent, $matches)) {
+                foreach (array_keys($matches[0]) as $key) {
+                    $src = $matches[1][$key];
+                    $title = $matches[2][$key];
+                    $time = '';
+                    if (preg_match('/Осталось:\s*(.+?)(?:\n|$)/u', $title, $timeMatch)) {
+                        $time = trim($timeMatch[1]);
+                    }
+
+                    $potions[] = [
+                        'title' => $title,
+                        'time' => $time,
+                        'image' => Defines::URL . str_replace('../', '', $src),
+                    ];
+                }
+            }
+        }
+        return $potions;
     }
 
     public function getStuffItems(string $html): array
