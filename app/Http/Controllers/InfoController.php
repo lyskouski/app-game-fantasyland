@@ -125,6 +125,18 @@ class InfoController extends Controller
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
+    public function scrollsSetSave() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/scrolls_set_save.php?' . http_build_query($data));
+        return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
+    }
+
+    public function scrollsSetWear() {
+        $data = request()->input();
+        $this->curl->boot($this->url . 'cgi/scrolls_set_wear.php?' . http_build_query($data));
+        return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
+    }
+
     public function loadItems() {
         $data = request()->input();
         $html = $this->curl->boot($this->url . 'cgi/inv_load_items.php?' . http_build_query($data));

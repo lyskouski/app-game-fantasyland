@@ -27,6 +27,15 @@
                     window.location.href = '/cgi/set_save.php?name=' + name;
                 }
             }
+            function save_scrolls() {
+                var name = prompt("Укажите название комплекта");
+                if (name) {
+                    window.location.href = '/cgi/scrolls_set_save.php?name=' + name;
+                }
+            }
+            function wear_scrolls(a) {
+                window.location.href = '/cgi/scrolls_set_wear.php?id=' + a;
+            }
         </script>
     </head>
     <body>
@@ -263,9 +272,39 @@
                     </li>
                     @endforeach
                 </ul>
-                <br />
                 <a style="float:right" href="#-1" onclick="save_set()">Сохранить текущий</a>
                 <a href="#0" onclick="wear_set(0)">Снять все</a>
+            </div>
+        </div>
+        <br />
+
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Комплекты вещей&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                <ul>
+                    @foreach($scrolls as $item)
+                    <li>
+                        <a href="#{{ $item['id'] }}" onclick="wear_scrolls({{ $item['id'] }})">{{ $item['title'] }}</a>
+                    </li>
+                    @endforeach
+                </ul>
+                <a style="float:right" href="#-2" onclick="save_scrolls()">Сохранить текущий</a>
+                <a href="#0" onclick="wear_scrolls(0)">Снять все</a>
             </div>
         </div>
         <br />

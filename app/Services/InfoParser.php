@@ -378,7 +378,7 @@ class InfoParser
         return [
             'stuff' => $this->getStuffSlots($html),
             'set' => $this->getStuffSets($html),
-            'scrolls' => '',
+            'scrolls' => $this->getScrollsSet($html),
             'image' => $playerImage,
             'playerMoney' => $playerMoney,
             'playerUM' => $playerUM,
@@ -426,6 +426,23 @@ class InfoParser
             }
         }
         return $sets;
+    }
+
+    private function getScrollsSet(string $html): array
+    {
+        $scrolls = [];
+        $pattern = "/<span class='invClick'[^>]*onClick='wearScrollsSet\\((\\d+)\\)'[^>]*>([^<]+)<\/span>/s";
+        if (preg_match_all($pattern, $html, $matches)) {
+            foreach (array_keys($matches[0]) as $key) {
+                $id = $matches[1][$key];
+                $title = trim($matches[2][$key]);
+                $scrolls[] = [
+                    'title' => $title,
+                    'id' => $id,
+                ];
+            }
+        }
+        return $scrolls;
     }
 
     public function getStuffItems(string $html): array

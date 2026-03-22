@@ -70,6 +70,8 @@ Route::get('/cgi/inv_wear.php', [InfoController::class, 'wear']);
 Route::get('/cgi/inv_load_items.php', [InfoController::class, 'loadItems']);
 Route::get('/cgi/set_wear.php', [InfoController::class, 'setWear']);
 Route::get('/cgi/set_save.php', [InfoController::class, 'setSave']);
+Route::get('/cgi/scrolls_set_save.php', [InfoController::class, 'scrollsSetSave']);
+Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
