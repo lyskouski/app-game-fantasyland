@@ -83,7 +83,7 @@
                             @if (isset($stuff[1]))
                             <img width=50 height=50 title="{{ $stuff[1]['title'] }}" src="{{ $stuff[1]['image'] }}" onclick='unwear(1)'>
                             @else
-                            <img width=50 height=50 title='Место для ожерелья'  src="https://www.fantasyland.ru/images/items/neck_none.gif" >
+                            <img width=50 height=50 title='Место для ожерелья'  src="https://www.fantasyland.ru/images/items/neck_none.gif" onclick="wear('1', 'd11')">
                             @endif
                         </td>
                     </tr>
@@ -92,14 +92,14 @@
                             @if (isset($stuff[2]))
                             <img width=50 height=50 title="{{ $stuff[2]['title'] }}" src="{{ $stuff[2]['image'] }}" onclick='unwear(2)'>
                             @else
-                            <img width=50 height=50 title='Место для брони'  src="https://www.fantasyland.ru/images/items/body_none.gif" >
+                            <img width=50 height=50 title='Место для брони'  src="https://www.fantasyland.ru/images/items/body_none.gif" onclick="wear('2', 'd12')">
                             @endif
                         </td>
                         <td height=50 width=50>
                             @if (isset($stuff[3]))
                             <img width=50 height=50 title="{{ $stuff[3]['title'] }}" src="{{ $stuff[3]['image'] }}" onclick='unwear(3)'>
                             @else
-                            <img width=50 height=50 title='Место для оружия'  src="https://www.fantasyland.ru/images/items/r_hand_none.gif" >
+                            <img width=50 height=50 title='Место для оружия'  src="https://www.fantasyland.ru/images/items/r_hand_none.gif" onclick="wear('3', 'd13')">
                             @endif
                         </td>
                     </tr>
@@ -108,19 +108,19 @@
                             @if (isset($stuff[16]))
                             <img width=25 height=25 title="{{ $stuff[16]['title'] }}" src="{{ $stuff[16]['image'] }}" onclick='unwear(16)'>
                             @else
-                            <img width=25 height=25 title='Место для браслета'  src="https://www.fantasyland.ru/images/items/bracer_none.gif" >
+                            <img width=25 height=25 title='Место для браслета'  src="https://www.fantasyland.ru/images/items/bracer_none.gif" onclick="wear('10', 'd110')">
                             @endif
                             @if (isset($stuff[17]))
                             <img width=25 height=25 title="{{ $stuff[17]['title'] }}" src="{{ $stuff[17]['image'] }}" onclick='unwear(17)'>
                             @else
-                            <img width=25 height=25 title='Место для браслета'  src="https://www.fantasyland.ru/images/items/bracer_none.gif" >
+                            <img width=25 height=25 title='Место для браслета'  src="https://www.fantasyland.ru/images/items/bracer_none.gif" onclick="wear('10', 'd110')">
                             @endif
                         </td>
                         <td height=25 width=50>
                             @if (isset($stuff[9]))
                             <img width=50 height=25 title="{{ $stuff[9]['title'] }}" src="{{ $stuff[9]['image'] }}" onclick='unwear(9)'>
                             @else
-                            <img width=50 height=25 title='Место для пояса'  src="https://www.fantasyland.ru/images/items/belt_none.gif" >
+                            <img width=50 height=25 title='Место для пояса'  src="https://www.fantasyland.ru/images/items/belt_none.gif" onclick="wear('9', 'd19')">
                             @endif
                         </td>
                     </tr>
@@ -129,29 +129,29 @@
                             @if (isset($stuff[12]))
                             <img width=25 height=25 title="{{ $stuff[12]['title'] }}" src="{{ $stuff[12]['image'] }}" onclick='unwear(12)'>
                             @else
-                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" >
+                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" onclick="wear('5', 'd15')">
                             @endif
                             @if (isset($stuff[13]))
                             <img width=25 height=25 title="{{ $stuff[13]['title'] }}" src="{{ $stuff[13]['image'] }}" onclick='unwear(13)'>
                             @else
-                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" >
+                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" onclick="wear('5', 'd15')">
                             @endif
                             @if (isset($stuff[14]))
                             <img width=25 height=25 title="{{ $stuff[14]['title'] }}" src="{{ $stuff[14]['image'] }}" onclick='unwear(14)'>
                             @else
-                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" >
+                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" onclick="wear('5', 'd15')">
                             @endif
                             @if (isset($stuff[15]))
                             <img width=25 height=25 title="{{ $stuff[15]['title'] }}" src="{{ $stuff[15]['image'] }}" onclick='unwear(15)'>
                             @else
-                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" >
+                            <img width=25 height=25 title='Место для кольца'  src="https://www.fantasyland.ru/images/items/r_ring_none.gif" onclick="wear('5', 'd15')">
                             @endif
                         </td>
                         <td height=50>
                             @if (isset($stuff[4]))
                             <img width=50 height=50 title="{{ $stuff[4]['title'] }}" src="{{ $stuff[4]['image'] }}" onclick='unwear(4)'>
                             @else
-                            <img width=50 height=50 title='Место для щита'  src="https://www.fantasyland.ru/images/items/l_hand_none.gif" >
+                            <img width=50 height=50 title='Место для щита'  src="https://www.fantasyland.ru/images/items/l_hand_none.gif" onclick="wear('4', 'd14')">
                             @endif
                         </td>
                     </tr>
@@ -160,14 +160,14 @@
                             @if (isset($stuff[6]))
                             <img width=50 height=50 title="{{ $stuff[6]['title'] }}" src="{{ $stuff[6]['image'] }}" onclick='unwear(6)'>
                             @else
-                            <img width=50 height=50 title='Место для перчаток'  src="https://www.fantasyland.ru/images/items/l_ring_none.gif" >
+                            <img width=50 height=50 title='Место для перчаток'  src="https://www.fantasyland.ru/images/items/l_ring_none.gif" onclick="wear('6', 'd16')">
                             @endif
                         </td>
                         <td height=50 width=50>
                             @if (isset($stuff[8]))
                             <img width=50 height=50 title="{{ $stuff[8]['title'] }}" src="{{ $stuff[8]['image'] }}" onclick='unwear(8)'>
                             @else
-                            <img width=50 height=50 title='Место для обуви'  src="https://www.fantasyland.ru/images/items/feet_none.gif" >
+                            <img width=50 height=50 title='Место для обуви'  src="https://www.fantasyland.ru/images/items/feet_none.gif" onclick="wear('8', 'd18')">
                             @endif
                         </td>
                     </tr>
@@ -176,42 +176,42 @@
                             @if (isset($stuff[30]))
                             <img hspace=2 src="{{ $stuff[30]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[30]['title'] }}" onclick='unwear(30)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[31]))
                             <img hspace=2 src="{{ $stuff[31]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[31]['title'] }}" onclick='unwear(31)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[32]))
                             <img hspace=2 src="{{ $stuff[32]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[32]['title'] }}" onclick='unwear(32)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[33]))
                             <img hspace=2 src="{{ $stuff[33]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[33]['title'] }}" onclick='unwear(33)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[34]))
                             <img hspace=2 src="{{ $stuff[34]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[34]['title'] }}" onclick='unwear(34)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[35]))
                             <img hspace=2 src="{{ $stuff[35]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[35]['title'] }}" onclick='unwear(35)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[36]))
                             <img hspace=2 src="{{ $stuff[36]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[36]['title'] }}" onclick='unwear(36)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                             @if (isset($stuff[37]))
                             <img hspace=2 src="{{ $stuff[37]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[37]['title'] }}" onclick='unwear(37)'>
                             @else
-                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка'>
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
                             @endif
                         </td>
                     </tr>
