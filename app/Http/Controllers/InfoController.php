@@ -26,7 +26,7 @@ class InfoController extends Controller
     }
 
     public function index() {
-        $html = $this->curl->boot($this->url . '/cgi/show_info.php');
+        $html = $this->get('cgi/show_info.php', []);
         return view('info', $this->parser->options($html));
     }
 
@@ -39,19 +39,19 @@ class InfoController extends Controller
             $opt . '.x' => rand(1, 10),
             $opt . '.y' => rand(1, 10),
         ];
-        $html = $this->curl->boot($this->url . 'cgi/change_info.php', $post);
+        $html = $this->post('cgi/change_info.php', [], $post);
         switch ($opt) {
             case self::TYPE_STUFF:
-                $html .= $this->curl->boot($this->url . 'cgi/set_load.php');
-                $html .= $this->curl->boot($this->url . 'cgi/scrolls_set_load.php');
+                $html .= $this->get('cgi/set_load.php', []);
+                $html .= $this->get('cgi/scrolls_set_load.php', []);
                 return view('info_stuff', $this->parser->getStuff($html));
             case self::TYPE_INFO:
                 return view('info_info', $this->parser->getInfo($html));
             case self::TYPE_ARMY:
                 return view('info_army', $this->parser->getArmy($html));
             case self::TYPE_DIARY:
-                $html .= $this->curl->boot($this->url . 'cgi/e_show_letters.php');
-                $html .= $this->curl->boot($this->url . 'cgi/pl_notebook.php');
+                $html .= $this->get('cgi/e_show_letters.php', []);
+                $html .= $this->get('cgi/pl_notebook.php', []);
                 return view('info_diary', $this->parser->getDiary($html));
             case self::TYPE_EFFECTS:
                 return view('info_effects', $this->parser->getEffects($html));
@@ -65,81 +65,68 @@ class InfoController extends Controller
     }
 
     public function mailIncome() {
-        $data = request()->input();
-        $html = $this->curl->boot($this->url . 'cgi/msgs_read.php?' . http_build_query($data));
+        $html = $this->get('cgi/msgs_read.php');
         return view('info_diary_mail', $this->parser->getMessage($html));
     }
 
     public function mailOutcome() {
-        $data = request()->input();
-        $html = $this->curl->boot($this->url . 'cgi/letters_read.php?' . http_build_query($data));
+        $html = $this->get('cgi/letters_read.php');
         return view('info_diary_mail', $this->parser->getMessage($html));
     }
 
     public function mail() {
         $data = request()->input();
-        $post = request()->post();
-        $html = $this->curl->boot($this->url . 'cgi/send_letter.php?' . http_build_query($data), $post);
+        $html = $this->post('cgi/send_letter.php', $data);
         return view('mail', ['id' => 2956, 'name' => '', ...$this->parser->getMailForm($html), ...$data]);
     }
 
     public function deleteMessage() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/msgs_del.php?' . http_build_query($data));
+        $this->get('cgi/msgs_del.php');
         return $this->indexPost([self::OPTION => self::TYPE_DIARY]);
     }
 
     public function notePost() {
-        $post = request()->post();
-        $this->curl->boot($this->url . 'cgi/pl_notebook.php', $post);
+        $this->post('cgi/pl_notebook.php', []);
         return $this->indexPost([self::OPTION => self::TYPE_DIARY]);
     }
 
     public function armySelection() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/army_needcombat_ref.php?' . http_build_query($data));
+        $this->get('cgi/army_needcombat_ref.php');
         return view('empty', ['data' => '']);
     }
 
     public function unwear() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/inv_unwear.php?' . http_build_query($data));
+        $this->get('cgi/inv_unwear.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function wear() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/inv_wear.php?' . http_build_query($data));
+        $this->get('cgi/inv_wear.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function setWear() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/set_wear.php?' . http_build_query($data));
+        $this->get('cgi/set_wear.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function setSave() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/set_save.php?' . http_build_query($data));
+        $this->get('cgi/set_save.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function scrollsSetSave() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/scrolls_set_save.php?' . http_build_query($data));
+        $this->get('cgi/scrolls_set_save.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function scrollsSetWear() {
-        $data = request()->input();
-        $this->curl->boot($this->url . 'cgi/scrolls_set_wear.php?' . http_build_query($data));
+        $this->get('cgi/scrolls_set_wear.php');
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
     public function loadItems() {
-        $data = request()->input();
-        $html = $this->curl->boot($this->url . 'cgi/inv_load_items.php?' . http_build_query($data));
+        $html = $this->get('cgi/inv_load_items.php');
         return view('info_stuff_items', $this->parser->getStuffItems($html));
     }
 }

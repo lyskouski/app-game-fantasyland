@@ -12,7 +12,7 @@ class PreyController extends MainController
 {
     public function stop() {
         $data = request()->all();
-        $html = $this->curl->boot($this->url . 'cgi/work_stop.php?' . http_build_query($data));
+        $html = $this->get('cgi/work_stop.php', $data);
         $loc = new LocationParser();
         if (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
@@ -29,8 +29,7 @@ class PreyController extends MainController
     }
 
     public function run() {
-        $post = request()->post();
-        $html = $this->curl->boot($this->url . 'cgi/work_start.php', $post);
+        $html = $this->post('cgi/work_start.php', []);
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
             ...(new PreyParser)->parse($html, $this->captcha(time()))
@@ -38,7 +37,7 @@ class PreyController extends MainController
     }
 
     public function start() {
-        $html = $this->curl->boot($this->url . 'cgi/work_start.php');
+        $html = $this->get('cgi/work_start.php', []);
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
             ...(new PreyParser)->parse($html, $this->captcha(time()))
@@ -47,8 +46,8 @@ class PreyController extends MainController
 
     public function favorite() {
         $data = request()->all();
-        $this->curl->boot($this->url . 'cgi/craft_favorite_ref.php?' . http_build_query($data));
-        $html = $this->curl->boot($this->url . 'cgi/no_combat.php');
+        $this->get('cgi/craft_favorite_ref.php', $data);
+        $html = $this->get('cgi/no_combat.php', []);
         return view('craft_stop', [
             ...(new LocationParser)->onPlace($html),
             ...(new CraftParser)->parse($html),

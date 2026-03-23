@@ -11,24 +11,23 @@ abstract class Controller
 {
     protected AppProxyProvider $curl;
 
-    public string $url = Defines::URL;
-
     public function __construct()
     {
         $this->curl = new AppProxyProvider();
     }
 
     public function generic(string $url, ?array $post = null) {
-        $data = $this->curl->boot($this->url . $url, $post);
-        $data = str_replace('src="../', 'src="' . $this->url, $data);
-        $data = str_replace('SRC="../', 'src="' . $this->url, $data);
-        $data = str_replace('src=../', 'src=' . $this->url, $data);
-        $data = str_replace('src="/', 'src="' . $this->url, $data);
-        $data = str_replace('src=/', 'src=' . $this->url, $data);
-        $data = str_replace('src="images/', 'src="' . $this->url . 'images/', $data);
-        $data = str_replace("BACKGROUND='../", "background='" . $this->url, $data);
-        $data = str_replace('BACKGROUND="../', 'background="' . $this->url, $data);
-        $data = str_replace('background="../', 'background="' . $this->url, $data);
+        $addr = Defines::URL;
+        $data = $this->curl->boot($addr . $url, $post);
+        $data = str_replace('src="../', 'src="' . $addr, $data);
+        $data = str_replace('SRC="../', 'src="' . $addr, $data);
+        $data = str_replace('src=../', 'src=' . $addr, $data);
+        $data = str_replace('src="/', 'src="' . $addr, $data);
+        $data = str_replace('src=/', 'src=' . $addr, $data);
+        $data = str_replace('src="images/', 'src="' . $addr . 'images/', $data);
+        $data = str_replace("BACKGROUND='../", "background='" . $addr, $data);
+        $data = str_replace('BACKGROUND="../', 'background="' . $addr, $data);
+        $data = str_replace('background="../', 'background="' . $addr, $data);
         $data = str_replace('target="_BLANK"', '', $data);
         $data = str_replace("window.open('help','_blank','scrollbars=yes,width=900,height=560,resizable=yes')", "document.location.href='/help/enc.php?type=menu'", $data);
         return view('generic', ['data' => $data]);
@@ -36,7 +35,18 @@ abstract class Controller
 
     public function captcha(?string $t) {
         $t = $t ?? random_int(0, 1000000);
-        $html = $this->curl->boot($this->url . 'cgi/png.php?c=' . $t, null, false);
+        $html = $this->curl->boot(Defines::URL . 'cgi/png.php?c=' . $t, null, false);
         return 'data:image/png;base64,' . base64_encode($html);
+    }
+
+    public function get(string $url, ?array $get = null) {
+        return $this->post($url, $get, []);
+    }
+
+    public function post(string $url, ?array $get = null, ?array $post = null) {
+        $get = $get ?? request()->input();
+        $query = !empty($get) ? '?' . http_build_query($get) : '';
+        $post = $post ?? request()->post();
+        return $this->curl->boot(Defines::URL . $url . $query, $post);
     }
 }

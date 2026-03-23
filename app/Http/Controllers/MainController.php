@@ -11,8 +11,7 @@ use App\Services\PreyParser;
 class MainController extends Controller
 {
     public function index() {
-        $post = request()->post();
-        $html = $this->curl->boot($this->url . 'cgi/no_combat.php', $post);
+        $html = $this->post('cgi/no_combat.php', []);
         $loc = new LocationParser();
         $prey = new PreyParser();
         if (strpos($html, 'work_stop.php') !== false) {
@@ -48,15 +47,15 @@ class MainController extends Controller
     public function map() {
         $post = request()->post();
         if (!empty($post)) {
-            $html = $this->curl->boot($this->url . 'cgi/travel_start.php', $post);
+            $html = $this->post('cgi/travel_start.php', [], $post);
         } else {
-            $html = $this->curl->boot($this->url . 'cgi/map.php');
+            $html = $this->get('cgi/map.php', []);
         }
         return view('main_map', (new LocationParser)->onMap($html));
     }
 
     public function mapStop() {
-        $this->curl->boot($this->url . 'cgi/travel_stop.php');
+        $this->get('cgi/travel_stop.php', []);
         return $this->index();
     }
 }

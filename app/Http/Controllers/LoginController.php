@@ -5,12 +5,13 @@
 namespace App\Http\Controllers;
 
 use App\Services\SecureStorage;
+use App\Settings\Defines;
 
 class LoginController extends Controller
 {
     private function getTimestamp(): ?string
     {
-        $html = $this->curl->boot($this->url);
+        $html = $this->get('', []);
         preg_match('/guestlogin\.php\?t=([a-z0-9]+)/i', $html, $matches);
         return $matches[1] ?? null;
     }
@@ -25,7 +26,7 @@ class LoginController extends Controller
 
     public function login() {
         $data = request()->only(['login', 'password']);
-        $loginResult = $this->curl->boot($this->url . 'login.php', $data);
+        $loginResult = $this->post('login.php', [], $data);
         if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $loginResult, $matches)) {
             $match = $matches[1];
             return view('login', [
@@ -35,7 +36,7 @@ class LoginController extends Controller
                 'password' => '',
             ]);
         }
-        $this->curl->boot($this->url . 'ch/chch.php');
+        $this->get('ch/chch.php', []);
         $opt = request()->only(['save']);
         if (isset($opt['save']) && $opt['save']) {
             SecureStorage::set('login', $data['login']);
@@ -46,8 +47,8 @@ class LoginController extends Controller
 
     public function guestLogin() {
         $data = request()->only(['t']);
-        $this->curl->boot($this->url . 'guestlogin.php?t=' . $data['t']);
-        $this->curl->boot($this->url . 'ch/chch.php');
+        $this->get('guestlogin.php', $data);
+        $this->get('ch/chch.php', []);
         return view('home');
     }
 
@@ -58,7 +59,7 @@ class LoginController extends Controller
     public function register() {
         $data = request()->post();
         $data['t'] = $this->getTimestamp();
-        $registerResult = $this->curl->boot($this->url . 'cgi/register.php?' . http_build_query($data));
+        $registerResult = $this->get('cgi/register.php', $data);
         if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
             return view('registry', ['error' => $registerResult]);
         }
@@ -66,9 +67,9 @@ class LoginController extends Controller
     }
 
     public function rules() {
-        $html = $this->curl->boot($this->url . 'rules.php');
-        $html = str_replace('BACKGROUND="images', 'BACKGROUND="' . $this->url . 'images', $html);
-        $html = str_replace('SRC="images', 'SRC="' . $this->url . 'images', $html);
+        $html = $this->get('rules.php', []);
+        $html = str_replace('BACKGROUND="images', 'BACKGROUND="' . Defines::URL . 'images', $html);
+        $html = str_replace('SRC="images', 'SRC="' . Defines::URL . 'images', $html);
         return view('generic', ['data' => $html]);
     }
 }
