@@ -18,7 +18,7 @@ abstract class Controller
         $this->curl = new AppProxyProvider();
     }
 
-    public function get(string $url, ?array $post = null) {
+    public function generic(string $url, ?array $post = null) {
         $data = $this->curl->boot($this->url . $url, $post);
         $data = str_replace('src="../', 'src="' . $this->url, $data);
         $data = str_replace('SRC="../', 'src="' . $this->url, $data);
