@@ -8,12 +8,12 @@ class GenericController extends Controller
 {
     public function index($url) {
         $data = request()->all();
-        return $this->generic($url . '?' . http_build_query($data));
+        return $this->generic($url, $data);
     }
 
     public function indexPost($url) {
         $data = request()->input();
         $post = request()->post();
-        return $this->generic($url . '?' . http_build_query($data), $post);
+        return $this->generic($url, $data, $post);
     }
 }

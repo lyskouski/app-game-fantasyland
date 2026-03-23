@@ -60,7 +60,7 @@ class InfoController extends Controller
             case self::TYPE_RATINGS:
                 return view('info_ratings', $this->parser->getRatings($html));
             default:
-                return $this->generic('cgi/change_info.php', $post);
+                return $this->generic('cgi/change_info.php', [], $post);
         }
     }
 

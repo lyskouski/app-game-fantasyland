@@ -16,9 +16,9 @@ abstract class Controller
         $this->curl = new AppProxyProvider();
     }
 
-    public function generic(string $url, ?array $post = null) {
+    public function generic(string $url, ?array $get = null, ?array $post = null) {
         $addr = Defines::URL;
-        $data = $this->curl->boot($addr . $url, $post);
+        $data = $this->curl->boot($addr . $url, $get, $post);
         $data = str_replace('src="../', 'src="' . $addr, $data);
         $data = str_replace('SRC="../', 'src="' . $addr, $data);
         $data = str_replace('src=../', 'src=' . $addr, $data);
@@ -35,7 +35,7 @@ abstract class Controller
 
     public function captcha(?string $t) {
         $t = $t ?? random_int(0, 1000000);
-        $html = $this->curl->boot(Defines::URL . 'cgi/png.php?c=' . $t, null, false);
+        $html = $this->curl->boot(Defines::URL . 'cgi/png.php', ['c' => $t], null, false);
         return 'data:image/png;base64,' . base64_encode($html);
     }
 
@@ -45,8 +45,7 @@ abstract class Controller
 
     public function post(string $url, ?array $get = null, ?array $post = null) {
         $get = $get ?? request()->input();
-        $query = !empty($get) ? '?' . http_build_query($get) : '';
         $post = $post ?? request()->post();
-        return $this->curl->boot(Defines::URL . $url . $query, $post);
+        return $this->curl->boot(Defines::URL . $url, $get, $post);
     }
 }
