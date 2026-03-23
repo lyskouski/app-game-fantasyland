@@ -101,7 +101,7 @@
                 @if (isset($timer) && $timer > 0)
                 <br />
                 <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}">-- : --</strong></p>
-                <script src="/js/timer.js"></script>
+                <script type="text/javascript" src="/js/timer.js"></script>
                 <script>
                     const timerElement = document.getElementById('timer');
                     let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
