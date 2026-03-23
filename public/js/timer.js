@@ -20,4 +20,4 @@ window.getTime = function (a) {
         res = m + ":" + ( ( s < 10 ) ? "0" : "" ) + s;
     }
     return res;
-};
+}
