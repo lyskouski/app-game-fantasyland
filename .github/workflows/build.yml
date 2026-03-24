@@ -122,6 +122,60 @@ jobs:
           cp "$APK_PATH" "$GITHUB_WORKSPACE/fantasyland_Android.aab"
 
 # iOS
+      - name: Setup Xcode (iOS/macOS)
+        if: matrix.target == 'iOS' || matrix.target == 'macOS'
+        run: |
+          # List available Xcode versions
+          echo "Available Xcode versions:"
+          ls -la /Applications/ | grep -i xcode
+          # Try to use Xcode 26+ first (prioritize newest)
+          if [ -d "/Applications/Xcode_26.3.app" ]; then
+            echo "Using Xcode 26.3"
+            sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
+          elif [ -d "/Applications/Xcode_26.2.app" ]; then
+            echo "Using Xcode 26.2"
+            sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+          elif [ -d "/Applications/Xcode_26.1.1.app" ]; then
+            echo "Using Xcode 26.1.1"
+            sudo xcode-select -s /Applications/Xcode_26.1.1.app/Contents/Developer
+          elif [ -d "/Applications/Xcode_26.0.1.app" ]; then
+            echo "Using Xcode 26.0.1"
+            sudo xcode-select -s /Applications/Xcode_26.0.1.app/Contents/Developer
+          elif [ -d "/Applications/Xcode_26.0.app" ]; then
+            echo "Using Xcode 26.0"
+            sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer
+          else
+            echo "Warning: No Xcode 26+ found, using default"
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          fi
+
+          # Show current Xcode version
+          echo "Selected Xcode version:"
+          xcrun xcodebuild -version
+
+      - name: Setup iOS Platform
+        if: matrix.target == 'iOS'
+        run: |
+          # Show available SDKs
+          echo "Available SDKs:"
+          xcrun xcodebuild -showsdks
+
+          # Try to install latest iOS platform
+          xcodebuild -downloadAllPlatforms || echo "Platform download failed, continuing with available platforms"
+
+          # Show iOS SDKs specifically
+          echo "iOS SDKs:"
+          xcrun xcodebuild -showsdks | grep -i ios
+
+          # Check if iOS 26+ SDK is available
+          if xcrun xcodebuild -showsdks | grep -q "iphoneos2[6-9]\|iphoneos[3-9][0-9]"; then
+            echo "✅ iOS 26+ SDK found"
+          else
+            echo "❌ Warning: iOS 26+ SDK not found, build will use available SDK"
+            echo "Available iOS SDKs:"
+            xcrun xcodebuild -showsdks | grep iphoneos
+          fi
+
       - name: Setup iOS signing credentials
         if: matrix.target == 'iOS'
         env:
