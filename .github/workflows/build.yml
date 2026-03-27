@@ -97,6 +97,12 @@ jobs:
         run: |
           echo "sdk.dir=$HOME/android-sdk" > nativephp/android/local.properties
 
+      - name: Apply screen always-on patch
+        if: matrix.target == 'Android'
+        run: |
+          chmod +x ./_patches/apply_screen_patch.sh
+          ./_patches/apply_screen_patch.sh
+
       - name: Create Android build
         if: matrix.target == 'Android'
         env:
