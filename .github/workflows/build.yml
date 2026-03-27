@@ -206,6 +206,26 @@ jobs:
           TEAM_ID: 8PVKPQ758L
           CI: true
         run: |
+          # Generate iOS project structure first
+          echo "Generating iOS project structure..."
+          php artisan native:package ios --no-build \
+          --export-method=app-store \
+          --api-key-path="$API_KEY_PATH" \
+          --api-key-id="$API_KEY_ID" \
+          --api-issuer-id="$API_ISSUER_ID" \
+          --certificate-path="$CERTIFICATE_PATH" \
+          --certificate-password="$CERTIFICATE_PASSWORD" \
+          --provisioning-profile-path="$PROVISIONING_PROFILE_PATH" \
+          --team-id="$TEAM_ID" \
+          --no-tty
+
+          # Apply screen always-on patch
+          echo "Applying iOS screen always-on patch..."
+          chmod +x ./_patches/apply_ios_screen_patch.sh
+          ./_patches/apply_ios_screen_patch.sh
+
+          # Build and package the app
+          echo "Building and packaging iOS app..."
           php artisan native:package ios \
           --export-method=app-store \
           --api-key-path="$API_KEY_PATH" \
