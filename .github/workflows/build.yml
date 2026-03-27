@@ -224,7 +224,7 @@ jobs:
 
           # Wait for iOS project structure to be generated and apply patch
           echo "Monitoring for iOS project structure generation..."
-          for i in {1..300}; do
+          for i in {1..900}; do
             if [ -f "nativephp/ios/App/App/AppDelegate.swift" ]; then
               echo "iOS project structure found! Applying screen always-on patch..."
               chmod +x ./_patches/apply_ios_screen_patch.sh
