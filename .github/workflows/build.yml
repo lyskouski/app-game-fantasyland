@@ -206,24 +206,6 @@ jobs:
           TEAM_ID: 8PVKPQ758L
           CI: true
         run: |
-          # Generate iOS project structure first
-          echo "Generating iOS project structure..."
-          php artisan native:package ios --no-build \
-          --export-method=app-store \
-          --api-key-path="$API_KEY_PATH" \
-          --api-key-id="$API_KEY_ID" \
-          --api-issuer-id="$API_ISSUER_ID" \
-          --certificate-path="$CERTIFICATE_PATH" \
-          --certificate-password="$CERTIFICATE_PASSWORD" \
-          --provisioning-profile-path="$PROVISIONING_PROFILE_PATH" \
-          --team-id="$TEAM_ID" \
-          --no-tty
-
-          # Apply screen always-on patch
-          echo "Applying iOS screen always-on patch..."
-          chmod +x ./_patches/apply_ios_screen_patch.sh
-          ./_patches/apply_ios_screen_patch.sh
-
           # Build and package the app
           echo "Building and packaging iOS app..."
           php artisan native:package ios \
@@ -236,7 +218,24 @@ jobs:
           --provisioning-profile-path="$PROVISIONING_PROFILE_PATH" \
           --team-id="$TEAM_ID" \
           --upload-to-app-store \
-          --no-tty
+          --no-tty &
+
+          BUILD_PID=$!
+
+          # Wait for iOS project structure to be generated and apply patch
+          echo "Monitoring for iOS project structure generation..."
+          for i in {1..300}; do
+            if [ -f "nativephp/ios/App/App/AppDelegate.swift" ]; then
+              echo "iOS project structure found! Applying screen always-on patch..."
+              chmod +x ./_patches/apply_ios_screen_patch.sh
+              ./_patches/apply_ios_screen_patch.sh
+              break
+            fi
+            sleep 1
+          done
+
+          echo "Waiting for iOS build to complete..."
+          wait $BUILD_PID
 
       - name: Locate and copy IPA file to workspace
         if: matrix.target == 'iOS'
