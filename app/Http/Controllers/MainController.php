@@ -30,6 +30,8 @@ class MainController extends Controller
                 ...$loc->onPlace($html),
                 ...$prey->parse($html, $this->captcha(time()))
             ]);
+        } elseif (strpos($html, '/cgi/maze_move.php') !== false) {
+            return view('labyrinth', []);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
         } elseif (
