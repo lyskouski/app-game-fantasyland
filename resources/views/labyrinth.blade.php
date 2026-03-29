@@ -52,7 +52,7 @@
                         <td valign="top" class="cell_title">
                             <small>
                                 &nbsp;
-                                <b id="position">L-{{ $lvl }} ({{ $x }}, {{ $y }})</b>
+                                <b id="position" style="color:white">L-{{ $lvl }} ({{ $x }}, {{ $y }})</b>
                                 - бодрость: <span id="stamina">{{ $stamina }}</span>%
                                 &nbsp;
                             </small>
@@ -84,6 +84,9 @@
                     </table>
                 </center>
                 <hr />
+                <div id="items"></div>
+                <div id="quest"></div>
+                <div id="fight"></div>
             </div>
         </div>
         <br />

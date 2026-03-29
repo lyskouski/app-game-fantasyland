@@ -72,4 +72,50 @@ class LabParser
         }
         return $result;
     }
+
+    public function getQuest($html) {
+        $result = [
+            'title' => '',
+            'description' => '',
+            'actions' => [],
+        ];
+        if (preg_match('/parent\.mc\.f1\([^)]*\)\.innerHTML\s*=\s*"([^"]*)"/', $html, $matches)) {
+            $result['title'] = $matches[1];
+        }
+        if (preg_match('/parent\.mc\.op\s*\(\s*"([^"]*)"/', $html, $matches)) {
+            $result['description'] = $matches[1];
+        }
+        if (preg_match_all('/parent\.mc\.msi\s*\(\s*"[^"]*"\s*,\s*"([^"]*)"\s*,/', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                if (!empty($result['description'])) {
+                    $result['description'] .= '<br />' . $match[1];
+                } else {
+                    $result['description'] = $match[1];
+                }
+            }
+        }
+        $pattern = '/parent\.mc\.re\s*\(\s*"([^"]*)"\s*,\s*(\d+)\s*,\s*"([^"]*)"\s*\)/';
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $result['actions'][] = [
+                    'text' => $match[1],
+                    'id' => (int)$match[2],
+                    'extra' => $match[3],
+                    'option' => '',
+                ];
+            }
+        }
+        $pattern = "/<A\s+HREF\s*=\s*'javascript:\s*([^(]*)\(\);?'[^>]*>([^<]*)<\/A>/i";
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $result['actions'][] = [
+                    'text' => $match[2],
+                    'id' => '-1',
+                    'extra' => '',
+                    'option' => trim($match[1]),
+                ];
+            }
+        }
+        return $result;
+    }
 }

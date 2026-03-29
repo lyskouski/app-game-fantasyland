@@ -4,6 +4,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LabParser;
+
 class LabController extends Controller
 {
     public function move() {
@@ -18,5 +20,25 @@ class LabController extends Controller
             $content .= $matches[1];
         }
         return view('empty', ['data' => $content]);
+    }
+
+    public function questAction() {
+        $activate = $this->get('cgi/maze_qaction.php');
+        if (strpos($activate, "location.href='no_combat.php'") !== false) {
+            //$this->get('/cgi/no_combat.php', []);
+            //$this->get('/cgi/mc_main.php', []);
+            $html = $this->get('/cgi/mc_hid.php', []);
+
+            return view('labyrinth_quest', (new LabParser)->getQuest($html));
+        }
+        return view('empty', ['data' => $activate]);
+    }
+
+    public function questReply() {
+        $html = $this->post('/cgi/mc_hid.php');
+        if (strpos($html, 'location.href="no_combat.php"') !== false) {
+            return redirect('/cgi/no_combat.php');
+        }
+        return view('labyrinth_quest', (new LabParser)->getQuest($html));
     }
 }

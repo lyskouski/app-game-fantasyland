@@ -78,6 +78,8 @@ Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear'
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
 Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
+Route::get('/cgi/maze_qaction.php', [LabController::class, 'questAction']);
+Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
