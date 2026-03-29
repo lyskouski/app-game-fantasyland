@@ -73,6 +73,7 @@
                         </tr>
                     </table>
                 </center>
+                <hr />
             </div>
         </div>
         <br />
@@ -94,7 +95,29 @@
                 <br />
             </div>
             <div class="main_middle">
-                ... свитки ...
+                @foreach($scrolls['items'] as $i => $item)
+                <table class="{{ $i % 2 == 0 ? 'light' : '' }}" width="100%" colspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="width: 80px" valign="top">
+                            <strong class="main_middle__count">{{ $item['count'] }}</strong>
+                            <img src="{{ $item['image'] }}" width="70" height="70" />
+                        </td>
+                        <td valign="top">
+                            @if($item['wearable'])
+                            <form method="GET" action="/cgi/inv_wear.php">
+                                <input type="hidden" name="id" value="{{ $item['id'] }}" />
+                                <input style="position:relative;float:right;" type="submit" value="Применить" />
+                            </form>
+                            @endif
+                            <small>
+                                <strong>{!! $item['name'] !!}</strong><br />
+                                {!! $item['lvl'] !!}<br />
+                            </small>
+                            <small class="tiny">{!! $item['effects'] !!}</small>
+                        </td>
+                    </tr>
+                </table>
+                @endforeach
             </div>
         </div>
         <br />
@@ -116,7 +139,29 @@
                 <br />
             </div>
             <div class="main_middle">
-                ... зелья ...
+                @foreach($potions['items'] as $i => $item)
+                <table class="{{ $i % 2 == 0 ? 'light' : '' }}" width="100%" colspacing="0" cellpadding="0">
+                    <tr>
+                        <td style="width: 80px" valign="top">
+                            <strong class="main_middle__count">{{ $item['count'] }}</strong>
+                            <img src="{{ $item['image'] }}" width="70" height="70" />
+                        </td>
+                        <td valign="top">
+                            @if($item['wearable'])
+                            <form method="GET" action="/cgi/inv_wear.php">
+                                <input type="hidden" name="id" value="{{ $item['id'] }}" />
+                                <input style="position:relative;float:right;" type="submit" value="Применить" />
+                            </form>
+                            @endif
+                            <small>
+                                <strong>{!! $item['name'] !!}</strong><br />
+                                {!! $item['lvl'] !!}<br />
+                            </small>
+                            <small class="tiny">{!! $item['effects'] !!}</small>
+                        </td>
+                    </tr>
+                </table>
+                @endforeach
             </div>
         </div>
         <br />
