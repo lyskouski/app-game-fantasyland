@@ -4,6 +4,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\InfoController;
+use App\Http\Controllers\LabController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PreyController;
@@ -75,6 +76,8 @@ Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear'
 
 // Labyrinth
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
+Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
+//Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

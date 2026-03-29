@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/index.css',
                 'resources/js/app.js',
                 'resources/js/forum.js',
+                'resources/js/labyrinth.js',
                 'resources/js/ping.js'
             ],
             refresh: true,

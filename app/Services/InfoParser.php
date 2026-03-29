@@ -446,7 +446,7 @@ class InfoParser
         return $scrolls;
     }
 
-    private function getPotions(string $html): array
+    public function getPotions(string $html): array
     {
         $potions = [];
         $tablePattern = "/<TABLE>.*?<TD>Зелья:<\/TD>(.*?)<\/TABLE>/s";
