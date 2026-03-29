@@ -5,6 +5,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CraftParser;
+use App\Services\LabParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
 
@@ -31,7 +32,10 @@ class MainController extends Controller
                 ...$prey->parse($html, $this->captcha(time()))
             ]);
         } elseif (strpos($html, '/cgi/maze_move.php') !== false) {
-            return view('labyrinth', []);
+            $parser = new LabParser();
+            $loc = $this->get('cgi/ch_who.php', []);
+            $state = $this->get('cgi/maze_ref.php', []);
+            return view('labyrinth', [...$parser->getLocation($loc), ...$parser->getState($state)]);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
         } elseif (
