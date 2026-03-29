@@ -104,7 +104,7 @@
                         </td>
                         <td valign="top">
                             @if($item['wearable'])
-                            <form method="GET" action="/cgi/inv_wear.php">
+                            <form method="GET" action="/cgi/inv_wear">
                                 <input type="hidden" name="id" value="{{ $item['id'] }}" />
                                 <input style="position:relative;float:right;" type="submit" value="Применить" />
                             </form>
@@ -148,7 +148,7 @@
                         </td>
                         <td valign="top">
                             @if($item['wearable'])
-                            <form method="GET" action="/cgi/inv_wear.php">
+                            <form method="GET" action="/cgi/inv_wear">
                                 <input type="hidden" name="id" value="{{ $item['id'] }}" />
                                 <input style="position:relative;float:right;" type="submit" value="Применить" />
                             </form>

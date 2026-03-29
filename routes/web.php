@@ -73,6 +73,9 @@ Route::get('/cgi/set_save.php', [InfoController::class, 'setSave']);
 Route::get('/cgi/scrolls_set_save.php', [InfoController::class, 'scrollsSetSave']);
 Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear']);
 
+// Labyrinth
+Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
+
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
 Route::post('/{any}', [GenericController::class, 'indexPost'])->where('any', '.*');

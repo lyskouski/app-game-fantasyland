@@ -73,4 +73,9 @@ class MainController extends Controller
         $this->get('cgi/travel_stop.php', []);
         return $this->index();
     }
+
+    public function wear() {
+        $this->get('cgi/inv_wear.php');
+        return $this->index();
+    }
 }
