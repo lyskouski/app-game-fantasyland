@@ -80,6 +80,7 @@ Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
 Route::get('/cgi/maze_qaction.php', [LabController::class, 'questAction']);
 Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
+Route::get('/cgi/technical_lab_info.php', [LabController::class, 'technicalInfo']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

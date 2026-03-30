@@ -4,19 +4,28 @@
 
 namespace App\Services;
 
+use App\Settings\Defines;
+
 class LabParser
 {
     public function getLocation($data) {
         $result = [
             'place' => null,
-            'location' => null,
+            'loc' => null,
         ];
         if (preg_match('/var\s+curPlace\s*=\s*(\d+)/', $data, $matches)) {
             $result['place'] = (int)$matches[1];
         }
         if (preg_match('/var\s+curLoc\s*=\s*(\d+)/', $data, $matches)) {
-            $result['location'] = (int)$matches[1];
+            $result['loc'] = (int)$matches[1];
         }
+        $result['location'] = Defines::LAB[$result['place']][$result['loc']] ?? [
+            'title' => 'Неизвестный Лабиринт',
+            'id' => 0,
+            'x' => 200,
+            'y' => 200,
+            'z' => 12,
+        ];
         return $result;
     }
 

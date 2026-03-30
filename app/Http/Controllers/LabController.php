@@ -41,4 +41,9 @@ class LabController extends Controller
         }
         return view('labyrinth_quest', (new LabParser)->getQuest($html));
     }
+
+    public function technicalInfo() {
+        $html = $this->get('/cgi/technical_lab_info.php');
+        return view('empty', ['data' => $html]);
+    }
 }

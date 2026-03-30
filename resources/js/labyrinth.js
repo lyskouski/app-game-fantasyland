@@ -7,6 +7,17 @@ window.goTo = function (lt) {
         .then(text => parse(text));
 }
 
+window.getSource = function() {
+    const id = ge('source').dataset.id;
+    fetch(`/cgi/technical_lab_info.php?maze_id=${id}`)
+        .then(response => response.text())
+        .then(text => {
+            const source = text.split(' ');
+            ge('source_drop').innerHTML = source[0];
+            ge('source_mob').innerHTML = source[1];
+        });
+}
+
 function ge(dir) {
     return document.getElementById(dir);
 }

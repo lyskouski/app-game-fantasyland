@@ -22,7 +22,20 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Карта&nbsp;</b></small>
+                            &nbsp;
+                            <small>
+                                <b id="location">{{ $location['title'] }}:</b>
+                                &nbsp;
+                                <span id="source" data-id="{{ $location['id'] }}" onclick="getSource()">
+                                    <img src="/images/lab/mob.gif" width="10" height="10" border="0" title="Мобы" />
+                                    <span id="source_mob">?</span>
+                                    &nbsp;
+                                    <img src="/images/lab/drop.gif" width="10" height="10" border="0" title="Дроп" />
+                                    <span id="source_drop">?</span>
+                                </span>
+                                <script>getSource();setInterval(getSource, 60000);</script>
+                            </small>
+                            &nbsp;
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
@@ -38,7 +51,7 @@
                 </div>
                 @endforeach
                 <div class="clear"></div>
-                ... карта лабиринта ...
+                ... карта лабиринта ... - {{ $location['x'] }} x {{ $location['y'] }} [{{ $location['z'] }}]
             </div>
         </div>
         <br />
