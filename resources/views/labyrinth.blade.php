@@ -33,7 +33,6 @@
                                     <img src="/images/lab/drop.gif" width="10" height="10" border="0" title="Дроп" />
                                     <span id="source_drop">?</span>
                                 </span>
-                                <script>getSource();setInterval(getSource, 60000);</script>
                             </small>
                             &nbsp;
                         </td>

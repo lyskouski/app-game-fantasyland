@@ -18,6 +18,9 @@ window.getSource = function() {
         });
 }
 
+document.addEventListener('DOMContentLoaded', window.getSource);
+setInterval(window.getSource, 60000);
+
 function ge(dir) {
     return document.getElementById(dir);
 }
