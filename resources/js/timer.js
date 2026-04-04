@@ -1,7 +1,9 @@
-window.getTime = function (a) {
-    h = Math.round( a / 3600 - 0.5 );
-    m = Math.round( ( a / 60 ) % 60 - 0.5 );
-    s = Math.round( a % 60 );
+window.getTimer = function (a) {
+    var h = Math.round( a / 3600 - 0.5 );
+    var m = Math.round( ( a / 60 ) % 60 - 0.5 );
+    var s = Math.round( a % 60 );
+    var d = '';
+    var res = '';
 
     if (s == 60) {
         ++ m;
@@ -23,18 +25,18 @@ window.getTime = function (a) {
 }
 
 window.startTimer = function() {
-    const timerElement = document.getElementById('timer');
-    let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
+    var timerElement = document.getElementById('timer');
+    var seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
     function updateTimer() {
         if (seconds > 0) {
             seconds--;
-            timerElement.textContent = window.getTime(seconds);
+            timerElement.innerHTML = window.getTimer(seconds);
         } else {
             clearInterval(timerInterval);
             timerElement.click();
         }
     }
-    const timerInterval = setInterval(updateTimer, 1000);
+    var timerInterval = setInterval(updateTimer, 1000);
 }
 
 document.addEventListener('DOMContentLoaded', window.startTimer);

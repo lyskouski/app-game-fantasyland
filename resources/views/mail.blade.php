@@ -64,7 +64,7 @@
                 <br /><br />
                 @if($timer)
                 <p>{{ $notification }}</p>
-                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="this.textContent = 'можно отправлять';">-- : --</strong></p>
+                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="this.innerHTML = 'можно отправлять';">-- : --</strong></p>
                 @endif
                 <form method="POST" action="/cgi/send_letter.php?id={{ $id }}">
                     @csrf

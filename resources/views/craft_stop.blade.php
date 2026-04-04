@@ -196,7 +196,7 @@
                     document.getElementById('receipt').style.display = 'block';
                     document.getElementById('receipt_item').innerHTML = item.innerHTML;
                     const receipt = item.getAttribute('data-receipt');
-                    document.getElementById('receipt_value').textContent = receipt;
+                    document.getElementById('receipt_value').innerHTML = receipt;
                     const time = item.getAttribute('data-time');
                     document.getElementById('receipt_time').value = time;
                     document.getElementById('receipt_id').value = item.getAttribute('data-id');
