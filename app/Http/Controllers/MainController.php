@@ -34,6 +34,8 @@ class MainController extends Controller
             ]);
         } elseif (strpos($html, '/cgi/maze_move.php') !== false) {
             return $this->lab();
+        } elseif (strpos($html, 'src="mc_main.php"') !== false) {
+            return redirect('/cgi/mc_main.php');
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
         } elseif (

@@ -43,6 +43,26 @@
                 </form>
                 <br />
                 @endforeach
+                @if($timer)
+                <div>
+                    Время ожидания: <strong id="timer" data-seconds="{{ $timer }}">-- : --</strong>
+                </div>
+                <script type="text/javascript" src="/js/timer.js"></script>
+                <script>
+                    const timerElement = document.getElementById('timer');
+                    let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
+                    function updateTimer() {
+                        if (seconds > 0) {
+                            seconds--;
+                            timerElement.textContent = window.getTime(seconds);
+                        } else {
+                            clearInterval(timerInterval);
+                            window.location = '/cgi/mc_hid.php';
+                        }
+                    }
+                    const timerInterval = setInterval(updateTimer, 1000);
+                </script>
+                @endif
             </div>
         </div>
         <br />

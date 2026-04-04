@@ -35,7 +35,6 @@ window.getSource = function() {
             ge('source_mob').innerHTML = source[1];
         });
 }
-
 document.addEventListener('DOMContentLoaded', window.getSource);
 setInterval(window.getSource, 60000);
 

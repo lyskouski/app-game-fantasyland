@@ -79,6 +79,7 @@ Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
 Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
 Route::get('/cgi/maze_qaction.php', [LabController::class, 'questAction']);
+Route::get('/cgi/mc_main.php', [LabController::class, 'questMain']);
 Route::get('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::get('/cgi/technical_lab_info.php', [LabController::class, 'technicalInfo']);

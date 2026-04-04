@@ -87,12 +87,18 @@ class LabParser
             'title' => '',
             'description' => '',
             'actions' => [],
+            'timer' => null,
         ];
         if (preg_match('/parent\.mc\.f1\([^)]*\)\.innerHTML\s*=\s*"([^"]*)"/', $html, $matches)) {
             $result['title'] = $matches[1];
+        } elseif (preg_match('/var\s+mn\s*=\s*"(.*?)"/', $html, $matches)) {
+            $result['title'] = strip_tags($matches[1]);
         }
         if (preg_match('/parent\.mc\.op\s*\(\s*"([^"]*)"/', $html, $matches)) {
             $result['description'] = $matches[1];
+        }
+        if (preg_match('/parent\.mc\.tm\s*=\s*(\d+)/', $html, $matches)) {
+            $result['timer'] = (int)$matches[1];
         }
         if (preg_match_all('/parent\.mc\.msi\s*\(\s*"[^"]*"\s*,\s*"([^"]*)"\s*,/', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
