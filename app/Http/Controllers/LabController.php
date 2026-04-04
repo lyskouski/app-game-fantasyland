@@ -4,10 +4,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\InfoParser;
 use App\Services\LabParser;
 
 class LabController extends Controller
 {
+    public function index() {
+        $parser = new LabParser();
+        $info = new InfoParser();
+        $loc = $this->get('cgi/ch_who.php', []);
+        $state = $this->get('cgi/maze_ref.php', []);
+        $scrolls = $this->get('cgi/inv_load_items.php', ['tp' => 26, 'dv' => 'd126', 'expand' => true]);
+        $potions = $this->get('cgi/inv_load_items.php', ['tp' => 25, 'dv' => 'd125', 'expand' => true]);
+        $post = [
+            '0.x' => rand(1, 10),
+            '0.y' => rand(1, 10),
+        ];
+        $html = $this->post('cgi/change_info.php', [], $post);
+        return view('labyrinth', [
+            ...$parser->getLocation($loc),
+            ...$parser->getState($state),
+            'scrolls' => $info->getStuffItems($scrolls),
+            'potions' => $info->getStuffItems($potions),
+            'active_potions' => $info->getPotions($html),
+            'captcha' => $this->captcha(time()),
+        ]);
+    }
+
     public function move() {
         $content = $this->get('cgi/maze_move.php');
         $content .= $this->get('cgi/maze_ref.php', []);
