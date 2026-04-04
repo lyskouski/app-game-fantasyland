@@ -27,8 +27,11 @@ class LabController extends Controller
 
     public function questMain() {
         $content = $this->get('cgi/mc_main.php');
-        $content .= $this->get('/cgi/mc_hid.php');
-        return view('labyrinth_quest', (new LabParser)->getQuest($content));
+        $hid = $this->get('/cgi/mc_hid.php');
+        if (strpos($content, "location.href='mc_hid.php'") !== false) {
+           $hid .= $this->get('/cgi/mc_hid.php');
+        }
+        return view('labyrinth_quest', (new LabParser)->getQuest($content . $hid));
     }
 
     public function questReply() {
