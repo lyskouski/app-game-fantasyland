@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css', 'resources/js/ping.js'])
+        @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
     </head>
     <body>
         <br />
@@ -56,24 +56,9 @@
             <div class="main_middle">
                 <div>{!! $data !!}</div>
                 <br />
-                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}">-- : --</strong></p>
+                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php';">-- : --</strong></p>
             </div>
         </div>
         <br />
-        <script type="text/javascript" src="/js/timer.js"></script>
-        <script>
-            const timerElement = document.getElementById('timer');
-            let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
-            function updateTimer() {
-                if (seconds > 0) {
-                    seconds--;
-                    timerElement.textContent = window.getTime(seconds);
-                } else {
-                    clearInterval(timerInterval);
-                    window.location = '/cgi/work_stop.php';
-                }
-            }
-            const timerInterval = setInterval(updateTimer, 1000);
-        </script>
     </body>
 </html>

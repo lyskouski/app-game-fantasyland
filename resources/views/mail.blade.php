@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css'])
+        @vite(['resources/css/index.css', 'resources/js/timer.js'])
     </head>
     <body>
         <br />
@@ -64,22 +64,7 @@
                 <br /><br />
                 @if($timer)
                 <p>{{ $notification }}</p>
-                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}">-- : --</strong></p>
-                <script type="text/javascript" src="/js/timer.js"></script>
-                <script>
-                    const timerElement = document.getElementById('timer');
-                    let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
-                    function updateTimer() {
-                        if (seconds > 0) {
-                            seconds--;
-                            timerElement.textContent = window.getTime(seconds);
-                        } else {
-                            clearInterval(timerInterval);
-                            document.getElementById('timer').textContent = 'можно отправлять';
-                        }
-                    }
-                    const timerInterval = setInterval(updateTimer, 1000);
-                </script>
+                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="this.textContent = 'можно отправлять';">-- : --</strong></p>
                 @endif
                 <form method="POST" action="/cgi/send_letter.php?id={{ $id }}">
                     @csrf

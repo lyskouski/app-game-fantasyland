@@ -21,3 +21,20 @@ window.getTime = function (a) {
     }
     return res;
 }
+
+window.startTimer = function() {
+    const timerElement = document.getElementById('timer');
+    let seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
+    function updateTimer() {
+        if (seconds > 0) {
+            seconds--;
+            timerElement.textContent = window.getTime(seconds);
+        } else {
+            clearInterval(timerInterval);
+            timerElement.click();
+        }
+    }
+    const timerInterval = setInterval(updateTimer, 1000);
+}
+
+document.addEventListener('DOMContentLoaded', window.startTimer);

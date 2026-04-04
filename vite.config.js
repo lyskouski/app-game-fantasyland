@@ -13,7 +13,8 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/forum.js',
                 'resources/js/labyrinth.js',
-                'resources/js/ping.js'
+                'resources/js/ping.js',
+                'resources/js/timer.js'
             ],
             refresh: true,
         }),
