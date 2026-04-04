@@ -7,6 +7,24 @@ window.goTo = function (lt) {
         .then(text => parse(text));
 }
 
+window.pickUp = function(id, add, qn) {
+  fetch('/cgi/maze_pickup.php?item_id='+id+'&moo='+add+'&qn='+qn)
+        .then(response => response.text())
+        .then(text => parse(text));
+}
+
+window.doQuestAction = function(id) {
+    fetch('/cgi/maze_qaction.php?id=' + id)
+        .then(response => response.text())
+        .then(text => {
+            if (text.includes("location.href='no_combat.php';")) {
+                window.location.href = '/cgi/mc_hid.php';
+            } else {
+                parse(text);
+            }
+        });
+}
+
 window.getSource = function() {
     const id = ge('source').dataset.id;
     fetch(`/cgi/technical_lab_info.php?maze_id=${id}`)
@@ -76,6 +94,30 @@ function parse(text) {
             ge('quest').innerHTML = questDescMatch[1];
         }
     }
+    // Pick up items
+    const pkuMatches = text.matchAll(/pku\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*'([^']*)'\s*\)/g);
+    let isFirst = true;
+    ge('items').innerHTML = '';
+    for (const match of pkuMatches) {
+        const item = {
+            id: parseInt(match[1], 10),
+            count: parseInt(match[2], 10),
+            name: match[3]
+        }
+        if (isFirst) {
+            ge('btn2').src = 'https://www.fantasyland.ru/images/miscellaneous/pick_up.gif';
+            ge('btn2').onclick = function() { fcs(2); pickUp(item.id, 0, item.count); };
+            ge('btn2').title = item.name;
+            isFirst = false;
+        }
+        const el = document.createElement('a');
+        el.onclick = function() { pickUp(item.id, 0, item.count) };
+        el.innerHTML = `(${item.count}) ${item.name}`;
+        ge('items').appendChild(el);
+        const space = document.createElement('span');
+        space.innerHTML = '&nbsp;';
+        ge('items').appendChild(space);
+    }
     // Message
     const messageMatch = text.match(/Syst\s*\(\s*'([^']*)'\s*\)/);
     if (messageMatch) {
@@ -88,9 +130,13 @@ function parse(text) {
     }
 }
 
+function fcs(id) {
+    ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
+}
+
 function a(id, str, num, img) {
     ge('btn' + id).src = 'https://www.fantasyland.ru/images/miscellaneous/' + img;
-    ge('btn' + id).onclick = function() { goTo(num) };
+    ge('btn' + id).onclick = function() { fcs(id); goTo(num); };
     ge('btn' + id).title = str;
 }
 
@@ -128,11 +174,7 @@ function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
 function ShowQuestAction(s, id, im, im_s) {
     if (s) {
         ge('btn6').src = 'https://www.fantasyland.ru/images/miscellaneous/' + im;
-        ge('btn6').onclick = function() { doQuestAction(id) };
+        ge('btn6').onclick = function() { fcs(6); doQuestAction(id) };
         ge('btn6').title = s;
     }
-}
-
-function doQuestAction(id) {
-    window.location.href = '/cgi/maze_qaction.php?id=' + id;
 }

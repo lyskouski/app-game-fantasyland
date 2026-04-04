@@ -9,7 +9,7 @@
 
 #message {
     position: fixed;
-    top: 10px;
+    top: 40px;
 }
 
 #message div {
@@ -24,6 +24,9 @@
 
 @keyframes fadeOut {
     0% {
+        opacity: 1;
+    }
+    50% {
         opacity: 1;
     }
     100% {

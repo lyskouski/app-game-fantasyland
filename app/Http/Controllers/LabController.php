@@ -14,16 +14,15 @@ class LabController extends Controller
         return view('empty', ['data' => $content]);
     }
 
-    public function questAction() {
-        $activate = $this->get('cgi/maze_qaction.php');
-        if (strpos($activate, "location.href='no_combat.php'") !== false) {
-            //$this->get('/cgi/no_combat.php', []);
-            //$this->get('/cgi/mc_main.php', []);
-            $html = $this->get('/cgi/mc_hid.php', []);
+    public function pickUp() {
+        $content = $this->get('cgi/maze_pickup.php');
+        $content .= $this->get('cgi/maze_ref.php', []);
+        return view('empty', ['data' => $content]);
+    }
 
-            return view('labyrinth_quest', (new LabParser)->getQuest($html));
-        }
-        return view('empty', ['data' => $activate]);
+    public function questAction() {
+        $content = $this->get('cgi/maze_qaction.php');
+        return view('empty', ['data' => $content]);
     }
 
     public function questReply() {
