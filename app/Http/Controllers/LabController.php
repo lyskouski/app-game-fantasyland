@@ -9,16 +9,8 @@ use App\Services\LabParser;
 class LabController extends Controller
 {
     public function move() {
-        $content = '';
-        $pattern = '/<script[^>]*>(.*?)<\/script>/is';
-        $move = $this->get('cgi/maze_move.php');
-        if (preg_match($pattern, $move, $matches)) {
-            $content .= $matches[1];
-        }
-        $html = $this->get('cgi/maze_ref.php', []);
-        if (preg_match($pattern, $html, $matches)) {
-            $content .= $matches[1];
-        }
+        $content = $this->get('cgi/maze_move.php');
+        $content .= $this->get('cgi/maze_ref.php', []);
         return view('empty', ['data' => $content]);
     }
 

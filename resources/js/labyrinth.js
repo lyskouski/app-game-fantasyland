@@ -27,7 +27,7 @@ function ge(dir) {
 
 function parse(text) {
     // Get out from labyrinth
-    if (text.includes("parent.no_combat.location.href='no_combat.php';")) {
+    if (text.includes("location.href='no_combat.php';") || text.includes('location.href="no_combat.php";')) {
         window.location.href = '/cgi/no_combat.php';
         return;
     }
@@ -75,6 +75,16 @@ function parse(text) {
         if (questDescMatch) {
             ge('quest').innerHTML = questDescMatch[1];
         }
+    }
+    // Message
+    const messageMatch = text.match(/Syst\s*\(\s*'([^']*)'\s*\)/);
+    if (messageMatch) {
+        const el = document.createElement('div');
+        el.innerHTML = messageMatch[1];
+        ge('message').appendChild(el);
+        setTimeout(() => {
+            ge('message').removeChild(el);
+        }, 5000);
     }
 }
 

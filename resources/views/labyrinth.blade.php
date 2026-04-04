@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css', 'resources/js/labyrinth.js'])
+        @vite(['resources/css/index.css', 'resources/css/labyrinth.css', 'resources/js/labyrinth.js'])
     </head>
     <body>
         <br />
@@ -45,12 +45,13 @@
             </div>
             <div class="main_middle">
                 @foreach($active_potions as $item)
-                <div class="main--dark tiny" style="float:left;color:white;margin: 0 6px 6px 0;padding: 2px 4px; border-radius:6px;box-shadow: inset -1px -1px 0 rgba(0,0,0,0.5), inset 1px 1px 0 rgba(0,0,0,0.5);">
+                <div class="main--dark tiny potions_item">
                     <img hspace=2 src="{{ $item['image'] }}" width='25' height='25' border='0' title="{{ $item['title'] }}"/>&nbsp;{{ $item['time'] }}
                 </div>
                 @endforeach
                 <div class="clear"></div>
                 ... карта лабиринта ... - {{ $location['x'] }} x {{ $location['y'] }} [{{ $location['z'] }}]
+                <div id="message"></div>
             </div>
         </div>
         <br />

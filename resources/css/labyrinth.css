@@ -1,0 +1,32 @@
+.potions_item {
+    float:left;
+    color:white;
+    margin: 0 6px 6px 0;
+    padding: 2px 4px;
+    border-radius: 6px;
+    box-shadow: inset -1px -1px 0 rgba(0,0,0,0.5), inset 1px 1px 0 rgba(0,0,0,0.5);
+}
+
+#message {
+    position: fixed;
+    top: 10px;
+}
+
+#message div {
+    background: rgba(0,0,0,0.5);
+    box-shadow: inset -1px -1px 0 rgba(255, 255, 255, 0.5), inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-size: 18px;
+    animation: fadeOut 5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

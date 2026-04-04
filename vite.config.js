@@ -8,6 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/craft.css',
+                'resources/css/labyrinth.css',
                 'resources/css/index.css',
                 'resources/js/app.js',
                 'resources/js/forum.js',
