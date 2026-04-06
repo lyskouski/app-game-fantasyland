@@ -33,3 +33,21 @@
         opacity: 0;
     }
 }
+
+#cimap {
+    display: block;
+    width: 100%;
+    height: 50vh;
+    box-shadow:inset -1px -1px 2px black, inset 1px 1px 2px black;border:1px solid #8c8e8d;
+}
+
+#return_focus {
+    display: none;
+    position: fixed;
+    cursor: pointer;
+    top: 32px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+    background: url(/images/lab/focus.jpg) no-repeat;
+}

@@ -6,6 +6,7 @@ window.goTo = function (lt) {
         .then(response => response.text())
         .then(text => parse(text));
 }
+document.addEventListener('DOMContentLoaded', () => window.goTo(0));
 
 window.pickUp = function(id, add, qn) {
   fetch('/cgi/maze_pickup.php?item_id='+id+'&moo='+add+'&qn='+qn)
@@ -165,6 +166,7 @@ function setStamina(x, max) {
 }
 
 function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
+    window.aCur = [z, x, y];
     ge('position').innerHTML = 'L-' + z + ' (' + x + ', ' + y + ')';
     ge('position').style.color = s ? 'white' : 'greenyellow';
     // TBD: traps on map
@@ -176,4 +178,474 @@ function ShowQuestAction(s, id, im, im_s) {
         ge('btn6').onclick = function() { fcs(6); doQuestAction(id) };
         ge('btn6').title = s;
     }
+}
+
+// ----------- Map -----------
+window.aCur = [0, 1, 1];
+window.aIniScrolling = [];
+window.aScrolling = [];
+window.bScrolling = false;
+window.aFocus = [];
+window.aMap = {};
+window.oCanvas = null;
+document.addEventListener('DOMContentLoaded', () => window.oCanvas = ge('cimap').getContext('2d'));
+window.aConfig = {
+    space: 20,
+    border: 4,
+    scroll: 10,
+    colors: {
+        black: '000000',
+        white: 'ffffff',
+        none: '373747',
+        wall_none: '333030',
+        wall: '828181',
+        fone: ['404040','4d4e4e','333232'],
+        type: {9: 'ff0000', 8: '5c7efd', 7: 'ffb881', 6: 'ffb881', 5: 'ffb881'},
+        doors: {
+            2: 'A10B0B',
+            3: '12A10B',
+            4: '0B55A1',
+            5: 'ffffff',
+            6: 'A16E0B',
+            7: 'F9B93E',
+            8: '3E65F9',
+            9: 'E1E1E2',
+            10: 'a9ac74',
+            11: 'f8aa48',
+            12: '14ff00'
+        },
+        trap: 'ff0000',
+        loc:  '9fa06b',
+        scroll:'9fa06b',
+        focus: 'eee285',
+        marker:'e5e285',
+        item: '66bb62'
+    }
+};
+
+window.canvasMouseMove = function(event) {
+    if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+    } else if (document.selection && document.selection.clear) {
+        document.selection.clear();
+    }
+    var iSizeSpace = window.aConfig.space,
+        aCoord = [Math.floor(event.layerX  / iSizeSpace), Math.floor(event.layerY  / iSizeSpace)];
+        aFocus = [aCoord[0]*iSizeSpace + iSizeSpace/2, aCoord[1]*iSizeSpace + iSizeSpace/2, aCoord[0], aCoord[1]];
+
+    if (window.bScrolling) {
+        if (window.aIniScrolling.length == 0) {
+            window.aIniScrolling = aCoord;
+        }
+        window.aScrolling = [aCoord[0] - window.aIniScrolling[0], aCoord[1] - window.aIniScrolling[1]];
+    }
+
+    if (typeof window.aFocus === 'undefined' || aFocus[0] != window.aFocus[0] || aFocus[1] != window.aFocus[1]) {
+        drawMap(null, aFocus);
+        window.aFocus = aFocus;
+    }
+}
+
+window.canvasMouseDown = function(event) {
+    if (!window.bScrolling) {
+        window.aIniScrolling = [];
+        var o = ge('return_focus');
+        o.style.display = 'block';
+        o.addEventListener('click', function() {
+            this.style.display = 'none';
+            window.aScrolling = [];
+            window.bScrolling = false;
+            drawMap();
+        });
+    }
+    window.bScrolling = true;
+}
+
+window.canvasMouseUp = function(event) {
+    window.bScrolling = false;
+}
+
+window.canvasMouseOut = function(event) {
+    drawMap();
+    window.bScrolling = false;
+}
+
+function draw(a) {
+    var o = window.oCanvas;
+    switch (a[0]) {
+        case 'txt':
+            if (typeof a[1][3] !== 'undefined' && a[1][3] !== '') {
+                o.font = a[1][3];
+            }
+            if (a[1][4]) {
+                o.textAlign = a[1][4];
+            }
+            o.fillText(a[1][0], a[1][1], a[1][2]);
+            break;
+        case 's':
+            o.strokeStyle = '#' + a[1];
+            break;
+        case 'f':
+            o.fillStyle = '#' + a[1];
+            break;
+        case 'w':
+            o.lineWidth = a[1];
+            break;
+        case 'b':
+            o.beginPath();
+            if (a[1][0]!='') o.moveTo(a[1][0], a[1][1]);
+            break;
+        case 'm':
+            o.moveTo(a[1][0], a[1][1]);
+            break;
+        case '' :
+            o.lineTo(a[1][0], a[1][1]);
+            break;
+        case 'i':
+            var sTempId = a[1][0].split('.').join('').split('/').join('').replace('http:', '');
+            var image = ge(sTempId);
+            if (!image) {
+                image = document.createElement('img');
+                image.src = a[1][0];
+                image.id = sTempId;
+                ge('cibuffer').appendChild(image);
+            }
+            o.drawImage(image, a[1][1], a[1][2], a[1][3], a[1][4]);
+            break;
+        case 'c':
+            if (!a[1][2]) o.closePath();
+            if (a[1][0]) o.stroke();
+            if (a[1][1]) o.fill();
+            break;
+        case 'st':
+            o.stroke();
+            break;
+        case 'fi':
+            o.fill();
+            break;
+        case 'a':
+            o.beginPath();
+            o.arc(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
+            o.stroke();
+            break;
+        case '[]':
+            o.beginPath();
+            o.rect(a[1][0],a[1][1],a[1][2],a[1][3]);
+            o.stroke();
+            o.fill();
+            break;
+        case '<>':
+            a = a[1];
+            o.beginPath();
+            if (a[4] > a[2]) {
+                o.lineTo(a[0]+a[2]/2, a[1]);
+                o.lineTo(a[0]+a[2], a[1]+a[2]/2);
+
+                o.lineTo(a[0]+a[2], a[1]+a[3]-a[2]/2);
+                o.lineTo(a[0]+a[2]/2, a[1]+a[3]);
+
+                o.lineTo(a[0], a[1]+a[3]-a[2]/2);
+
+                o.lineTo(a[0], a[1]+a[2]/2);
+            } else {
+                o.lineTo(a[0]+a[2]-a[3]/2, a[1]);
+                o.lineTo(a[0]+a[2], a[1]+a[3]/2);
+
+                o.lineTo(a[0]+a[2]-a[3]/2, a[1]+a[3]);
+
+                o.lineTo(a[0]+a[3]/2, a[1]+a[3]);
+                o.lineTo(a[0], a[1]+a[3]-a[3]/2);
+
+                o.lineTo(a[0]+a[3]/2, a[1]);
+            }
+            o.stroke();
+            o.fill();
+        case 'v':
+            o.bezierCurveTo(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
+            break;
+        case '-':
+            o.clearRect(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4]);
+            break;
+        case 't':
+            o.globalCompositeOperation = a[1];
+            break;
+        case 'r':
+            o.translate(a[1][0],a[1][1]);
+            o.rotate(a[1][2].degree());
+            o.translate(-a[1][0],-a[1][1]);
+            break;
+        case 'd':
+            o.translate(a[1][0],a[1][1]);
+            break;
+        case '>':
+            o.save();
+            break;
+        case '<':
+            o.restore();
+            break;
+        case 'x':
+            if (typeof a[1][3] === 'undefined') {
+                o.fillText(a[1][0], a[1][1], a[1][2]);
+                o.strokeText(a[1][0], a[1][1], a[1][2]);
+            } else {
+                o.fillText(a[1][0], a[1][1], a[1][2], a[1][3]);
+                o.strokeText(a[1][0], a[1][1], a[1][2]);
+            }
+            break;
+        case 'o':
+            o.translate(a[1][0],a[1][1]);
+            o.scale(a[1][2],a[1][3]);
+            o.translate(-a[1][0],-a[1][1]);
+            break;
+    }
+    o = null;
+}
+
+function drawMap(aTemp, aFocus) {
+    for (var x in aTemp) {
+        for (var y in aTemp[x]) {
+            if (typeof window.aMap[x] === 'undefined') {
+                window.aMap[x] = {};
+            }
+            window.aMap[x][y] = aTemp[x][y];
+        }
+    }
+    var aData = window.aMap;
+
+    var o = ge('cimap');
+    var computedStyle = window.getComputedStyle(o);
+    var iPlotWidth = parseFloat(computedStyle.width);
+    var iPlotHeight = parseFloat(computedStyle.height);
+    var aMapSize = [parseInt(o.dataset.x, 10), parseInt(o.dataset.y, 10)];
+
+    var iSizeSpace = window.aConfig.space,
+        iSizeBorder = window.aConfig.border,
+        iSizeCell = iSizeSpace - iSizeBorder,
+        iInitSpace = window.aConfig.scroll,
+        aColors = window.aConfig.colors,
+        sColor = '',
+        sColorB = '',
+        iTime = Math.floor(new Date().getTime() / 1000),
+        a, aTemp,
+        bExist = false,
+        bKeysRequired = false,
+        aCurr = [window.aCur[1], window.aCur[2]],
+        aNum  = [Math.ceil(iPlotWidth  / iSizeSpace), Math.ceil(iPlotHeight / iSizeSpace)],
+        aFirst = [aCurr[0] - Math.round(aNum[0]/2), aCurr[1] - Math.round(aNum[1]/2)];
+
+    for (var i = 0; i < 2; i++) {
+        if (aCurr[i] + Math.round(aNum[i]/2) > aMapSize[i]) {
+            aFirst[i] = aMapSize[i] - aNum[i] + 2;
+        }
+        if (aFirst[i] < 1) {
+            aFirst[i] = 1;
+        }
+
+        if (typeof window.aScrolling[i] !== 'undefined') {
+            if (window.bScrolling) {
+                aFirst[i] += parseInt(aMapSize[i] * window.aScrolling[i] / (aNum[i]-1));
+                if (aFirst[i] + Math.round(aNum[i]/2) > aMapSize[i]) {
+                    aFirst[i] = aMapSize[i] - aNum[i] + 2;
+                }
+                if (aFirst[i] < 1) {
+                    aFirst[i] = 1;
+                }
+                window.aScrollingStep = aFirst;
+            } else {
+                aFirst = window.aScrollingStep;
+            }
+        }
+    }
+
+    ge('cimap').style.backgroundColor = '#' + aColors.wall_none;
+
+    draw(['-', [0, 0, iPlotWidth, iPlotHeight]]);
+
+    for (var x = 0; x < aNum[0]; x++) {
+        for (var y = 0; y < aNum[1]; y++) {
+            if (x + aFirst[0] > aMapSize[0] || y + aFirst[1] > aMapSize[1]) {
+                continue;
+            }
+
+            if (typeof aData[x + aFirst[0]] !== 'undefined' && typeof aData[x + aFirst[0]][y + aFirst[1]] !== 'undefined') {
+                a = aData[x + aFirst[0]][y + aFirst[1]];
+            } else {
+                a = {type:0, time: 0};
+            }
+
+            if (parseInt(a.type) === 0) {
+                if (a.time && a.time > iTime - 86400) {
+                    sColor = aColors.fone[aColors.fone.length - 1];
+                    fcolor: for (i = 1; i < aColors.fone.length; i++) {
+                        if (Math.ceil(a.time / 3600) !== Math.ceil(iTime / 3600)) {
+                            break fcolor;
+                        }
+                        if (a.time > iTime - 3600/i) {
+                            sColor = aColors.fone[i-1];
+                        }
+                    }
+                    bExist = true;
+                } else {
+                    bExist = false;
+                    sColor = aColors.none;
+                }
+            } else {
+                sColor = aColors.type[a.type];
+            }
+            draw(['s', aColors.black]);
+            draw(['f', sColor]);
+
+            if (bExist) {
+                draw(['[]', [
+                    iInitSpace + x*iSizeSpace - iSizeBorder/2,
+                    iInitSpace + y*iSizeSpace - iSizeBorder/2,
+                    iSizeCell + iSizeBorder,
+                    iSizeCell + iSizeBorder
+                ]]);
+            } else {
+                draw(['[]', [
+                    iInitSpace + x*iSizeSpace,
+                    iInitSpace + y*iSizeSpace,
+                    iSizeCell,
+                    iSizeCell
+                ]]);
+            }
+        }
+    }
+
+    draw(['s', aColors.type[8]]);
+    var iShift = (iSizeSpace - iSizeBorder) / (iSizeSpace * 2);
+    aTemp = [iInitSpace+1+(aCurr[0]-aFirst[0]+iShift)*iSizeSpace, iInitSpace+1+(aCurr[1]-aFirst[1]+iShift)*iSizeSpace, iSizeCell * 0.85];
+    draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*0.4, Math.PI*0.6, 0]]);
+    draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*0.9, Math.PI*1.1, 0]]);
+    draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*1.4, Math.PI*1.6, 0]]);
+    draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*1.9, Math.PI*2.1, 0]]);
+    draw(['s', aColors.black]);
+    draw(['i', ['/images/lab/icon.gif', iInitSpace+1+(aCurr[0]-aFirst[0])*iSizeSpace, iInitSpace+1+(aCurr[1]-aFirst[1])*iSizeSpace, iSizeCell-1, iSizeCell-1]]);
+
+    for (var x = 0; x < aNum[0]; x++) {
+        for (var y = 0; y < aNum[1]; y++) {
+            if (x + aFirst[0] > aMapSize[0] || y + aFirst[1] > aMapSize[1]) {
+                continue;
+            }
+
+            if (typeof window.aMap[x + aFirst[0]] !== 'undefined' && typeof window.aMap[x + aFirst[0]][y + aFirst[1]] !== 'undefined') {
+                a = window.aMap[x + aFirst[0]][y + aFirst[1]];
+            } else {
+                a = {time: 0};
+            }
+            if (a.time) {
+                for (i in {2:'t',4:'l',5:'r',7:'b'}) {
+                    if (a.loc[i] == 0) {
+                        sColorB = aColors.wall;
+                    } else if(a.loc[i] == parseInt(a.loc[i])) {
+                        continue;
+                    } else {
+                        sColorB = aColors.doors[a.loc[i].split('-')[1]];
+                        bKeysRequired = true;
+                    }
+                    draw(['f', sColorB]);
+                    aTemp = [iInitSpace + x*iSizeSpace - iSizeBorder/2, iInitSpace + y*iSizeSpace - iSizeBorder/2, iSizeBorder, iSizeBorder, iSizeCell];
+                    switch (parseInt(i)) {
+                        case 7: aTemp[1] += iSizeCell + iSizeBorder;
+                        case 2: aTemp[2] += iSizeCell; aTemp[1] -= iSizeBorder/2; break;
+                        case 5: aTemp[0] += iSizeCell + iSizeBorder;
+                        case 4: aTemp[3] += iSizeCell; aTemp[0] -= iSizeBorder/2; break;
+                    }
+                    draw(['<>', aTemp]);
+                }
+
+                aTemp = '';
+                for (i in {1:0,3:0,6:0,8:0}) {
+                    if (a.loc[i] != 0) {
+                        switch (parseInt(a.loc[i])) {
+                            case 7: aTemp = 'go_out.gif'; break;
+                            case 5: aTemp = 'go_u.gif'; break;
+                            case 6: aTemp = 'go_d.gif'; break;
+                            default: continue;
+                        }
+                        draw(['i', ['https://www.fantasyland.ru/images/miscellaneous/'+aTemp, iInitSpace+x*iSizeSpace, iInitSpace+y*iSizeSpace, iSizeCell, iSizeCell]]);
+                    }
+                }
+                if (typeof a.info !== 'undefined' && a.info.length && aTemp === '') {
+                    draw(['f', (a.info[0][0].in_array(['q_action.gif', 'pick_up.gif', 'pick_up_gold.gif']) || a.info[0][0].indexOf('unlock_') !== -1) ? aColors.item : aColors.trap]);
+                    draw(['a', [iInitSpace+x*iSizeSpace+iSizeBorder+iSizeCell/3, iInitSpace+y*iSizeSpace+iSizeBorder+iSizeCell/3, iSizeCell/3-1, 0, Math.PI*2, 0]]);
+                    draw(['fi']);
+                    draw(['i', ['https://www.fantasyland.ru/images/miscellaneous/'+a.info[0][0], iInitSpace+x*iSizeSpace+iSizeBorder, iInitSpace+y*iSizeSpace+iSizeBorder, iSizeCell - 2*iSizeBorder, iSizeCell - 2*iSizeBorder]]);
+                }
+            }
+
+            if (!x || !y) {
+                draw(['f', aColors.loc]);
+                if (x) {
+                    draw(['txt', [x + aFirst[0], iInitSpace + x*iSizeSpace + iSizeSpace/2, iInitSpace + y*iSizeSpace + iSizeSpace/4 + iSizeBorder, '8px Arial', 'center']]);
+                } else {
+                    draw(['txt', [y + aFirst[1], iInitSpace + x*iSizeSpace + iSizeSpace/4, iInitSpace + y*iSizeSpace + iSizeSpace/2, '8px Arial', 'center']]);
+                }
+            }
+        }
+    }
+
+    if (typeof aFocus !== 'undefined') {
+        aFocus[0] += iInitSpace-iSizeBorder/2;
+        aFocus[1] += iInitSpace-iSizeBorder/2;
+        aFocus[2] += aFirst[0];
+        aFocus[3] += aFirst[1];
+        draw(['f', aColors.focus]);
+        draw(['[]', [0, aFocus[1], aFocus[0]-iSizeSpace, 1]]);
+        draw(['[]', [aFocus[0]+iSizeSpace, aFocus[1], iPlotWidth, 1]]);
+        draw(['[]', [aFocus[0], 0, 1, aFocus[1]-iSizeSpace]]);
+        draw(['[]', [aFocus[0], aFocus[1]+iSizeSpace, 1, iPlotHeight]]);
+        draw(['s', aColors.focus]);
+        draw(['a',  [aFocus[0], aFocus[1], iSizeSpace*3/4, 0, Math.PI*2, 0]]);
+        if (typeof window.aMap[aFocus[2]] !== 'undefined' && typeof window.aMap[aFocus[2]][aFocus[3]] !== 'undefined') {
+            a = window.aMap[aFocus[2]][aFocus[3]];
+        } else {
+            a = {type:0, time:0, info:[]};
+        }
+        var sText = window.usc.temp.getTypeInfo(a, 'L-'+window.usc.temp.aCur[0]+' ('+aFocus[2]+', '+aFocus[3]+')');
+
+        var b = aNum[0]/2 > aFocus[2]-aFirst[0] ? true : false;
+        draw(['f', aColors.white]);
+        draw(['txt', [sText, aFocus[0]+(b ? iSizeSpace : -iSizeSpace), aFocus[1]-2, '12px Arial', (b ? 'start' : 'end')]]);
+        if (a.info.length) {
+            sText = '';
+            for (i = 0; i < a.info.length; i++) {
+                if (a.info[i][1]) {
+                    sText += window.usc.trim(a.info[i][1]);
+                    if (sText.substr(-1) === ')') {
+                        sText = sText.slice(0, -1);
+                    }
+                    sText += '\r\n';
+                }
+            }
+            draw(['txt', [sText, aFocus[0]+(b ? iSizeSpace : -iSizeSpace), aFocus[1]+14, '12px Arial', (b ? 'start' : 'end')]]);
+        }
+        draw(['f', aColors.loc]);
+        if (typeof a.user !== 'undefined') {
+            iTime = Math.floor((iTime - a.time)/60);
+
+            sText = a.user + ' (';
+            if (iTime > 60) {
+                sText += Math.floor(iTime/60)+' ч. назад)';
+            } else {
+                sText += iTime+' мин. назад)';
+            }
+            draw(['txt', [sText, aFocus[0]+(b ? -iSizeSpace : iSizeSpace), aFocus[1]+14, '12px Arial', (b ? 'end' : 'start')]]);
+        }
+    }
+
+    draw(['s', aColors.black]);
+    draw(['f', aColors.black]);
+    draw(['[]', [0,0,iInitSpace-iSizeBorder*2/3, iPlotHeight]]);
+    draw(['[]', [0,0,iPlotWidth, iInitSpace-iSizeBorder*2/3]]);
+
+    draw(['s', aColors.black]);
+    draw(['f', aColors.scroll]);
+    var iSize = iPlotWidth*iPlotWidth / (aMapSize[0] * iSizeSpace);
+    draw(['<>', [ iPlotWidth*aFirst[0]/aMapSize[0], -iSizeBorder, iSize, iInitSpace-iSizeBorder/2, iInitSpace ]]);
+    iSize = iPlotWidth*iPlotHeight / (aMapSize[1] * iSizeSpace);
+    draw(['<>', [ -iSizeBorder, iPlotHeight*aFirst[1]/aMapSize[1], iInitSpace-iSizeBorder/2, iSize, iInitSpace ]]);
+
+    return bKeysRequired;
 }
