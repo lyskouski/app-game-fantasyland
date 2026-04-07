@@ -44,7 +44,7 @@ function ge(dir) {
 }
 
 function parse(text) {
-    const aParams = {loc: {1: 0, 2: 3, 3: 0, 4: 1, 5: 2, 6: 0, 7: 4, 8: 0}, curr: [], info: [], type: 0};
+    const aParams = {loc: {}, curr: [], info: [], type: 0, time: 0};
     // Get out from labyrinth
     if (text.includes("location.href='no_combat.php';") || text.includes('location.href="no_combat.php";')) {
         window.location.href = '/cgi/no_combat.php';
@@ -61,11 +61,19 @@ function parse(text) {
     // Buttons
     const aMatches = text.matchAll(/a\s*\(\s*(\d+)\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/g);
     for (const match of aMatches) {
-        a(parseInt(match[1], 10), match[2], match[3], match[4]);
+        const id = parseInt(match[1], 10);
+        a(id, match[2], match[3], match[4]);
+        aParams.loc[id] = parseInt(match[3], 10);
+        if (id == 0 || id == 6) {
+            aParams.type = 7;
+            aParams.info.push([match[4], match[2]]);
+        }
     }
     const bMatches = text.matchAll(/b\s*\(\s*(\d+)\s*\)/g);
     for (const match of bMatches) {
-        b(parseInt(match[1], 10));
+        const id = parseInt(match[1], 10);
+        b(id);
+        aParams.loc[id] = 0;
     }
     // Stamina
     const staminaMatch = text.match(/setStamina\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)/);
@@ -75,24 +83,31 @@ function parse(text) {
     // Position
     const mooMatch = text.match(/moo\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(false|true)\s*,\s*(false|true)\s*\)/);
     if (mooMatch) {
+        var z, x, y, s, isTrap, preserveTrapOnMap;
         moo(
-            parseInt(mooMatch[1], 10),
-            parseInt(mooMatch[2], 10),
-            parseInt(mooMatch[3], 10),
-            parseInt(mooMatch[4], 10),
-            mooMatch[5] === 'true',
-            mooMatch[6] === 'true'
+            z = parseInt(mooMatch[1], 10),
+            x = parseInt(mooMatch[2], 10),
+            y = parseInt(mooMatch[3], 10),
+            s = parseInt(mooMatch[4], 10),
+            isTrap = mooMatch[5] === 'true',
+            preserveTrapOnMap = mooMatch[6] === 'true'
         );
+        aParams.curr = [z, x, y];
+        if (isTrap && preserveTrapOnMap) {
+            aParams.type = 9;
+        }
     }
     // Quest Action
     const questMatch = text.match(/ShowQuestAction\s*\(\s*'([^']*)'\s*,\s*(\d+)\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/);
     ge('quest').innerHTML = '';
     if (questMatch) {
         ShowQuestAction(questMatch[1], parseInt(questMatch[2], 10), questMatch[3], questMatch[4]);
+        aParams.type = 8;
         // Extract quest description from HTML
         const questDescMatch = text.match(/ShowQuestAction.*?<b>([^<]+)<\/b>/);
         if (questDescMatch) {
             ge('quest').innerHTML = questDescMatch[1];
+            aParams.info.push([questMatch[3], questDescMatch[1]]);
         }
     }
     // Pick up items
@@ -129,6 +144,10 @@ function parse(text) {
             ge('message').removeChild(el);
         }, 5000);
     }
+    // Draw the cell on map
+    aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
+    aParams.time = Math.floor(new Date().getTime() / 1000);
+    drawMap({[aParams.curr[1]]: {[aParams.curr[2]]: aParams}});
 }
 
 function fcs(id) {
@@ -170,7 +189,6 @@ function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
     window.aCur = [z, x, y];
     ge('position').innerHTML = 'L-' + z + ' (' + x + ', ' + y + ')';
     ge('position').style.color = s ? 'white' : 'greenyellow';
-    // TBD: traps on map
 }
 
 function ShowQuestAction(s, id, im, im_s) {
@@ -269,6 +287,74 @@ window.canvasMouseUp = function(event) {
 window.canvasMouseOut = function(event) {
     drawMap();
     window.bScrolling = false;
+}
+
+window.canvasTouchStart = function(event) {
+    event.preventDefault();
+    const touchEvent = new MouseEvent('mousedown', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    Object.defineProperty(touchEvent, 'layerX', {
+        value: getTouchLayerX(event),
+        enumerable: true
+    });
+    Object.defineProperty(touchEvent, 'layerY', {
+        value: getTouchLayerY(event),
+        enumerable: true
+    });
+    window.canvasMouseDown(touchEvent);
+}
+
+window.canvasTouchMove = function(event) {
+    event.preventDefault();
+    const touchEvent = new MouseEvent('mousemove', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    Object.defineProperty(touchEvent, 'layerX', {
+        value: getTouchLayerX(event),
+        enumerable: true
+    });
+    Object.defineProperty(touchEvent, 'layerY', {
+        value: getTouchLayerY(event),
+        enumerable: true
+    });
+    window.canvasMouseMove(touchEvent);
+}
+
+window.canvasTouchEnd = function(event) {
+    event.preventDefault();
+    const touchEvent = new MouseEvent('mouseup', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    window.canvasMouseUp(touchEvent);
+}
+
+window.canvasTouchCancel = function(event) {
+    event.preventDefault();
+    const touchEvent = new MouseEvent('mouseleave', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    window.canvasMouseOut(touchEvent);
+}
+
+function getTouchLayerX(event) {
+    const canvas = ge('cimap');
+    const rect = canvas.getBoundingClientRect();
+    return event.touches[0].clientX - rect.left;
+}
+
+function getTouchLayerY(event) {
+    const canvas = ge('cimap');
+    const rect = canvas.getBoundingClientRect();
+    return event.touches[0].clientY - rect.top;
 }
 
 function draw(a) {

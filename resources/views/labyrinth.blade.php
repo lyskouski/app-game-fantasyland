@@ -50,7 +50,7 @@
                 </div>
                 @endforeach
                 <div class="clear"></div>
-                <canvas id="cimap" data-x="{{ $location['x'] }}" data-y="{{ $location['y'] }}" data-z="{{ $location['z'] }}" onmousemove="canvasMouseMove(event)" onmousedown="canvasMouseDown(event)" onmouseup="canvasMouseUp(event)" onmouseleave="canvasMouseOut(event)"></canvas>
+                <canvas id="cimap" data-x="{{ $location['x'] }}" data-y="{{ $location['y'] }}" data-z="{{ $location['z'] }}" onmousemove="canvasMouseMove(event)" onmousedown="canvasMouseDown(event)" onmouseup="canvasMouseUp(event)" onmouseleave="canvasMouseOut(event)" ontouchstart="canvasTouchStart(event)" ontouchmove="canvasTouchMove(event)" ontouchend="canvasTouchEnd(event)" ontouchcancel="canvasTouchCancel(event)"></canvas>
                 <div id="return_focus" title="Вернуть фокус на персонажа"></div>
                 <script>
                     window.aMap = {/* TDB: fill data from Database */};
