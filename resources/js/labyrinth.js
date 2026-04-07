@@ -44,6 +44,7 @@ function ge(dir) {
 }
 
 function parse(text) {
+    const aParams = {loc: {1: 0, 2: 3, 3: 0, 4: 1, 5: 2, 6: 0, 7: 4, 8: 0}, curr: [], info: [], type: 0};
     // Get out from labyrinth
     if (text.includes("location.href='no_combat.php';") || text.includes('location.href="no_combat.php";')) {
         window.location.href = '/cgi/no_combat.php';
@@ -401,13 +402,13 @@ function draw(a) {
     o = null;
 }
 
-function drawMap(aTemp, aFocus) {
-    for (var x in aTemp) {
-        for (var y in aTemp[x]) {
+function drawMap(aCurr, aFocus) {
+    for (var x in aCurr) {
+        for (var y in aCurr[x]) {
             if (typeof window.aMap[x] === 'undefined') {
                 window.aMap[x] = {};
             }
-            window.aMap[x][y] = aTemp[x][y];
+            window.aMap[x][y] = aCurr[x][y];
         }
     }
     var aData = window.aMap;
@@ -426,7 +427,8 @@ function drawMap(aTemp, aFocus) {
         sColor = '',
         sColorB = '',
         iTime = Math.floor(new Date().getTime() / 1000),
-        a, aTemp,
+        a = {},
+        aTemp = [],
         bExist = false,
         bKeysRequired = false,
         aCurr = [window.aCur[1], window.aCur[2]],
@@ -470,7 +472,7 @@ function drawMap(aTemp, aFocus) {
             if (typeof aData[x + aFirst[0]] !== 'undefined' && typeof aData[x + aFirst[0]][y + aFirst[1]] !== 'undefined') {
                 a = aData[x + aFirst[0]][y + aFirst[1]];
             } else {
-                a = {type:0, time: 0};
+                a = {type: 0, time: 0};
             }
 
             if (parseInt(a.type) === 0) {
@@ -515,7 +517,7 @@ function drawMap(aTemp, aFocus) {
 
     draw(['s', aColors.type[8]]);
     var iShift = (iSizeSpace - iSizeBorder) / (iSizeSpace * 2);
-    aTemp = [iInitSpace+1+(aCurr[0]-aFirst[0]+iShift)*iSizeSpace, iInitSpace+1+(aCurr[1]-aFirst[1]+iShift)*iSizeSpace, iSizeCell * 0.85];
+    var aTemp = [iInitSpace+1+(aCurr[0]-aFirst[0]+iShift)*iSizeSpace, iInitSpace+1+(aCurr[1]-aFirst[1]+iShift)*iSizeSpace, iSizeCell * 0.85];
     draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*0.4, Math.PI*0.6, 0]]);
     draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*0.9, Math.PI*1.1, 0]]);
     draw(['a', [aTemp[0], aTemp[1], aTemp[2], Math.PI*1.4, Math.PI*1.6, 0]]);
@@ -555,19 +557,19 @@ function drawMap(aTemp, aFocus) {
                     draw(['<>', aTemp]);
                 }
 
-                aTemp = '';
-                for (i in {1:0,3:0,6:0,8:0}) {
+                var sTemp = '';
+                for (i in {1:0, 3:0, 6:0, 8:0}) {
                     if (a.loc[i] != 0) {
                         switch (parseInt(a.loc[i])) {
-                            case 7: aTemp = 'go_out.gif'; break;
-                            case 5: aTemp = 'go_u.gif'; break;
-                            case 6: aTemp = 'go_d.gif'; break;
+                            case 7: sTemp = 'go_out.gif'; break;
+                            case 5: sTemp = 'go_u.gif'; break;
+                            case 6: sTemp = 'go_d.gif'; break;
                             default: continue;
                         }
-                        draw(['i', ['https://www.fantasyland.ru/images/miscellaneous/'+aTemp, iInitSpace+x*iSizeSpace, iInitSpace+y*iSizeSpace, iSizeCell, iSizeCell]]);
+                        draw(['i', ['https://www.fantasyland.ru/images/miscellaneous/'+sTemp, iInitSpace+x*iSizeSpace, iInitSpace+y*iSizeSpace, iSizeCell, iSizeCell]]);
                     }
                 }
-                if (typeof a.info !== 'undefined' && a.info.length && aTemp === '') {
+                if (typeof a.info !== 'undefined' && a.info.length && sTemp === '') {
                     draw(['f', (a.info[0][0].in_array(['q_action.gif', 'pick_up.gif', 'pick_up_gold.gif']) || a.info[0][0].indexOf('unlock_') !== -1) ? aColors.item : aColors.trap]);
                     draw(['a', [iInitSpace+x*iSizeSpace+iSizeBorder+iSizeCell/3, iInitSpace+y*iSizeSpace+iSizeBorder+iSizeCell/3, iSizeCell/3-1, 0, Math.PI*2, 0]]);
                     draw(['fi']);
