@@ -207,7 +207,14 @@ window.bScrolling = false;
 window.aFocus = [];
 window.aMap = {};
 window.oCanvas = null;
-document.addEventListener('DOMContentLoaded', () => window.oCanvas = ge('cimap').getContext('2d'));
+document.addEventListener('DOMContentLoaded', () => {
+    const canvasElement = ge('cimap');
+    const rect = canvasElement.getBoundingClientRect();
+    // Set canvas resolution to match displayed size
+    canvasElement.width = Math.floor(rect.width);
+    canvasElement.height = Math.floor(rect.height);
+    window.oCanvas = canvasElement.getContext('2d');
+});
 window.aConfig = {
     space: 20,
     border: 4,
