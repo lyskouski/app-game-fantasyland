@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Лига Героев</title>
 
@@ -50,10 +51,10 @@
                 </div>
                 @endforeach
                 <div class="clear"></div>
-                <canvas id="cimap" data-x="{{ $location['x'] }}" data-y="{{ $location['y'] }}" data-z="{{ $location['z'] }}" onmousemove="canvasMouseMove(event)" onmousedown="canvasMouseDown(event)" onmouseup="canvasMouseUp(event)" onmouseleave="canvasMouseOut(event)" ontouchstart="canvasTouchStart(event)" ontouchmove="canvasTouchMove(event)" ontouchend="canvasTouchEnd(event)" ontouchcancel="canvasTouchCancel(event)"></canvas>
+                <canvas id="cimap"  data-place="{{ $place }}" data-loc="{{ $loc }}" data-x="{{ $location['x'] }}" data-y="{{ $location['y'] }}" data-z="{{ $location['z'] }}" onmousemove="canvasMouseMove(event)" onmousedown="canvasMouseDown(event)" onmouseup="canvasMouseUp(event)" onmouseleave="canvasMouseOut(event)" ontouchstart="canvasTouchStart(event)" ontouchmove="canvasTouchMove(event)" ontouchend="canvasTouchEnd(event)" ontouchcancel="canvasTouchCancel(event)"></canvas>
                 <div id="return_focus" title="Вернуть фокус на персонажа"></div>
                 <script>
-                    window.aMap = {/* TDB: fill data from Database */};
+                    document.addEventListener('DOMContentLoaded', () => window.drawMap({!! $map_data !!}));
                 </script>
                 <div id="cibuffer" style="display:none"></div>
                 <div id="message"></div>

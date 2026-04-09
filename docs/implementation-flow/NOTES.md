@@ -173,3 +173,7 @@ If you want to keep using the existing com.tercad.fingrom profile, update your .
 
 Recommended: Use Option 1 if this app should be com.tercad.fantasyland. The provisioning profile you currently have is for a different app (fingrom).
 
+
+# Database creation
+
+php artisan make:migration create_map_table

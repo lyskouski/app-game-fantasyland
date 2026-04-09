@@ -170,6 +170,29 @@ function parse(text) {
     aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
     aParams.time = Math.floor(new Date().getTime() / 1000);
     drawMap({[aParams.curr[1]]: {[aParams.curr[2]]: aParams}});
+    save(aParams);
+}
+
+function save(aParams) {
+    var o = ge('cimap');
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch('/labyrinth/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify({
+            location_id: parseInt(o.dataset.loc),
+            place_id: parseInt(o.dataset.place),
+            z: aParams.curr[0],
+            x: aParams.curr[1],
+            y: aParams.curr[2],
+            type: aParams.type,
+            info: aParams.info,
+            loc: aParams.loc,
+        })
+    }).catch(error => alert('Failed to save map: ' + error));
 }
 
 function fcs(id) {
@@ -388,138 +411,7 @@ function getTouchLayerY(event) {
     return event.touches[0].clientY - rect.top;
 }
 
-function draw(a) {
-    var o = window.oCanvas;
-    switch (a[0]) {
-        case 'txt':
-            if (typeof a[1][3] !== 'undefined' && a[1][3] !== '') {
-                o.font = a[1][3];
-            }
-            if (a[1][4]) {
-                o.textAlign = a[1][4];
-            }
-            o.fillText(a[1][0], a[1][1], a[1][2]);
-            break;
-        case 's':
-            o.strokeStyle = '#' + a[1];
-            break;
-        case 'f':
-            o.fillStyle = '#' + a[1];
-            break;
-        case 'w':
-            o.lineWidth = a[1];
-            break;
-        case 'b':
-            o.beginPath();
-            if (a[1][0]!='') o.moveTo(a[1][0], a[1][1]);
-            break;
-        case 'm':
-            o.moveTo(a[1][0], a[1][1]);
-            break;
-        case '' :
-            o.lineTo(a[1][0], a[1][1]);
-            break;
-        case 'i':
-            var sTempId = a[1][0].split('.').join('').split('/').join('').replace('http:', '');
-            var image = ge(sTempId);
-            if (!image) {
-                image = document.createElement('img');
-                image.src = a[1][0];
-                image.id = sTempId;
-                ge('cibuffer').appendChild(image);
-            }
-            o.drawImage(image, a[1][1], a[1][2], a[1][3], a[1][4]);
-            break;
-        case 'c':
-            if (!a[1][2]) o.closePath();
-            if (a[1][0]) o.stroke();
-            if (a[1][1]) o.fill();
-            break;
-        case 'st':
-            o.stroke();
-            break;
-        case 'fi':
-            o.fill();
-            break;
-        case 'a':
-            o.beginPath();
-            o.arc(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
-            o.stroke();
-            break;
-        case '[]':
-            o.beginPath();
-            o.rect(a[1][0],a[1][1],a[1][2],a[1][3]);
-            o.stroke();
-            o.fill();
-            break;
-        case '<>':
-            a = a[1];
-            o.beginPath();
-            if (a[4] > a[2]) {
-                o.lineTo(a[0]+a[2]/2, a[1]);
-                o.lineTo(a[0]+a[2], a[1]+a[2]/2);
-
-                o.lineTo(a[0]+a[2], a[1]+a[3]-a[2]/2);
-                o.lineTo(a[0]+a[2]/2, a[1]+a[3]);
-
-                o.lineTo(a[0], a[1]+a[3]-a[2]/2);
-
-                o.lineTo(a[0], a[1]+a[2]/2);
-            } else {
-                o.lineTo(a[0]+a[2]-a[3]/2, a[1]);
-                o.lineTo(a[0]+a[2], a[1]+a[3]/2);
-
-                o.lineTo(a[0]+a[2]-a[3]/2, a[1]+a[3]);
-
-                o.lineTo(a[0]+a[3]/2, a[1]+a[3]);
-                o.lineTo(a[0], a[1]+a[3]-a[3]/2);
-
-                o.lineTo(a[0]+a[3]/2, a[1]);
-            }
-            o.stroke();
-            o.fill();
-        case 'v':
-            o.bezierCurveTo(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
-            break;
-        case '-':
-            o.clearRect(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4]);
-            break;
-        case 't':
-            o.globalCompositeOperation = a[1];
-            break;
-        case 'r':
-            o.translate(a[1][0],a[1][1]);
-            o.rotate(a[1][2].degree());
-            o.translate(-a[1][0],-a[1][1]);
-            break;
-        case 'd':
-            o.translate(a[1][0],a[1][1]);
-            break;
-        case '>':
-            o.save();
-            break;
-        case '<':
-            o.restore();
-            break;
-        case 'x':
-            if (typeof a[1][3] === 'undefined') {
-                o.fillText(a[1][0], a[1][1], a[1][2]);
-                o.strokeText(a[1][0], a[1][1], a[1][2]);
-            } else {
-                o.fillText(a[1][0], a[1][1], a[1][2], a[1][3]);
-                o.strokeText(a[1][0], a[1][1], a[1][2]);
-            }
-            break;
-        case 'o':
-            o.translate(a[1][0],a[1][1]);
-            o.scale(a[1][2],a[1][3]);
-            o.translate(-a[1][0],-a[1][1]);
-            break;
-    }
-    o = null;
-}
-
-function drawMap(aCurr, aFocus) {
+window.drawMap = function(aCurr, aFocus) {
     for (var x in aCurr) {
         for (var y in aCurr[x]) {
             if (typeof window.aMap[x] === 'undefined') {
@@ -771,4 +663,135 @@ function drawMap(aCurr, aFocus) {
     draw(['<>', [ -iSizeBorder, iPlotHeight*aFirst[1]/aMapSize[1], iInitSpace-iSizeBorder/2, iSize, iInitSpace ]]);
 
     return bKeysRequired;
+}
+
+function draw(a) {
+    var o = window.oCanvas;
+    switch (a[0]) {
+        case 'txt':
+            if (typeof a[1][3] !== 'undefined' && a[1][3] !== '') {
+                o.font = a[1][3];
+            }
+            if (a[1][4]) {
+                o.textAlign = a[1][4];
+            }
+            o.fillText(a[1][0], a[1][1], a[1][2]);
+            break;
+        case 's':
+            o.strokeStyle = '#' + a[1];
+            break;
+        case 'f':
+            o.fillStyle = '#' + a[1];
+            break;
+        case 'w':
+            o.lineWidth = a[1];
+            break;
+        case 'b':
+            o.beginPath();
+            if (a[1][0]!='') o.moveTo(a[1][0], a[1][1]);
+            break;
+        case 'm':
+            o.moveTo(a[1][0], a[1][1]);
+            break;
+        case '' :
+            o.lineTo(a[1][0], a[1][1]);
+            break;
+        case 'i':
+            var sTempId = a[1][0].split('.').join('').split('/').join('').replace('http:', '');
+            var image = ge(sTempId);
+            if (!image) {
+                image = document.createElement('img');
+                image.src = a[1][0];
+                image.id = sTempId;
+                ge('cibuffer').appendChild(image);
+            }
+            o.drawImage(image, a[1][1], a[1][2], a[1][3], a[1][4]);
+            break;
+        case 'c':
+            if (!a[1][2]) o.closePath();
+            if (a[1][0]) o.stroke();
+            if (a[1][1]) o.fill();
+            break;
+        case 'st':
+            o.stroke();
+            break;
+        case 'fi':
+            o.fill();
+            break;
+        case 'a':
+            o.beginPath();
+            o.arc(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
+            o.stroke();
+            break;
+        case '[]':
+            o.beginPath();
+            o.rect(a[1][0],a[1][1],a[1][2],a[1][3]);
+            o.stroke();
+            o.fill();
+            break;
+        case '<>':
+            a = a[1];
+            o.beginPath();
+            if (a[4] > a[2]) {
+                o.lineTo(a[0]+a[2]/2, a[1]);
+                o.lineTo(a[0]+a[2], a[1]+a[2]/2);
+
+                o.lineTo(a[0]+a[2], a[1]+a[3]-a[2]/2);
+                o.lineTo(a[0]+a[2]/2, a[1]+a[3]);
+
+                o.lineTo(a[0], a[1]+a[3]-a[2]/2);
+
+                o.lineTo(a[0], a[1]+a[2]/2);
+            } else {
+                o.lineTo(a[0]+a[2]-a[3]/2, a[1]);
+                o.lineTo(a[0]+a[2], a[1]+a[3]/2);
+
+                o.lineTo(a[0]+a[2]-a[3]/2, a[1]+a[3]);
+
+                o.lineTo(a[0]+a[3]/2, a[1]+a[3]);
+                o.lineTo(a[0], a[1]+a[3]-a[3]/2);
+
+                o.lineTo(a[0]+a[3]/2, a[1]);
+            }
+            o.stroke();
+            o.fill();
+        case 'v':
+            o.bezierCurveTo(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4],a[1][5]);
+            break;
+        case '-':
+            o.clearRect(a[1][0],a[1][1],a[1][2],a[1][3],a[1][4]);
+            break;
+        case 't':
+            o.globalCompositeOperation = a[1];
+            break;
+        case 'r':
+            o.translate(a[1][0],a[1][1]);
+            o.rotate(a[1][2].degree());
+            o.translate(-a[1][0],-a[1][1]);
+            break;
+        case 'd':
+            o.translate(a[1][0],a[1][1]);
+            break;
+        case '>':
+            o.save();
+            break;
+        case '<':
+            o.restore();
+            break;
+        case 'x':
+            if (typeof a[1][3] === 'undefined') {
+                o.fillText(a[1][0], a[1][1], a[1][2]);
+                o.strokeText(a[1][0], a[1][1], a[1][2]);
+            } else {
+                o.fillText(a[1][0], a[1][1], a[1][2], a[1][3]);
+                o.strokeText(a[1][0], a[1][1], a[1][2]);
+            }
+            break;
+        case 'o':
+            o.translate(a[1][0],a[1][1]);
+            o.scale(a[1][2],a[1][3]);
+            o.translate(-a[1][0],-a[1][1]);
+            break;
+    }
+    o = null;
 }

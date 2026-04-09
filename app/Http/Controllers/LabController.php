@@ -13,7 +13,9 @@ class LabController extends Controller
         $parser = new LabParser();
         $info = new InfoParser();
         $loc = $this->get('cgi/ch_who.php', []);
+        $locData = $parser->getLocation($loc);
         $state = $this->get('cgi/maze_ref.php', []);
+        $stateData = $parser->getState($state);
         $scrolls = $this->get('cgi/inv_load_items.php', ['tp' => 26, 'dv' => 'd126', 'expand' => true]);
         $potions = $this->get('cgi/inv_load_items.php', ['tp' => 25, 'dv' => 'd125', 'expand' => true]);
         $post = [
@@ -22,13 +24,34 @@ class LabController extends Controller
         ];
         $html = $this->post('cgi/change_info.php', [], $post);
         return view('labyrinth', [
-            ...$parser->getLocation($loc),
-            ...$parser->getState($state),
+            ...$locData,
+            ...$stateData,
             'scrolls' => $info->getStuffItems($scrolls),
             'potions' => $info->getStuffItems($potions),
             'active_potions' => $info->getPotions($html),
             'captcha' => $this->captcha(time()),
+            'map_data' => \App\Models\Map::getByLocation($locData['loc'], $locData['place'], $stateData['lvl']),
         ]);
+    }
+
+    public function save() {
+        $data = request()->post();
+        \App\Models\Map::updateOrCreate(
+            [
+                'location_id' => $data['location_id'],
+                'place_id' => $data['place_id'] ?? 0,
+                'z' => $data['z'],
+                'x' => $data['x'],
+                'y' => $data['y'],
+            ],
+            [
+                'type' => $data['type'] ?? 0,
+                'loc' => json_encode($data['loc'] ?? []),
+                'info' => json_encode($data['info'] ?? []),
+            ]
+        );
+
+        return view('empty', ['data' => 'OK']);
     }
 
     public function move() {
