@@ -177,3 +177,22 @@ Recommended: Use Option 1 if this app should be com.tercad.fantasyland. The prov
 # Database creation
 
 php artisan make:migration create_map_table
+
+
+NOTE: it looks like migrations were not applied during the aplication start. How to fix?
+
+> SQLSTATE[HY000]: General error: 1 no such table: maps (Connection: sqlite, Database: /data/user/0/com.tercad.fantasyland/app_storage/persisted_data/database/database.sqlite, SQL: select * from "maps" where "location_id" = 15 and "place_id" = 11 and "z" = 0)
+
+
+The issue is a table name mismatch. The migration creates map (singular), but Eloquent's default convention looks for maps (plural).
+
+Fix 1: Update the migration to use maps (recommended)
+
+> Schema::create('maps', function (Blueprint $table) {
+
+Or Fix 2: Tell the Model to use map table
+Add this to Map.php:
+
+> protected $table = 'map';
+
+
