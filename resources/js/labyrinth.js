@@ -1,3 +1,20 @@
+Number.prototype.in_array = String.prototype.in_array = function (a) {
+    if (a.length) {
+        for (var i = 0; i < a.length; i++) {
+            if (this === a[i]) {
+                return true;
+            }
+        }
+    } else {
+        for (var i in a) {
+            if (this === a[i]) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
 window.goTo = function (lt) {
     if (ge('cod').style.display == 'block') {
         lt += '&c=' + ge('codInput').value;
@@ -124,6 +141,7 @@ function parse(text) {
             ge('btn2').src = 'https://www.fantasyland.ru/images/miscellaneous/pick_up.gif';
             ge('btn2').onclick = function() { fcs(2); pickUp(item.id, 0, item.count); };
             ge('btn2').title = item.name;
+            aParams.info.push(['pick_up.gif', item.name]);
             isFirst = false;
         }
         const el = document.createElement('a');
@@ -151,7 +169,9 @@ function parse(text) {
 }
 
 function fcs(id) {
-    ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
+    if (!~ge('btn' + id).src.indexOf('_s.gif')) {
+        ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
+    }
 }
 
 function a(id, str, num, img) {
@@ -663,7 +683,11 @@ function drawMap(aCurr, aFocus) {
                     }
                 }
                 if (typeof a.info !== 'undefined' && a.info.length && sTemp === '') {
-                    draw(['f', (a.info[0][0].in_array(['q_action.gif', 'pick_up.gif', 'pick_up_gold.gif']) || a.info[0][0].indexOf('unlock_') !== -1) ? aColors.item : aColors.trap]);
+                    let color = aColors.trap;
+                    if (a.info[0][0].in_array(['q_action.gif', 'pick_up.gif', 'pick_up_gold.gif']) || ~a.info[0][0].indexOf('unlock_')) {
+                        color = aColors.item;
+                    }
+                    draw(['f', color]);
                     draw(['a', [iInitSpace+x*iSizeSpace+iSizeBorder+iSizeCell/3, iInitSpace+y*iSizeSpace+iSizeBorder+iSizeCell/3, iSizeCell/3-1, 0, Math.PI*2, 0]]);
                     draw(['fi']);
                     draw(['i', ['https://www.fantasyland.ru/images/miscellaneous/'+a.info[0][0], iInitSpace+x*iSizeSpace+iSizeBorder, iInitSpace+y*iSizeSpace+iSizeBorder, iSizeCell - 2*iSizeBorder, iSizeCell - 2*iSizeBorder]]);
