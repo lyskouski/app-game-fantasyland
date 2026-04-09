@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css', 'resources/css/labyrinth.css', 'resources/js/labyrinth.js'])
+        @vite(['resources/css/index.css', 'resources/css/labyrinth.css', 'resources/js/ping.js', 'resources/js/labyrinth.js'])
     </head>
     <body>
         <br />
@@ -85,8 +85,8 @@
             <div class="main_middle">
                 <center>
                     <div id="cod" style="display:none">
-                        <img src="{!! $captcha !!}" width="90" height="40" />
-                        &nbsp;<input type="text" id="codInput" maxlength="4" placeholder="Введите код" />
+                        <img id="codImage" src="{!! $captcha !!}" width="90" height="40" />
+                        &nbsp;<input type="text" id="codInput" inputmode="numeric" maxlength="4" placeholder="Введите код" />
                     </div>
                     <table border="0">
                         <tr>

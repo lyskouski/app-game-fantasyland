@@ -69,6 +69,10 @@ function parse(text) {
     }
     // Show verification code
     if (text.includes('parent.no_combat.ShowCod()')) {
+        const captchaMatch = text.match(/captcha\[([^\]]+)\]/);
+        if (captchaMatch) {
+            ge('codImage').src = captchaMatch[1];
+        }
         ge('cod').style.display = 'block';
         ge('codInput').value = '';
         ge('codInput').focus();

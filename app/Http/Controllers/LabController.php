@@ -34,6 +34,9 @@ class LabController extends Controller
     public function move() {
         $content = $this->get('cgi/maze_move.php');
         $content .= $this->get('cgi/maze_ref.php', []);
+        if (strpos($content, 'ShowCod()') !== false) {
+            $content .= 'captcha[' . $this->captcha(time()) . ']';
+        }
         return view('empty', ['data' => $content]);
     }
 
