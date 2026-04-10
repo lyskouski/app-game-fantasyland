@@ -4,11 +4,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\AppProxyProvider;
 use App\Services\InfoParser;
 use App\Services\LabParser;
+use App\Settings\Defines;
 
 class LabController extends Controller
 {
+    protected AppProxyProvider $cit;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->cit = new AppProxyProvider('citadel');
+    }
+
     public function index() {
         $parser = new LabParser();
         $info = new InfoParser();
@@ -52,6 +62,40 @@ class LabController extends Controller
         );
 
         return view('empty', ['data' => 'OK']);
+    }
+
+    public function config() {
+        return view('labyrinth_config', ['type' => null]);
+    }
+
+    public function sync() {
+        $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
+        // TODO: authenticate on Citadel
+        if (strpos($conn, 'Прохожий') !== false) {
+            $loc = $this->get('cgi/ch_who.php', []);
+            $locData = (new LabParser)->getLocation($loc);
+            $data = [
+                'action' => 'init',
+                'version' => Defines::PLUGIN_VERSION,
+                'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
+                'user' => 'lg:' . $locData['login'],
+            ];
+            $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+        }
+        $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
+        $type = null;
+        if (preg_match('/<p>([^<]+)<\/p>/', $conn, $matches)) {
+            $type = $matches[1];
+        }
+        return view('labyrinth_config', ['type' => $type]);
+    }
+
+    public function clear() {
+        $lastHour = request()->query('last_hour', false);
+        $loc = $this->get('cgi/ch_who.php', []);
+        $locData = (new LabParser)->getLocation($loc);
+        \App\Models\Map::clearLocation($locData['loc'], $locData['place'], $lastHour);
+        return redirect('/labyrinth');
     }
 
     public function move() {

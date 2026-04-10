@@ -7,6 +7,8 @@ namespace App\Settings;
 class Defines
 {
     public const URL = 'https://www.fantasyland.ru/';
+    public const CITADEL = 'https://www.citadel-liga.info/liga/';
+    public const PLUGIN_VERSION = '3.0.43';
 
     public const LAB = [
         19 => [

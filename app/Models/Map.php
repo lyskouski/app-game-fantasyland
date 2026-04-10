@@ -43,4 +43,14 @@ class Map extends Model
         }
         return json_encode($result);
     }
+
+    public static function clearLocation(?string $locationId, ?string $placeId, bool $lastHour = false): void
+    {
+        $query = self::where('location_id', $locationId)
+            ->where('place_id', $placeId);
+        if ($lastHour) {
+            $query->where('updated_at', '<=', now()->subHour());
+        }
+        $query->delete();
+    }
 }

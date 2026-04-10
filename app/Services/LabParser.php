@@ -12,12 +12,16 @@ class LabParser
         $result = [
             'place' => null,
             'loc' => null,
+            'login' => null,
         ];
         if (preg_match('/var\s+curPlace\s*=\s*(\d+)/', $data, $matches)) {
             $result['place'] = (int)$matches[1];
         }
         if (preg_match('/var\s+curLoc\s*=\s*(\d+)/', $data, $matches)) {
             $result['loc'] = (int)$matches[1];
+        }
+        if (preg_match("/var\s+plLogin\s*=\s*'([^']+)'/", $data, $matches)) {
+            $result['login'] = $matches[1];
         }
         $result['location'] = Defines::LAB[$result['place']][$result['loc']] ?? [
             'title' => 'Неизвестный Лабиринт',

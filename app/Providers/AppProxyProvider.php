@@ -9,9 +9,9 @@ class AppProxyProvider
     protected $browser = 'Mozilla/5.0 (X11; Linux x86_64; rv:149.0) Gecko/20100101 Firefox/149.0';
     protected $fcurl;
 
-    public function __construct()
+    public function __construct(string $type = 'cookie')
     {
-        $this->fcurl = storage_path('cookie.txt');
+        $this->fcurl = storage_path($type . '.txt');
         $dir = dirname($this->fcurl);
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
@@ -32,11 +32,11 @@ class AppProxyProvider
         }
     }
 
-    protected function convert(array $data): string
+    protected function convert(array $data, bool $convert = true): string
     {
         $converted = [];
         foreach ($data as $key => $value) {
-            $converted[$key] = $this->convertEncoding($value, 'UTF-8', 'cp1251');
+            $converted[$key] = $convert ? $this->convertEncoding($value, 'UTF-8', 'cp1251') : $value;
         }
         return http_build_query($converted);
     }
@@ -51,7 +51,7 @@ class AppProxyProvider
 
         curl_setopt($curl, CURLOPT_USERAGENT, $this->browser);
         if ($get) {
-            $url .= '?' . $this->convert($get);
+            $url .= '?' . $this->convert($get, $convert);
         }
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
@@ -60,7 +60,7 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_TIMEOUT, 60);
         if ($post) {
             curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $this->convert($post));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $this->convert($post, $convert));
         }
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);

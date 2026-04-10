@@ -77,6 +77,9 @@ Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear'
 // Labyrinth
 Route::get('/labyrinth', [LabController::class, 'index']);
 Route::post('/labyrinth/save', [LabController::class, 'save']);
+Route::get('/labyrinth/config', [LabController::class, 'config']);
+Route::get('/labyrinth/clear', [LabController::class, 'clear']);
+Route::get('/labyrinth/sync', [LabController::class, 'sync']);
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
 Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
