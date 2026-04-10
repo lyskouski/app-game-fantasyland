@@ -65,7 +65,7 @@
                 <div class="alert alert-success">
                     Ваш статус на Цитадели: <b>{{ $type }}</b><br />
                     <input type="checkbox" id="sync" onchange="localStorage.citadel_sync = this.checked ? '1' : '0'" />
-                    &nbsp; Синхронизировать данные
+                    &nbsp;Синхронизировать данные
                     <script>
                         document.addEventListener('DOMContentLoaded', () => document.getElementById('sync').checked = localStorage.citadel_sync === '1');
                     </script>

@@ -68,19 +68,23 @@ class LabController extends Controller
         return view('labyrinth_config', ['type' => null]);
     }
 
+    protected function init() {
+        $loc = $this->get('cgi/ch_who.php', []);
+        $locData = (new LabParser)->getLocation($loc);
+        $data = [
+            'action' => 'init',
+            'version' => Defines::PLUGIN_VERSION,
+            'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
+            'user' => 'lg:' . $locData['login'],
+        ];
+        return $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+    }
+
     public function sync() {
         $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
         // TODO: authenticate on Citadel
         if (strpos($conn, 'Прохожий') !== false) {
-            $loc = $this->get('cgi/ch_who.php', []);
-            $locData = (new LabParser)->getLocation($loc);
-            $data = [
-                'action' => 'init',
-                'version' => Defines::PLUGIN_VERSION,
-                'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
-                'user' => 'lg:' . $locData['login'],
-            ];
-            $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+            $this->init();
         }
         $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
         $type = null;
@@ -88,6 +92,17 @@ class LabController extends Controller
             $type = $matches[1];
         }
         return view('labyrinth_config', ['type' => $type]);
+    }
+
+    public function initToCitadel() {
+        $response = $this->init();
+        return view('empty', ['data' => $response]);
+    }
+
+    public function saveToCitadel() {
+        $data = request()->post();
+        $response = $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+        return view('empty', ['data' => $response]);
     }
 
     public function clear() {

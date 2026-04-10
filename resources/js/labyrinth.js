@@ -171,6 +171,9 @@ function parse(text) {
     aParams.time = Math.floor(new Date().getTime() / 1000);
     drawMap({[aParams.curr[1]]: {[aParams.curr[2]]: aParams}});
     save(aParams);
+    if (localStorage.citadel_sync === '1') {
+        saveToCitadel(aParams);
+    }
 }
 
 function save(aParams) {
@@ -183,8 +186,8 @@ function save(aParams) {
             'X-CSRF-TOKEN': token
         },
         body: JSON.stringify({
-            location_id: parseInt(o.dataset.loc),
-            place_id: parseInt(o.dataset.place),
+            location_id: parseInt(o.dataset.loc, 10),
+            place_id: parseInt(o.dataset.place, 10),
             z: aParams.curr[0],
             x: aParams.curr[1],
             y: aParams.curr[2],
@@ -194,6 +197,39 @@ function save(aParams) {
         })
     }).catch(error => alert('Failed to save map: ' + error));
 }
+
+function saveToCitadel(aParams) {
+    const set = ge('cimap').dataset;
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    aParams = {...aParams,
+        url: '/cgi/maze_ref.php',
+        action: 'coordinates',
+        curr: [...aParams.curr, 0, aParams.type == 9 ? 'true' : 'false', 'true )'],
+        version: set.version,
+        user: 'lg:' +  set.login
+    };
+    fetch('/labyrinth/citadel/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        body: JSON.stringify(aParams)
+    })
+        .then(response => response.text())
+        .then(text => {
+            // TBD
+            alert(text);
+        })
+        .catch(error => alert('Failed to save C-map: ' + error));
+}
+
+function initToCitadel() {
+    if (localStorage.citadel_sync === '1') {
+        fetch('/labyrinth/citadel/init').catch(error => alert('Failed to init C-map: ' + error));
+    }
+}
+document.addEventListener('DOMContentLoaded', initToCitadel);
 
 function fcs(id) {
     if (!~ge('btn' + id).src.indexOf('_s.gif')) {

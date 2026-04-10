@@ -80,6 +80,8 @@ Route::post('/labyrinth/save', [LabController::class, 'save']);
 Route::get('/labyrinth/config', [LabController::class, 'config']);
 Route::get('/labyrinth/clear', [LabController::class, 'clear']);
 Route::get('/labyrinth/sync', [LabController::class, 'sync']);
+Route::post('/labyrinth/citadel/save', [LabController::class, 'saveToCitadel']);
+Route::get('/labyrinth/citadel/init', [LabController::class, 'initToCitadel']);
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
 Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
