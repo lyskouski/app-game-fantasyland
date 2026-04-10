@@ -57,6 +57,15 @@
                     document.addEventListener('DOMContentLoaded', () => window.drawMap({!! $map_data !!}));
                 </script>
                 <div id="cibuffer" style="display:none"></div>
+                <div>
+                    <small>
+                        <a style="float:right" href="/labyrinth/config">Настройки</a>
+                        Масштаб:
+                        <a href="#more" onclick="canvasZoomOut();return false">меньше</a>
+                        &nbsp;/&nbsp;
+                        <a href="#less" onclick="canvasZoomIn(); return false">больше<a>
+                    </small>
+                </div>
                 <div id="message"></div>
             </div>
         </div>

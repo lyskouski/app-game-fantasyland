@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasElement.height = Math.floor(rect.height);
     window.oCanvas = canvasElement.getContext('2d');
 });
-window.aConfig = {
+window.aConfig = JSON.parse(localStorage.config || null) || {
     space: 20,
     border: 4,
     scroll: 10,
@@ -295,6 +295,25 @@ window.aConfig = {
         item: '66bb62'
     }
 };
+
+window.canvasZoomIn = function() {
+    window.aConfig.space  *= 1.05;
+    window.aConfig.border *= 1.05;
+    window.aConfig.scroll *= 1.05;
+    updateConfigState();
+};
+
+window.canvasZoomOut = function() {
+    window.aConfig.space  *= 0.95;
+    window.aConfig.border *= 0.95;
+    window.aConfig.scroll *= 0.95;
+    updateConfigState();
+};
+
+function updateConfigState() {
+    localStorage.config = JSON.stringify(window.aConfig);
+    drawMap();
+}
 
 window.canvasMouseMove = function(event) {
     if (window.getSelection) {
