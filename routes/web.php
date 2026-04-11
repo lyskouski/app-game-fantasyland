@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CitadelController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\InfoController;
@@ -20,9 +21,7 @@ Route::post('/cgi/register.php', [LoginController::class, 'register']);
 Route::get('/rules.php', [LoginController::class, 'rules']);
 
 // Navigation: Citadel
-Route::get('/citadel', function () {
-    return view('citadel');
-});
+Route::get('/citadel', [CitadelController::class, 'index']);
 
 // Forum
 Route::get('/cgi/forum_rooms.php', [ForumController::class, 'index']);

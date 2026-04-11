@@ -23,6 +23,6 @@
         </style>
     </head>
     <body>
-        <iframe src="https://www.citadel-liga.info/liga" allowfullscreen></iframe>
+        <iframe src="https://www.citadel-liga.info/liga/{{ $url }}" allowfullscreen></iframe>
     </body>
 </html>
