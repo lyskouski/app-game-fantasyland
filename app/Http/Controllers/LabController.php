@@ -71,11 +71,12 @@ class LabController extends Controller
     protected function init() {
         $loc = $this->get('cgi/ch_who.php', []);
         $locData = (new LabParser)->getLocation($loc);
+        session()->put('token', 'lg:' . $locData['login'] . '|' . session()->getId());
         $data = [
             'action' => 'init',
-            'version' => Defines::PLUGIN_VERSION,
+            'version' => [Defines::PLUGIN_VERSION, Defines::PLUGIN_VERSION],
             'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
-            'user' => 'lg:' . $locData['login'],
+            'token' => session()->get('token'),
         ];
         return $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
     }
@@ -101,6 +102,7 @@ class LabController extends Controller
 
     public function saveToCitadel() {
         $data = request()->post();
+        $data['token'] = session()->get('token');
         $response = $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
         return view('empty', ['data' => $response]);
     }
