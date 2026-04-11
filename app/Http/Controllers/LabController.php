@@ -71,14 +71,17 @@ class LabController extends Controller
     protected function init() {
         $loc = $this->get('cgi/ch_who.php', []);
         $locData = (new LabParser)->getLocation($loc);
-        session()->put('token', 'lg:' . $locData['login'] . '|' . session()->getId());
         $data = [
             'action' => 'init',
             'version' => [Defines::PLUGIN_VERSION, Defines::PLUGIN_VERSION],
             'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
-            'token' => session()->get('token'),
+            'user' => $locData['login'],
         ];
-        return $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+        $result = $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+        if (preg_match("/setToken\('[^']*',\s*'([^']+)'\)/", $result, $matches)) {
+            session()->put('token', $matches[1]);
+        }
+        return $result;
     }
 
     public function sync() {

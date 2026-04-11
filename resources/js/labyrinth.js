@@ -199,14 +199,13 @@ function save(aParams) {
 }
 
 function saveToCitadel(aParams) {
-    const set = ge('cimap').dataset;
+    const dataset = ge('cimap').dataset;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     aParams = {...aParams,
         url: '/cgi/maze_ref.php',
         action: 'coordinates',
         curr: [...aParams.curr, 0, aParams.type == 9 ? 'true' : 'false', 'true )'],
-        version: set.version,
-        user: 'lg:' +  set.login
+        version: dataset.version
     };
     fetch('/labyrinth/citadel/save', {
         method: 'POST',
@@ -218,8 +217,24 @@ function saveToCitadel(aParams) {
     })
         .then(response => response.text())
         .then(text => {
-            // TBD
-            alert(text);
+            const drawMapMatch = text.match(/drawMap\s*\(\s*\{/);
+            if (drawMapMatch) {
+                const startIndex = drawMapMatch.index + drawMapMatch[0].length - 1;
+                let braceCount = 1;
+                let endIndex = startIndex + 1;
+                while (braceCount > 0 && endIndex < text.length) {
+                    if (text[endIndex] === '{') braceCount++;
+                    if (text[endIndex] === '}') braceCount--;
+                    endIndex++;
+                }
+                try {
+                    const jsonStr = text.substring(startIndex, endIndex);
+                    const data = JSON.parse(jsonStr);
+                    drawMap(data);
+                } catch (e) {
+                    alert('Failed to parse drawMap data: ' + e);
+                }
+            }
         })
         .catch(error => alert('Failed to save C-map: ' + error));
 }
@@ -471,6 +486,9 @@ window.drawMap = function(aCurr, aFocus) {
         for (var y in aCurr[x]) {
             if (typeof window.aMap[x] === 'undefined') {
                 window.aMap[x] = {};
+            }
+            if (typeof window.aMap[x][y] !== 'undefined' && window.aMap[x][y].time > aCurr[x][y].time) {
+                continue;
             }
             window.aMap[x][y] = aCurr[x][y];
         }
