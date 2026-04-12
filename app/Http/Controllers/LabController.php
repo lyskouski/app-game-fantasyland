@@ -86,7 +86,6 @@ class LabController extends Controller
 
     public function sync() {
         $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
-        // TODO: authenticate on Citadel
         if (strpos($conn, 'Прохожий') !== false) {
             $this->init();
         }
