@@ -50,6 +50,16 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 5);
 
+        $headers = [
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding: gzip, deflate',
+            'Accept-Language: en-US,en;q=0.9',
+            'Cache-Control: no-cache',
+            'Pragma: no-cache',
+            'Upgrade-Insecure-Requests: 1',
+        ];
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
         curl_setopt($curl, CURLOPT_USERAGENT, $this->browser);
         if ($get) {
             $url .= '?' . $this->convert($get, $convert);
