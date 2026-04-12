@@ -59,7 +59,7 @@
                 <div id="cibuffer" style="display:none"></div>
                 <div>
                     <small>
-                        <a style="float:right" href="/labyrinth/config">Настройки</a>
+                        <a style="float:right;padding-top:2px" href="/labyrinth/config">Настройки</a>
                         Масштаб:
                         <a href="#more" onclick="canvasZoomOut();return false">меньше</a>
                         &nbsp;/&nbsp;

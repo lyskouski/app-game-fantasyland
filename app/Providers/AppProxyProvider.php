@@ -51,9 +51,9 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_MAXREDIRS, 5);
 
         $headers = [
-            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding: gzip, deflate',
-            'Accept-Language: en-US,en;q=0.9',
+        //    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        //    'Accept-Encoding: gzip, deflate',
+            'Accept-Language: ru-RU,ru;q=0.9',
             'Cache-Control: no-cache',
             'Pragma: no-cache',
             'Upgrade-Insecure-Requests: 1',
