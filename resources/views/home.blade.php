@@ -15,7 +15,7 @@
             <!-- native:bottom-nav-item id="settings" icon="settings" label="Цитадель" url="/citadel" / -->
         </native:bottom-nav>
 
-        <native:side-nav gestures-enabled="true">
+        <!-- native:side-nav gestures-enabled="true">
             <native:side-nav-header title="Цитадель" subtitle="Сервисы к игре" icon="home" />
 
             <native:side-nav-item id="fight" label="Анализатор боёв" icon="analytics" url="/citadel?url=fight" />
@@ -81,7 +81,7 @@
                 url="https://www.citadel-liga.info/citadel/todo"
                 open-in-browser="true"
             />
-        </native:side-nav>
+        </native:side-nav -->
 
         <script>window.location = "/cgi/no_combat.php";</script>
     </body>
