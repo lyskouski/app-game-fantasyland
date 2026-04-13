@@ -60,6 +60,10 @@ body {
     border-radius: 4px;
     box-shadow: inset -1px -1px 1px black, inset 1px 1px 1px black, 0px 0px 1px white;
 }
+.main_middle p {
+    margin: 0 2px;
+    padding: 0;
+}
 .main_middle__count {
     float: right;
     font-size: 12px;
