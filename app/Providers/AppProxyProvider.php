@@ -50,8 +50,15 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 5);
 
+        if ($get) {
+            $url .= '?' . $this->convert($get, $convert);
+        }
+
         $parsedUrl = parse_url($url);
         $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+        $path = $parsedUrl['path'] ?? '/';
+        $referer = $baseUrl . $path;
+
         $headers = [
         //    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         //    'Accept-Encoding: gzip, deflate',
@@ -60,23 +67,25 @@ class AppProxyProvider
             'Pragma: no-cache',
             'Upgrade-Insecure-Requests: 1',
             'Origin: ' . $baseUrl,
-            'Referer: ' . $baseUrl . '/',
+            'Referer: ' . $referer,
         ];
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-        curl_setopt($curl, CURLOPT_USERAGENT, $this->browser);
-        if ($get) {
-            $url .= '?' . $this->convert($get, $convert);
+        if ($post) {
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded';
         }
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+        curl_setopt($curl, CURLOPT_USERAGENT, $this->browser);
+
         if ($post) {
             curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_POSTFIELDS, $this->convert($post, $convert));
         }
+
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);
         $result = curl_exec($curl);
