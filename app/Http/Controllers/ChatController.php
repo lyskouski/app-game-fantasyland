@@ -17,4 +17,9 @@ class ChatController extends Controller
         $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
         return view('chat', ['data' => $data]);
     }
+
+    public function clear() {
+        Notification::truncate();
+        return redirect('/chat');
+    }
 }

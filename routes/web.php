@@ -41,6 +41,7 @@ Route::get('/cgi/travel_stop.php', [MainController::class, 'mapStop']);
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 Route::get('/ch/chout.php', [ChatController::class, 'messages']);
+Route::get('/chat/clear', [ChatController::class, 'clear']);
 
 // Mining
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);

@@ -32,7 +32,11 @@
                 <br />
             </div>
             <div class="main_middle">
-                ...
+                <center>
+                    <form method="GET" action="/chat/clear">
+                        <button type="submit" class="button">Очистить</button>
+                    </form>
+                </center>
             </div>
         </div>
         <br />
@@ -55,7 +59,7 @@
             </div>
             <div class="main_middle">
                 @foreach($data as $item)
-                <p><small>[{{ $item->created_at->format('H:i:s') }}] {!! $item->message !!}</small></p>
+                <p><small>[{{ $item->created_at->format('H:i') }}] {!! $item->message !!}</small></p>
                 @endforeach
             </div>
         </div>
