@@ -7,10 +7,6 @@ namespace App\Services;
 class CraftParser
 {
     public function parse(string $html) {
-        $message = '';
-        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
-            $message = $matches[1];
-        }
         $craft = [];
         if (preg_match_all(
             '/<BUTTON[^>]+onClick=\'regimeTo\(([^)]+)\)[^>]*>([^<]+)<\/BUTTON>/ui',
@@ -36,7 +32,7 @@ class CraftParser
                 }
             }
         }
-        return ['craft' => $craft, 'recipes' => $this->getRecipes($html), 'message' => $message];
+        return ['craft' => $craft, 'recipes' => $this->getRecipes($html)];
     }
 
     protected function getRecipes($html) {

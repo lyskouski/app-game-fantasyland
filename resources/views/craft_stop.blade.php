@@ -92,11 +92,6 @@
                 <br />
             </div>
             <div class="main_middle">
-                @if (isset($message) && $message)
-                <div class="message">
-                    {!! $message !!}
-                </div>
-                @endif
                 <p>Доступные рецепты на все уровни:</p>
                 @foreach ($craft as $type)
                 <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">

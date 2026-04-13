@@ -92,11 +92,6 @@
                 <br />
             </div>
             <div class="main_middle">
-                @if (isset($message) && $message)
-                <div class="message">
-                    {!! $message !!}
-                </div>
-                @endif
                 {!! $data !!}
                 @if (isset($timer) && $timer > 0)
                 <br />

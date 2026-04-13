@@ -30,10 +30,6 @@ class PreyParser
         if (preg_match('/InsertTimer2\\s*\\(\\s*(\\d+)/', $html, $matches)) {
             $timer = (int)$matches[1];
         }
-        $message = '';
-        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
-            $message = $matches[1];
-        }
-        return ['data' => $content, 'image' => $image, 'timer' => $timer, 'message' => $message];
+        return ['data' => $content, 'image' => $image, 'timer' => $timer];
     }
 }

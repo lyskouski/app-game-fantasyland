@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Providers\AppProxyProvider;
 use App\Services\InfoParser;
 use App\Services\LabParser;
@@ -24,8 +25,10 @@ class LabController extends Controller
         $info = new InfoParser();
         $loc = $this->get('cgi/ch_who.php', []);
         $locData = $parser->getLocation($loc);
+        Notification::addIfExists($loc);
         $state = $this->get('cgi/maze_ref.php', []);
         $stateData = $parser->getState($state);
+        Notification::addIfExists($state);
         $scrolls = $this->get('cgi/inv_load_items.php', ['tp' => 26, 'dv' => 'd126', 'expand' => true]);
         $potions = $this->get('cgi/inv_load_items.php', ['tp' => 25, 'dv' => 'd125', 'expand' => true]);
         $post = [
@@ -33,6 +36,7 @@ class LabController extends Controller
             '0.y' => rand(1, 10),
         ];
         $html = $this->post('cgi/change_info.php', [], $post);
+        Notification::addIfExists($html);
         return view('labyrinth', [
             ...$locData,
             ...$stateData,
@@ -120,6 +124,7 @@ class LabController extends Controller
     public function move() {
         $content = $this->get('cgi/maze_move.php');
         $content .= $this->get('cgi/maze_ref.php', []);
+        Notification::addIfExists($content);
         if (strpos($content, 'ShowCod()') !== false) {
             $content .= 'captcha[' . $this->captcha(time()) . ']';
         }
@@ -129,25 +134,30 @@ class LabController extends Controller
     public function pickUp() {
         $content = $this->get('cgi/maze_pickup.php');
         $content .= $this->get('cgi/maze_ref.php', []);
+        Notification::addIfExists($content);
         return view('empty', ['data' => $content]);
     }
 
     public function questAction() {
         $content = $this->get('cgi/maze_qaction.php');
+        Notification::addIfExists($content);
         return view('empty', ['data' => $content]);
     }
 
     public function questMain() {
         $content = $this->get('cgi/mc_main.php');
+        Notification::addIfExists($content);
         $hid = $this->get('/cgi/mc_hid.php');
         if (strpos($content, "location.href='mc_hid.php'") !== false) {
            $hid .= $this->get('/cgi/mc_hid.php');
         }
+        Notification::addIfExists($hid);
         return view('labyrinth_quest', (new LabParser)->getQuest($content . $hid));
     }
 
     public function questReply() {
         $html = $this->post('/cgi/mc_hid.php');
+        Notification::addIfExists($html);
         if (strpos($html, 'location.href="no_combat.php"') !== false) {
             return redirect('/cgi/no_combat.php');
         }

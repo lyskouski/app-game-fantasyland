@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\CraftParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
@@ -14,6 +15,7 @@ class MainController extends Controller
         $html = $this->post('cgi/no_combat.php', []);
         $loc = new LocationParser();
         $prey = new PreyParser();
+        Notification::addIfExists($html);
         if (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [
                 ...$loc->onPlace($html),
@@ -55,11 +57,13 @@ class MainController extends Controller
         } else {
             $html = $this->get('cgi/map.php', []);
         }
+        Notification::addIfExists($html);
         return view('main_map', (new LocationParser)->onMap($html));
     }
 
     public function mapStop() {
-        $this->get('cgi/travel_stop.php', []);
+        $html = $this->get('cgi/travel_stop.php', []);
+        Notification::addIfExists($html);
         return $this->index();
     }
 

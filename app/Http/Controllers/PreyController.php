@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\CraftParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
@@ -13,6 +14,7 @@ class PreyController extends MainController
     public function stop() {
         $data = request()->all();
         $html = $this->get('cgi/work_stop.php', $data);
+        Notification::addIfExists($html);
         $loc = new LocationParser();
         if (strpos($html, 'craft_favorite_ref.php') !== false) {
             return view('craft_stop', [
@@ -30,6 +32,7 @@ class PreyController extends MainController
 
     public function run() {
         $html = $this->post('cgi/work_start.php', []);
+        Notification::addIfExists($html);
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
             ...(new PreyParser)->parse($html, $this->captcha(time()))
@@ -38,6 +41,7 @@ class PreyController extends MainController
 
     public function start() {
         $html = $this->get('cgi/work_start.php', []);
+        Notification::addIfExists($html);
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
             ...(new PreyParser)->parse($html, $this->captcha(time()))

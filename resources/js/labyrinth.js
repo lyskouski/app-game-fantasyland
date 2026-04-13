@@ -156,16 +156,6 @@ function parse(text) {
         space.innerHTML = '&nbsp;';
         ge('items').appendChild(space);
     }
-    // Message
-    const messageMatch = text.match(/Syst\s*\(\s*'([^']*)'\s*\)/);
-    if (messageMatch) {
-        const el = document.createElement('div');
-        el.innerHTML = messageMatch[1];
-        ge('message').appendChild(el);
-        setTimeout(() => {
-            ge('message').removeChild(el);
-        }, 5000);
-    }
     // Draw the cell on map
     aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
     aParams.time = Math.floor(new Date().getTime() / 1000);

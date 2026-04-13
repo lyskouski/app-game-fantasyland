@@ -4,10 +4,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
+
 class ChatController extends Controller
 {
     public function index() {
         $data = $this->get('cgi/ch_ref.php', []);
         return view('empty', ['data' => $data]);
+    }
+
+    public function messages() {
+        $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
+        return view('chat', ['data' => $data]);
     }
 }
