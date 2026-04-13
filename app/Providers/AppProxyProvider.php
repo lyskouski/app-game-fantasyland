@@ -50,6 +50,8 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 5);
 
+        $parsedUrl = parse_url($url);
+        $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
         $headers = [
         //    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         //    'Accept-Encoding: gzip, deflate',
@@ -57,6 +59,8 @@ class AppProxyProvider
             'Cache-Control: no-cache',
             'Pragma: no-cache',
             'Upgrade-Insecure-Requests: 1',
+            'Origin: ' . $baseUrl,
+            'Referer: ' . $baseUrl . '/',
         ];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
