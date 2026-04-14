@@ -17,12 +17,13 @@ class Notification extends Model
 
     public static function addIfExists(string $html): void
     {
-        if (preg_match("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
-            $message = $matches[1];
-            self::create([
-                'message' => $message
-            ]);
-            Dialog::toast(strip_tags($message), 'long');
+        if (preg_match_all("/Syst\(\s*'([^']*)'/u", $html, $matches)) {
+            foreach ($matches[1] as $message) {
+                self::create([
+                    'message' => $message
+                ]);
+                Dialog::toast(strip_tags($message), 'long');
+            }
         }
     }
 }

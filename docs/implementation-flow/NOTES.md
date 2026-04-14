@@ -198,3 +198,16 @@ Add this to Map.php:
 
 composer require nativephp/mobile-background-tasks
 php artisan native:plugin:register nativephp/mobile-background-tasks
+
+
+# Install the package
+composer require srwiez/nativephp-mobile-screen
+
+# Publish the plugins provider (first time only)
+php artisan vendor:publish --tag=nativephp-plugins-provider
+
+# Register the plugin
+php artisan native:plugin:register srwiez/nativephp-mobile-screen
+
+# Verify registration
+php artisan native:plugin:list

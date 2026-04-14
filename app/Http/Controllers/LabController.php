@@ -148,7 +148,7 @@ class LabController extends Controller
         $content = $this->get('cgi/mc_main.php');
         Notification::addIfExists($content);
         $hid = $this->get('/cgi/mc_hid.php');
-        if (strpos($content, "location.href='mc_hid.php'") !== false) {
+        if (strpos($content, 'mc_hid.php') !== false) {
            $hid .= $this->get('/cgi/mc_hid.php');
         }
         Notification::addIfExists($hid);
