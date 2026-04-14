@@ -196,3 +196,5 @@ Add this to Map.php:
 > protected $table = 'map';
 
 
+composer require nativephp/mobile-background-tasks
+php artisan native:plugin:register nativephp/mobile-background-tasks
