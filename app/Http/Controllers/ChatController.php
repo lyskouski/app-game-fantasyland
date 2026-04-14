@@ -20,6 +20,6 @@ class ChatController extends Controller
 
     public function clear() {
         Notification::truncate();
-        return redirect('/chat');
+        return redirect('/ch/chout.php');
     }
 }
