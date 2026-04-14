@@ -60,8 +60,8 @@ class AppProxyProvider
         $referer = $baseUrl . $path;
 
         $headers = [
-        //    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        //    'Accept-Encoding: gzip, deflate',
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding: gzip, deflate',
             'Accept-Language: ru-RU,ru;q=0.9',
             'Cache-Control: no-cache',
             'Pragma: no-cache',
@@ -75,6 +75,7 @@ class AppProxyProvider
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_ENCODING, '');
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -89,6 +90,7 @@ class AppProxyProvider
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->fcurl);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->fcurl);
         $result = curl_exec($curl);
+        curl_close($curl);
         return $convert ? $this->convertEncoding($result, 'cp1251', 'UTF-8') : $result;
     }
 }
