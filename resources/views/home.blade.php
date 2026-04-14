@@ -11,7 +11,7 @@
             <native:bottom-nav-item id="profile" icon="person" label="Профиль" url="/cgi/show_info.php" />
             <native:bottom-nav-item id="home" icon="home" label="Главная" url="/cgi/no_combat.php" :active="true" />
             <native:bottom-nav-item id="chat" icon="chat" label="Сообщения" url="/ch/chout.php" />
-            <native:bottom-nav-item id="forum" icon="group" label="Форум" url="/cgi/forum_rooms.php" />
+            <native:bottom-nav-item id="forum" icon="people" label="Форум" url="/cgi/forum_rooms.php" />
             <!-- native:bottom-nav-item id="settings" icon="settings" label="Цитадель" url="/citadel" / -->
         </native:bottom-nav>
 
