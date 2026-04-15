@@ -1,3 +1,5 @@
+import { Device } from '#nativephp';
+
 Number.prototype.in_array = String.prototype.in_array = function (a) {
     if (a.length) {
         for (var i = 0; i < a.length; i++) {
@@ -76,6 +78,7 @@ function parse(text) {
         ge('cod').style.display = 'block';
         ge('codInput').value = '';
         ge('codInput').focus();
+        Device.vibrate();
     } else {
         ge('cod').style.display = 'none';
     }
@@ -259,10 +262,12 @@ var maxStamina = 100;
 var tm;
 
 function updateStamina() {
+    ge('stamina').innerHTML = stamina++;
     if (stamina > maxStamina) {
         stamina = maxStamina;
+        Device.vibrate();
+        return;
     }
-    ge('stamina').innerHTML = stamina++;
     tm = setTimeout(updateStamina, 1000);
 }
 

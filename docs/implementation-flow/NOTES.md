@@ -211,3 +211,15 @@ php artisan native:plugin:register srwiez/nativephp-mobile-screen
 
 # Verify registration
 php artisan native:plugin:list
+
+To use the Native JavaScript library, you must install the plugin in your package.json file. Add the following section to the JSON:
+
+{
+    "dependencies": {
+        ...
+    },
+    "imports": {
+        "#nativephp": "./vendor/nativephp/mobile/resources/dist/native.js"
+    }
+}
+
