@@ -81,9 +81,22 @@ class LabController extends Controller
             'loc' => sprintf('%03d_%03d', $locData['loc'], $locData['place']),
             'user' => $locData['login'],
         ];
-        $result = $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
-        if (preg_match("/setToken\('[^']*',\s*'([^']+)'\)/", $result, $matches)) {
+        $result = '{}';
+        $conn = $this->cit->boot(Defines::CITADEL . 'plugin', [], $data, false);
+        if (preg_match("/setToken\('[^']*',\s*'([^']+)'\)/", $conn, $matches)) {
             session()->put('token', $matches[1]);
+            $cartInit = [
+                'url' => '/cgi/no_combat.php',
+                'action' => 'mapper',
+                'time' => time(),
+                'version' => Defines::PLUGIN_VERSION,
+                'token' => $matches[1],
+            ];
+            $cart = $this->cit->boot(Defines::CITADEL . 'plugin', [], $cartInit, false);
+
+            if (preg_match('/window\.usc\.temp\.aMap\s*=\s*({\s*[\s\S]*?});/', $cart, $mapMatches)) {
+                $result = $mapMatches[1];
+            }
         }
         return $result;
     }

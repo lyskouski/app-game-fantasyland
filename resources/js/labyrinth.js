@@ -163,16 +163,13 @@ function parse(text) {
     aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
     aParams.time = Math.floor(new Date().getTime() / 1000);
     drawMap({[aParams.curr[1]]: {[aParams.curr[2]]: aParams}});
-    save(aParams);
-    if (localStorage.citadel_sync === '1') {
-        saveToCitadel(aParams);
-    }
+    save(aParams).then((_) => saveToCitadel(aParams));
 }
 
 function save(aParams) {
     var o = ge('cimap');
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    fetch('/labyrinth/save', {
+    return fetch('/labyrinth/save', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -192,6 +189,9 @@ function save(aParams) {
 }
 
 function saveToCitadel(aParams) {
+    if (localStorage.citadel_sync != '1') {
+        return;
+    }
     const dataset = ge('cimap').dataset;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     aParams = {...aParams,
@@ -200,7 +200,7 @@ function saveToCitadel(aParams) {
         curr: [...aParams.curr, 0, aParams.type == 9 ? 'true' : 'false', 'true )'],
         version: dataset.version
     };
-    fetch('/labyrinth/citadel/save', {
+    return fetch('/labyrinth/citadel/save', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -234,7 +234,10 @@ function saveToCitadel(aParams) {
 
 function initToCitadel() {
     if (localStorage.citadel_sync === '1') {
-        fetch('/labyrinth/citadel/init').catch(error => alert('Failed to init C-map: ' + error));
+        fetch('/labyrinth/citadel/init')
+            .then(response => response.text())
+            .then(text => drawMap(JSON.parse(text)))
+            .catch(error => alert('Failed to init C-map: ' + error));
     }
 }
 document.addEventListener('DOMContentLoaded', initToCitadel);
