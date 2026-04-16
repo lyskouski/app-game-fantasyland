@@ -59,7 +59,7 @@
             </div>
             <div class="main_middle">
                 @foreach($data as $item)
-                <p><small>[{{ $item->created_at->format('H:i') }}] {!! $item->message !!}</small></p>
+                <p class="item"><small>[{{ $item->created_at->format('H:i') }}] {!! $item->message !!}</small></p>
                 @endforeach
             </div>
         </div>

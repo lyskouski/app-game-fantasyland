@@ -52,6 +52,7 @@ Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
 // Personal info
 Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
 Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
+Route::post('/cgi/add_um_effect.php', [InfoController::class, 'addUmEffect']);
 // Personal info: Mail
 Route::get('/cgi/msgs_read.php', [InfoController::class, 'mailIncome']);
 Route::get('/cgi/letters_read.php', [InfoController::class, 'mailOutcome']);

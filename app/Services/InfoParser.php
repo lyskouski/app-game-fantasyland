@@ -510,4 +510,13 @@ class InfoParser
         }
         return ['items' => $items];
     }
+
+    public function getMoney(string $html): string
+    {
+        $money = '';
+        if (preg_match('/<span id=\'umValue\'>([^<]+)<\/span>/u', $html, $moneyMatch)) {
+            $money = trim($moneyMatch[1]);
+        }
+        return $money;
+    }
 }

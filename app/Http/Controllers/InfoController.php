@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+// use App\Models\Notification;
 use App\Services\InfoParser;
 
 class InfoController extends Controller
@@ -56,7 +57,9 @@ class InfoController extends Controller
             case self::TYPE_EFFECTS:
                 return view('info_effects', $this->parser->getEffects($html));
             case self::TYPE_RUNES:
-                return view('info_runes');
+                $money = $this->parser->getMoney($html);
+                // Notification::addIfExists($initial);
+                return view('info_runes', ['money' => $money]);
             case self::TYPE_RATINGS:
                 return view('info_ratings', $this->parser->getRatings($html));
             default:
@@ -128,5 +131,11 @@ class InfoController extends Controller
     public function loadItems() {
         $html = $this->get('cgi/inv_load_items.php');
         return view('info_stuff_items', $this->parser->getStuffItems($html));
+    }
+
+    public function addUmEffect() {
+        $data = request()->post();
+        $this->get('cgi/add_um_effect.php', $data);
+        return $this->indexPost([self::OPTION => self::TYPE_RUNES]);
     }
 }
