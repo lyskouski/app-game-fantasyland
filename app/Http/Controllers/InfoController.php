@@ -4,8 +4,8 @@
 
 namespace App\Http\Controllers;
 
-// use App\Models\Notification;
 use App\Services\InfoParser;
+use Native\Mobile\Facades\Dialog;
 
 class InfoController extends Controller
 {
@@ -58,7 +58,6 @@ class InfoController extends Controller
                 return view('info_effects', $this->parser->getEffects($html));
             case self::TYPE_RUNES:
                 $money = $this->parser->getMoney($html);
-                // Notification::addIfExists($initial);
                 return view('info_runes', ['money' => $money]);
             case self::TYPE_RATINGS:
                 return view('info_ratings', $this->parser->getRatings($html));
@@ -136,6 +135,7 @@ class InfoController extends Controller
     public function addUmEffect() {
         $data = request()->post();
         $this->get('cgi/add_um_effect.php', $data);
+        Dialog::toast('Руна успешно куплена!', 'long');
         return $this->indexPost([self::OPTION => self::TYPE_RUNES]);
     }
 }

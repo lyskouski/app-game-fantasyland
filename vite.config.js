@@ -8,10 +8,11 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/craft.css',
-                'resources/css/labyrinth.css',
                 'resources/css/index.css',
+                'resources/css/labyrinth.css',
                 'resources/js/app.js',
                 'resources/js/forum.js',
+                'resources/js/info_runes.js',
                 'resources/js/labyrinth.js',
                 'resources/js/ping.js',
                 'resources/js/timer.js'
