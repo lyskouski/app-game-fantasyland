@@ -86,5 +86,53 @@
             </div>
         </div>
         <br />
+        @if (isset($buy))
+        <div class="main">
+            <div class="main_top">
+                <table cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
+                        </td>
+                        <td valign="top" class="cell_title">
+                            <small><b>&nbsp;Магазин&nbsp;</b></small>
+                        </td>
+                        <td>
+                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
+                        </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div class="main_middle">
+                <table>
+                @foreach ($buy as $i => $item)
+                <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
+                    <td>
+                        <img src="https://www.fantasyland.ru/{{ $item['img'] }}" />
+                    </td>
+                    <td>
+                        <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
+                        <span id="d{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
+                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" />
+                    </td>
+                    <td>
+                        <form method="POST" action="/cgi/buy.php">
+                            @csrf
+                            <input type="hidden" name="good_id" value="{{ $item['good_id'] }}" />
+                            <input type="hidden" name="shp_id" value="{{ $item['shp_id'] ?? '' }}" />
+                            <input type="hidden" name="good_type" value="{{ $item['good_type'] ?? '' }}" />
+                            <input type="hidden" name="price_quest" value="{{ $item['price_quest'] ?? '' }}" />
+                            <input type="hidden" name="capCode" value="{{ $item['capCode'] ?? '' }}" />
+                            <center><input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="" /></center>
+                            <input type="submit" value="Купить" />
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+                </table>
+            </div>
+        </div>
+        @endif
     </body>
 </html>

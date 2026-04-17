@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Services\CraftParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
+use App\Services\StoreParser;
 
 class MainController extends Controller
 {
@@ -43,11 +44,26 @@ class MainController extends Controller
             strpos($html, '<image height=150 width=150') !== false ||
             strpos($html, "window.open('loc_desc.php") !== false
         ) {
-            return view('main_place', $loc->onPlace($html));
+            return $this->place($html);
         } elseif (strpos($html, 'travel_start.php') !== false) {
             return $this->map();
         }
         return view('generic', ['data' => $html]);
+    }
+
+    public function place($html = null) {
+        $data = (new LocationParser)->onPlace($html);
+        if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {
+            $store = new StoreParser();
+            $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['sid' => $matches[1]]);
+            $data['debug'] = $htmlBuy;
+            $data['buy'] = $store->parseBuyStore($htmlBuy);
+            if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
+                $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);
+                $data['sell'] = $store->parseSellStore($htmlSell);
+            }
+        }
+        return view('main_place', $data);
     }
 
     public function map() {
