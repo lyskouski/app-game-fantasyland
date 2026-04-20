@@ -109,3 +109,30 @@ a:active {
 .tiny {
     font-size: 8px;
 }
+.tab {
+    overflow: hidden;
+}
+.tablinks {
+    float: left;
+    outline: none;
+    cursor: pointer;
+    margin-top: 4px;
+    padding: 10px 16px;
+    transition: 0.3s;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    background-image: url("https://www.fantasyland.ru/images/pic/bg.jpg");
+    box-shadow: inset 1px -1px 1px black, inset -1px 1px 1px black, 0px 0px 1px white;
+    border: none;
+    border-radius: 6px 6px 0 0;
+}
+.tablinks:visited {
+    color: white;
+}
+.tablinks.active {
+    background-image: none;
+    padding-top: 14px;
+    margin-top: 0;
+    box-shadow: inset 1px 1px 1px black, inset -1px 1px 1px black, 0px 1px 1px white;
+}

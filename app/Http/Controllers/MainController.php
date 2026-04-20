@@ -56,7 +56,6 @@ class MainController extends Controller
         if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {
             $store = new StoreParser();
             $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['sid' => $matches[1]]);
-            $data['debug'] = $htmlBuy;
             $data['buy'] = $store->parseBuyStore($htmlBuy);
             if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
                 $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);

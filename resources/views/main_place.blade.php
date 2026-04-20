@@ -105,7 +105,12 @@
                 <br />
             </div>
             <div class="main_middle">
-                <table>
+                <div class="tab">
+                    <a href="#" class="tablinks active" onclick="openTab(event, 'buy')">Покупка</a>
+                    <a href="#" class="tablinks" onclick="openTab(event, 'sell')">Продажа</a>
+                </div>
+                <div class="clear"></div>
+                <table id="buy_table">
                 @foreach ($buy as $i => $item)
                 <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
                     <td>
@@ -114,7 +119,7 @@
                     <td>
                         <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
                         <span id="d{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
-                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" />
+                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                     </td>
                     <td>
                         <form method="POST" action="/cgi/buy.php">
@@ -124,8 +129,10 @@
                             <input type="hidden" name="good_type" value="{{ $item['good_type'] ?? '' }}" />
                             <input type="hidden" name="price_quest" value="{{ $item['price_quest'] ?? '' }}" />
                             <input type="hidden" name="capCode" value="{{ $item['capCode'] ?? '' }}" />
-                            <center><input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="" /></center>
-                            <input type="submit" value="Купить" />
+                            <center>
+                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="" /><br />
+                                <input type="submit" value="Купить" />
+                            </center>
                         </form>
                     </td>
                 </tr>
