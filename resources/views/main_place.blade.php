@@ -130,8 +130,8 @@
                             <input type="hidden" name="price_quest" value="{{ $item['price_quest'] ?? '' }}" />
                             <input type="hidden" name="capCode" value="{{ $item['capCode'] ?? '' }}" />
                             <center>
-                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('b{{ $item['good_id'] }}', this.value)" /><br />
-                                <input type="submit" value="Купить" />
+                                <input type="submit" value="Купить" /><br />
+                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('b{{ $item['good_id'] }}', this.value)" />
                             </center>
                         </form>
                     </td>
@@ -155,8 +155,8 @@
                             <input type="hidden" name="good_id" value="{{ $item['good_id'] }}" />
                             <input type="hidden" name="shp_id" value="{{ $item['shp_id'] ?? '' }}" />
                             <center>
-                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['good_id'] }}', this.value)" /><br />
-                                <input type="submit" value="Продать" />
+                                <input type="submit" value="Продать" /><br />
+                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['good_id'] }}', this.value)" />
                             </center>
                         </form>
                     </td>
