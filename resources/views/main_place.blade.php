@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css'])
+        @vite(['resources/css/index.css', 'resources/js/main_place.js'])
     </head>
     <body>
         <br />
@@ -106,11 +106,11 @@
             </div>
             <div class="main_middle">
                 <div class="tab">
-                    <a href="#" class="tablinks active" onclick="openTab(event, 'buy')">Покупка</a>
-                    <a href="#" class="tablinks" onclick="openTab(event, 'sell')">Продажа</a>
+                    <a href="#buy" class="tablinks @if(isset($tab) && $tab == 'buy') active @endif" onclick="openTab('buy_table', this);return false;">Покупка</a>
+                    <a href="#sell" class="tablinks @if(isset($tab) && $tab == 'sell') active @endif" onclick="openTab('sell_table', this);return false;">Продажа</a>
                 </div>
                 <div class="clear"></div>
-                <table id="buy_table">
+                <table class="tabcontent" id="buy_table" style="display: @if(isset($tab) && $tab == 'buy') table @else none @endif;">
                 @foreach ($buy as $i => $item)
                 <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
                     <td>
@@ -118,7 +118,7 @@
                     </td>
                     <td>
                         <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
-                        <span id="d{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
+                        <span data-cost="{{ $item['cost'] }}" id="b{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
                         <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                     </td>
                     <td>
@@ -130,8 +130,33 @@
                             <input type="hidden" name="price_quest" value="{{ $item['price_quest'] ?? '' }}" />
                             <input type="hidden" name="capCode" value="{{ $item['capCode'] ?? '' }}" />
                             <center>
-                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="" /><br />
+                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('b{{ $item['good_id'] }}', this.value)" /><br />
                                 <input type="submit" value="Купить" />
+                            </center>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+                </table>
+                <table class="tabcontent" id="sell_table" style="display: @if(isset($tab) && $tab == 'sell') table @else none @endif;">
+                @foreach ($sell as $i => $item)
+                <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
+                    <td>
+                        <img src="https://www.fantasyland.ru/{{ $item['img'] }}" />
+                    </td>
+                    <td>
+                        <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
+                        <span data-cost="{{ $item['cost'] }}" id="s{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
+                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
+                    </td>
+                    <td>
+                        <form method="POST" action="/cgi/sell_good_to_shop.php">
+                            @csrf
+                            <input type="hidden" name="good_id" value="{{ $item['good_id'] }}" />
+                            <input type="hidden" name="shp_id" value="{{ $item['shp_id'] ?? '' }}" />
+                            <center>
+                                <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['good_id'] }}', this.value)" /><br />
+                                <input type="submit" value="Продать" />
                             </center>
                         </form>
                     </td>

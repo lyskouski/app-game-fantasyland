@@ -53,6 +53,7 @@ class MainController extends Controller
 
     public function place($html = null) {
         $data = (new LocationParser)->onPlace($html);
+        $data['tab'] = request()->input('tab', 'buy');
         if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {
             $store = new StoreParser();
             $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['sid' => $matches[1]]);

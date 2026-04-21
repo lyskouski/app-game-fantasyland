@@ -9,6 +9,7 @@ use App\Http\Controllers\LabController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PreyController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -97,7 +98,8 @@ Route::get('/cgi/maze_pickup.php', [LabController::class, 'pickUp']);
 // State-owned stores
 //Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'buyList']);
 //Route::get('/cgi/v_trade_show_goods_for_sale.php', [StoreController::class, 'saleList']);
-//Route::get('/cgi/buy.php', [StoreController::class, 'buyItem']);
+Route::post('/cgi/buy.php', [StoreController::class, 'buyItem']);
+Route::post('/cgi/sell_good_to_shop.php', [StoreController::class, 'sellItem']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

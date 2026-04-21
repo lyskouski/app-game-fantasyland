@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/forum.js',
                 'resources/js/info_runes.js',
                 'resources/js/labyrinth.js',
+                'resources/js/main_place.js',
                 'resources/js/ping.js',
                 'resources/js/timer.js'
             ],
