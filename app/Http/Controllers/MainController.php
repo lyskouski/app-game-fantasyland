@@ -53,11 +53,12 @@ class MainController extends Controller
 
     public function place($html = null) {
         $data = (new LocationParser)->onPlace($html);
-        $data['tab'] = request()->input('tab', 'buy');
+        $data['tab'] = session()->pull('tab', 'buy');
         if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {
             $store = new StoreParser();
             $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['sid' => $matches[1]]);
             $data['buy'] = $store->parseBuyStore($htmlBuy);
+            // $data['captcha'] = $this->captcha(time());
             if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
                 $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);
                 $data['sell'] = $store->parseSellStore($htmlSell);

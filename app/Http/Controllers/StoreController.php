@@ -11,12 +11,14 @@ class StoreController extends MainController
     public function buyItem() {
         $html = $this->post('cgi/buy.php');
         Notification::addIfExists($html);
-        return redirect('/cgi/no_combat.php?tab=buy');
+        session(['tab' => 'buy']);
+        return redirect('/cgi/no_combat.php');
     }
 
     public function sellItem() {
         $html = $this->post('cgi/sell_good_to_shop.php');
         Notification::addIfExists($html);
-        return redirect('/cgi/no_combat.php?tab=sell');
+        session(['tab' => 'sell']);
+        return redirect('/cgi/no_combat.php');
     }
 }
