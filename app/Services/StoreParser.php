@@ -16,19 +16,20 @@ class StoreParser
                 $goodId = $match[1];
                 $rowContent = $match[0];
 
-                $item = [];
-                $item['good_id'] = $goodId;
+                $item = [
+                    'good_id' => $goodId,
+                ];
 
-                // Extract image src
-                if (preg_match('#src="([^"]+?\.(gif|jpg|png))"#i', $rowContent, $m)) {
+                // Extract image src - handles both single and double quotes
+                if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
                     $img = preg_replace('#^\.\./+#', '', $m[1]);
                     $item['img'] = $img;
                 }
 
-                // Extract count and title: (N)&nbsp;<b>Title</b>
-                if (preg_match('#\((\d+)\)\s*&nbsp;\s*<b>([^<]+)</b>#i', $rowContent, $m)) {
+                // Extract count and title: (N)&nbsp;<b>Title</b> or with tags like <br>
+                if (preg_match('#\((\d+)\)\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
                     $item['count'] = $m[1];
-                    $item['title'] = str_replace('&nbsp;', ' ', $m[2]);
+                    $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
                 }
 
                 // Extract cost from div id=d{goodId}
@@ -78,19 +79,20 @@ class StoreParser
                 $goodId = $match[1];
                 $rowContent = $match[0];
 
-                $item = [];
-                $item['good_id'] = $goodId;
+                $item = [
+                    'good_id' => $goodId,
+                ];
 
-                // Extract image src
-                if (preg_match('#src="([^"]+?\.(gif|jpg|png))"#i', $rowContent, $m)) {
+                // Extract image src - handles both single and double quotes
+                if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
                     $img = preg_replace('#^\.\./+#', '', $m[1]);
                     $item['img'] = $img;
                 }
 
-                // Extract count and title: [N]&nbsp;<b>Title</b> (square brackets for sell store)
-                if (preg_match('#\[(\d+)\]\s*&nbsp;\s*<b>([^<]+)</b>#i', $rowContent, $m)) {
+                // Extract count and title: [N]&nbsp;<b>Title</b> or with tags like <br> (square brackets for sell store)
+                if (preg_match('#\[(\d+)\]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
                     $item['count'] = $m[1];
-                    $item['title'] = str_replace('&nbsp;', ' ', $m[2]);
+                    $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
                 }
 
                 // Extract cost from div id=d{goodId}
