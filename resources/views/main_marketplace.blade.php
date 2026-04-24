@@ -79,7 +79,6 @@
             </div>
         </div>
         <br />
-        @if (isset($buy))
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -117,6 +116,6 @@
                 </div>
             </div>
         </div>
-        @endif
+        <br />
     </body>
 </html>

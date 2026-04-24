@@ -26,14 +26,14 @@ class StoreParser
                     $item['img'] = $img;
                 }
 
-                // Extract count and title: (N)&nbsp;<b>Title</b> or with tags like <br>
-                if (preg_match('#\((\d+)\)\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
+                // Extract count and title: (N)&nbsp;<b>Title</b> or [N]&nbsp;<b>Title</b> or with tags like <br>
+                if (preg_match('#[\(\[](\d+)[\)\]]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
                     $item['count'] = $m[1];
                     $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
                 }
 
-                // Extract cost from div id=d{goodId}
-                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+)</div>#i", $rowContent, $m)) {
+                // Extract cost from div id=d{goodId} - supports both integers and decimals (e.g., "5.1" or "5")
+                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
                     $item['cost'] = $m[1];
                 }
 
@@ -95,8 +95,8 @@ class StoreParser
                     $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
                 }
 
-                // Extract cost from div id=d{goodId}
-                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+)</div>#i", $rowContent, $m)) {
+                // Extract cost from div id=d{goodId} - supports both integers and decimals (e.g., "5.1" or "5")
+                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
                     $item['cost'] = $m[1];
                 }
 

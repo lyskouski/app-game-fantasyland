@@ -16,6 +16,7 @@ class MainController extends Controller
         $html = $this->post('cgi/no_combat.php', []);
         $loc = new LocationParser();
         $prey = new PreyParser();
+        // throw new \Exception('Unknown page: ' . $html);
         Notification::addIfExists($html);
         if (strpos($html, 'work_stop.php') !== false) {
             return view('prey_start', [
@@ -37,7 +38,7 @@ class MainController extends Controller
             return redirect('/labyrinth');
         } elseif (strpos($html, 'src="mc_main.php"') !== false) {
             return redirect('/cgi/mc_main.php');
-        } elseif (strpos($html, "href='v_trade_load_all.php'") !== false) {
+        } elseif (strpos($html, "action='v_trade_search.php'") !== false) {
             return $this->marketplace($html);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));

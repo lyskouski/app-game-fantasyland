@@ -106,11 +106,13 @@
             </div>
             <div class="main_middle">
                 <div class="tab">
-                    <a href="#buy" class="tablinks @if(isset($tab) && $tab == 'buy') active @endif" onclick="openTab('buy_table', this);return false;">Покупка</a>
+                    <a href="#buy" class="tablinks @if(isset($tab) && $tab == 'buy' || !isset($sell)) active @endif" onclick="openTab('buy_table', this);return false;">Покупка</a>
+                    @if (isset($sell))
                     <a href="#sell" class="tablinks @if(isset($tab) && $tab == 'sell') active @endif" onclick="openTab('sell_table', this);return false;">Продажа</a>
+                    @endif
                 </div>
                 <div class="clear"></div>
-                <table class="tabcontent" id="buy_table" style="display: @if(isset($tab) && $tab == 'buy') table @else none @endif;">
+                <table class="tabcontent" id="buy_table" style="display: @if(isset($tab) && $tab == 'buy' || !isset($sell)) table @else none @endif;">
                 @foreach ($buy as $i => $item)
                 <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
                     <td>
@@ -138,6 +140,7 @@
                 </tr>
                 @endforeach
                 </table>
+                @if (isset($sell))
                 <table class="tabcontent" id="sell_table" style="display: @if(isset($tab) && $tab == 'sell') table @else none @endif;">
                 @foreach ($sell as $i => $item)
                 <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
@@ -163,6 +166,7 @@
                 </tr>
                 @endforeach
                 </table>
+                @endif
             </div>
         </div>
         @endif
