@@ -111,7 +111,7 @@
                 </div>
                 <div class="tabcontent" id="tent_table" style="display: @if($tab == 'tent') block @else none @endif;">
                 @foreach ($tent as $item)
-                    <p><a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{{ $item['name'] }}</a></p>
+                    <p><a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{!! $item['name'] !!}</a></p>
                 @endforeach
                 </div>
             </div>
