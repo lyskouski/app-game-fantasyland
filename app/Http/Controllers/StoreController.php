@@ -5,6 +5,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Services\LocationParser;
+use App\Services\StoreParser;
 
 class StoreController extends MainController
 {
@@ -20,5 +22,19 @@ class StoreController extends MainController
         Notification::addIfExists($html);
         session(['tab' => 'sell']);
         return redirect('/cgi/no_combat.php');
+    }
+
+    public function tent() {
+        $html = $this->get('cgi/no_combat.php', []);
+        $data = (new LocationParser)->onPlace($html);
+        $data['tab'] = session()->pull('tab', 'buy');
+        $store = new StoreParser();
+        $htmlBuy = $this->get('cgi/v_trade_load_shop.php');
+        $data['buy'] = $store->parseBuyStore($htmlBuy);
+        if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
+            $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);
+            $data['sell'] = $store->parseSellStore($htmlSell);
+        }
+        return view('main_place', $data);
     }
 }

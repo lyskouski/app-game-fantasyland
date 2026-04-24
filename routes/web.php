@@ -95,11 +95,12 @@ Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::get('/cgi/technical_lab_info.php', [LabController::class, 'technicalInfo']);
 Route::get('/cgi/maze_pickup.php', [LabController::class, 'pickUp']);
 
-// State-owned stores
+// Marketplace (tents)
 //Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'buyList']);
 //Route::get('/cgi/v_trade_show_goods_for_sale.php', [StoreController::class, 'saleList']);
 Route::post('/cgi/buy.php', [StoreController::class, 'buyItem']);
 Route::post('/cgi/sell_good_to_shop.php', [StoreController::class, 'sellItem']);
+Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'tent']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

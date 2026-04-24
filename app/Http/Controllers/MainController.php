@@ -37,6 +37,8 @@ class MainController extends Controller
             return redirect('/labyrinth');
         } elseif (strpos($html, 'src="mc_main.php"') !== false) {
             return redirect('/cgi/mc_main.php');
+        } elseif (strpos($html, "href='v_trade_load_all.php'") !== false) {
+            return $this->marketplace($html);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
         } elseif (
@@ -51,7 +53,16 @@ class MainController extends Controller
         return view('generic', ['data' => $html]);
     }
 
-    public function place($html = null) {
+    protected function marketplace($html) {
+        $data = (new LocationParser)->onPlace($html);
+        $data['tab'] = session()->pull('tab', 'tent');
+        $store = new StoreParser();
+        $htmlTent = $this->get('cgi/v_trade_load_all.php', []);
+        $data['tent'] = $store->parseTentStore($htmlTent);
+        return view('main_marketplace', $data);
+    }
+
+    protected function place($html = null) {
         $data = (new LocationParser)->onPlace($html);
         $data['tab'] = session()->pull('tab', 'buy');
         if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {

@@ -120,4 +120,24 @@ class StoreParser
 
         return $items;
     }
+
+    public function parseTentStore(string $html) {
+        $items = [];
+        if (preg_match_all('#<OPTION[^>]*value=[\'"]?(\d+)[\'"]?[^>]*>([^<]*)</OPTION>#i', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $id = $match[1];
+                $name = trim($match[2]);
+
+                // Skip the default "---" option
+                if ($name !== '---') {
+                    $items[] = [
+                        'id' => $id,
+                        'name' => $name,
+                    ];
+                }
+            }
+        }
+
+        return $items;
+    }
 }
