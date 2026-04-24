@@ -31,6 +31,7 @@ class StoreController extends MainController
         $store = new StoreParser();
         $htmlBuy = $this->get('cgi/v_trade_load_shop.php');
         $data['buy'] = $store->parseBuyStore($htmlBuy);
+        $data['title_tent'] = $store->parseTitle($htmlBuy);
         if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
             $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);
             $data['sell'] = $store->parseSellStore($htmlSell);

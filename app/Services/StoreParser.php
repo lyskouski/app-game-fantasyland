@@ -6,6 +6,16 @@ namespace App\Services;
 
 class StoreParser
 {
+    public function parseTitle(string $html) {
+        // Extract shop name and owner from: <B>Name</B> <B>(count)</B> — владелец owner
+        if (preg_match('#<B>([\s\S]*?)</B>\s*<B>\(\d+\)</B>\s*—\s*владелец\s+(.+?)<#i', $html, $m)) {
+            $name = $m[1];
+            $owner = $m[2];
+            return "{$name} - владелец {$owner}";
+        }
+        return '';
+    }
+
     public function parseBuyStore(string $html) {
         $items = [];
 
