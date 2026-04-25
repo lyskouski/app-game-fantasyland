@@ -43,3 +43,34 @@ window.loadPrice = function(goodId, shpId) {
         })
         .catch(error => console.error('Error fetching price:', error));
 }
+
+window.submitBuyForm = function(form) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    fetch('/cgi/buy.php', {
+        method: 'POST',
+        body: formData
+    })
+    .catch(error => console.error('Error:', error));
+    return false;
+}
+
+window.submitSellForm = function(form) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    fetch('/cgi/sell_good_to_shop.php', {
+        method: 'POST',
+        body: formData
+    })
+    .catch(error => console.error('Error:', error));
+    return false;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.buy-form').forEach(form => {
+        form.addEventListener('submit', function(e) { submitBuyForm(this); });
+    });
+    document.querySelectorAll('.sell-form').forEach(form => {
+        form.addEventListener('submit', function(e) { submitSellForm(this); });
+    });
+});
