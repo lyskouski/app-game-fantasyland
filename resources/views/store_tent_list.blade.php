@@ -102,17 +102,63 @@
             </div>
             <div class="main_middle">
                 <table width="100%" colspacing="0" cellpadding="0">
-                    @foreach ($shops as $i => $item)
-                    <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
-                        <td>
-                            {{ $item['name'] }}
+                    <tr class="colored">
+                        <th align="left">
+                            Название
+                        </th>
+                        <th align="center">
+                            &nbsp;<a href="#buy">Покупка</a>&nbsp;
+                        </th>
+                        <th align="center">
+                            &nbsp;<a href="#sell">Продажа</a>&nbsp;
+                        </th>
+                    </tr>
+                    @foreach ($shops as $item)
+                    <tr class="colored">
+                        <td valign="top">
+                            <a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{{ $item['name'] }}</a><br />
+                            <small>Кол-во: {{ $item['count'] }}</small>
                         </td>
                         <td align="center">
-                            купить
+                            <small>
+                                <span id="b{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
+                            </small>
+                            <br />
+                            <form method="POST" action="/cgi/buy.php">
+                                @csrf
+                                <input type="hidden" name="good_id" value="{{ $id }}" />
+                                <input type="hidden" name="shp_id" value="{{ $item['id'] ?? '' }}" />
+                                <input type="hidden" name="good_type" value="-1" />
+                                <input type="hidden" name="price_quest" value="" />
+                                <input type="hidden" name="capCode" value="" />
+                                <center>
+                                    <input type="submit" value="Купить" /><br />
+                                    <input type="text" name="number" value="1" size="3" onkeyup="updateCost('b{{ $item['id'] }}', this.value)" />
+                                </center>
+                            </form>
                         </td>
-                        <td align="center">
-                            продать
+                        <td align="center" id="i{{ $item['id'] }}">
+                            <small>
+                                <span id="s{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
+                            </small>
+                            <br />
+                            <form method="POST" action="/cgi/sell_good_to_shop.php">
+                                @csrf
+                                <input type="hidden" name="good_id" value="{{ $id }}" />
+                                <input type="hidden" name="shp_id" value="{{ $item['id'] ?? '' }}" />
+                                <center>
+                                    <input type="submit" value="Продать" /><br />
+                                    <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['id'] }}', this.value)" />
+                                </center>
+                            </form>
                         </td>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                window.loadPrice({{ $id }}, {{ $item['id'] }});
+                            });
+                        </script>
                     </tr>
                     @endforeach
                 </table>

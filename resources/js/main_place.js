@@ -20,3 +20,22 @@ window.filterTents = function(query) {
         item.style.display = name.includes(lowerQuery) ? '' : 'none';
     });
 }
+
+window.loadPrice = function(goodId, shpId) {
+    fetch(`/store/price?id=${goodId}&shop=${shpId}`)
+        .then(response => response.json())
+        .then(data => {
+            const buyElement = document.getElementById(`b${shpId}`);
+            buyElement.dataset.cost = data.buy;
+            buyElement.textContent = data.buy;
+            if (parseInt(data.sell, 10) > 0) {
+                const sellElement = document.getElementById(`s${shpId}`);
+                sellElement.dataset.cost = data.sell;
+                sellElement.textContent = data.sell;
+            } else {
+                const el = document.getElementById(`i${shpId}`);
+                el.innerHTML = '---';
+            }
+        })
+        .catch(error => console.error('Error fetching price:', error));
+}

@@ -49,4 +49,30 @@ class StoreController extends MainController
         $data['shops'] = $store->parseTents($htmlShops);
         return view('store_tent_list', $data);
     }
+
+    public function priceJson() {
+        $goodId = request()->input('id');
+        $shopId = request()->input('shop');
+        $store = new StoreParser();
+        $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['id' => $shopId]);
+        $dataBuy = $store->parseBuyStore($htmlBuy);
+        $item = ['buy' => 0, 'sell' => 0];
+        foreach ($dataBuy as $i) {
+            if ($i['good_id'] == $goodId) {
+                $item['buy'] = $i['cost'] ?? 0;
+                break;
+            }
+        }
+        if (preg_match("/v_trade_show_goods_for_sale\.php\?id=(\d+)/", $htmlBuy, $matches)) {
+            $htmlSell = $this->get('cgi/v_trade_show_goods_for_sale.php', ['id' => $matches[1]]);
+            $dataSell = $store->parseSellStore($htmlSell);
+            foreach ($dataSell as $i) {
+                if ($i['good_id'] == $goodId) {
+                    $item['sell'] = $i['cost'] ?? 0;
+                    break;
+                }
+            }
+        }
+        return response()->json($item);
+    }
 }
