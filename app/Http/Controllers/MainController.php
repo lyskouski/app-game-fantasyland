@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use App\Services\CraftParser;
+use App\Services\InfoParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
 use App\Services\StoreParser;
@@ -60,6 +61,9 @@ class MainController extends Controller
         $store = new StoreParser();
         $htmlTent = $this->get('cgi/v_trade_load_all.php', []);
         $data['tent'] = $store->parseTentStore($htmlTent);
+        $htmlItem = $this->get('cgi/inv_load_items.php', ['all' => '', 'dv' => 'd1777']);
+        $info = new InfoParser();
+        $data['items'] = $info->getStuffItems($htmlItem)['items'] ?? [];
         return view('main_marketplace', $data);
     }
 

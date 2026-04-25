@@ -154,4 +154,21 @@ class StoreParser
 
         return $items;
     }
+
+    public function parseTents(string $html) {
+        $items = [];
+
+        // Pattern to match: <b>N.</b>&nbsp;<a href=v_trade_load_shop.php?id=XXX>Name</a>&nbsp;(count) or [count]
+        if (preg_match_all('#<b>\d+\.</b>\s*&nbsp;\s*<a[^>]*href=v_trade_load_shop\.php\?id=(\d+)[^>]*>([^<]+)</a>\s*&nbsp;\s*[\(\[]<span[^>]*>(\d+)</span>[\)\]]#i', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $items[] = [
+                    'id' => $match[1],
+                    'name' => trim($match[2]),
+                    'count' => $match[3],
+                ];
+            }
+        }
+
+        return $items;
+    }
 }

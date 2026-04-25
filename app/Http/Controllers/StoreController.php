@@ -38,4 +38,15 @@ class StoreController extends MainController
         }
         return view('main_place', $data);
     }
+
+    public function showTents() {
+        $html = $this->get('cgi/no_combat.php', []);
+        $data = (new LocationParser)->onPlace($html);
+        $data['id'] = request()->input('id');
+        $data['item_name'] = request()->input('name');
+        $htmlShops = $this->get('cgi/v_trade_show_shops.php');
+        $store = new StoreParser();
+        $data['shops'] = $store->parseTents($htmlShops);
+        return view('store_tent_list', $data);
+    }
 }

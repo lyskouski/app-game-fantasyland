@@ -76,6 +76,10 @@
                 </form>
                 @endforeach
                 @endif
+                <form method="GET" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                    @csrf
+                    <input type="submit" value="к Торговым рядам" style="width: 100%;" />
+                </form>
             </div>
         </div>
         <br />
@@ -87,7 +91,7 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Торговые ряды&nbsp;</b></small>
+                            <small><b>&nbsp;{{ $item_name ?? '?' }}&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
@@ -97,53 +101,22 @@
                 <br />
             </div>
             <div class="main_middle">
-                <div class="tab">
-                    <a href="#item" class="tablinks @if($tab == 'item') active @endif" onclick="openTab('item_table', this);return false;">Вещи</a>
-                    <a href="#army" class="tablinks @if($tab == 'army') active @endif" onclick="openTab('army_table', this);return false;">Юниты</a>
-                    <a href="#tent" class="tablinks @if($tab == 'tent') active @endif" onclick="openTab('tent_table', this);return false;">Палатки</a>
-                </div>
-                <div class="clear"></div>
-                <div class="tabcontent" id="item_table" style="display: @if($tab == 'item') block @else none @endif;">
-                @foreach($items as $i => $item)
-                    <table class="{{ $i % 2 == 0 ? 'light' : '' }}" width="100%" colspacing="0" cellpadding="0">
-                        <tr>
-                            <td style="width: 80px" valign="top">
-                                <strong class="main_middle__count">{{ $item['count'] }}</strong>
-                                <img src="{{ $item['image'] }}" width="70" height="70" />
-                            </td>
-                            <td valign="top">
-                                @if($item['wearable'])
-                                <form method="GET" action="/cgi/v_trade_show_shops.php">
-                                    <input type="hidden" name="id" value="{{ $item['id'] }}" />
-                                    <input type="hidden" name="t" value="1" />
-                                    <input type="hidden" name="name" value="{{ $item['name'] }}" />
-                                    <input style="position:relative;float:right;" type="submit" value="Продать" />
-                                </form>
-                                @endif
-                                <small>
-                                    <strong>{!! $item['name'] !!}</strong><br />
-                                    {!! $item['lvl'] !!}<br />
-                                </small>
-                                <small class="tiny">{!! $item['effects'] !!}</small>
-                            </td>
-                        </tr>
-                    </table>
-                @endforeach
-                </div>
-                <div class="tabcontent" id="army_table" style="display: @if($tab == 'army') block @else none @endif;">
-                ...
-                </div>
-                <div class="tabcontent" id="tent_table" style="display: @if($tab == 'tent') block @else none @endif;">
-                    <br />
-                    <center><input type="text" placeholder="Поиск палаток по названию" onkeyup="filterTents(this.value)" /></center>
-                @foreach ($tent as $item)
-                    <p class="tent_item">
-                        <a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{!! $item['name'] !!}</a>
-                    </p>
-                @endforeach
-                </div>
+                <table width="100%" colspacing="0" cellpadding="0">
+                    @foreach ($shops as $i => $item)
+                    <tr class="{{ $i % 2 == 0 ? 'light' : '' }}">
+                        <td>
+                            {{ $item['name'] }}
+                        </td>
+                        <td align="center">
+                            купить
+                        </td>
+                        <td align="center">
+                            продать
+                        </td>
+                    </tr>
+                    @endforeach
+                </table>
             </div>
         </div>
-        <br />
     </body>
 </html>

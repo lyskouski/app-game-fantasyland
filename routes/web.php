@@ -101,6 +101,7 @@ Route::get('/cgi/maze_pickup.php', [LabController::class, 'pickUp']);
 Route::post('/cgi/buy.php', [StoreController::class, 'buyItem']);
 Route::post('/cgi/sell_good_to_shop.php', [StoreController::class, 'sellItem']);
 Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'tent']);
+Route::get('/cgi/v_trade_show_shops.php', [StoreController::class, 'showTents']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');
