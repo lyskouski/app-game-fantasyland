@@ -47,7 +47,7 @@ class StoreController extends MainController
         $htmlShops = $this->get('cgi/v_trade_show_shops.php');
         $store = new StoreParser();
         $data['shops'] = $store->parseTents($htmlShops);
-        return view('store_tent_list', $data);
+        return view('store_tents', $data);
     }
 
     public function priceJson() {
@@ -56,10 +56,11 @@ class StoreController extends MainController
         $store = new StoreParser();
         $htmlBuy = $this->get('cgi/v_trade_load_shop.php', ['id' => $shopId]);
         $dataBuy = $store->parseBuyStore($htmlBuy);
-        $item = ['buy' => 0, 'sell' => 0];
+        $item = ['buy' => 0, 'sell' => 0, 'id' => null];
         foreach ($dataBuy as $i) {
             if ($i['good_id'] == $goodId) {
                 $item['buy'] = $i['cost'] ?? 0;
+                $item['id'] = $i['shp_id'] ?? null;
                 break;
             }
         }

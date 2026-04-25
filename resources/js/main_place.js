@@ -28,10 +28,14 @@ window.loadPrice = function(goodId, shpId) {
             const buyElement = document.getElementById(`b${shpId}`);
             buyElement.dataset.cost = data.buy;
             buyElement.textContent = data.buy;
+            const mbElement = document.getElementById(`mb${shpId}`);
+            mbElement.value = data.id;
             if (parseInt(data.sell, 10) > 0) {
                 const sellElement = document.getElementById(`s${shpId}`);
                 sellElement.dataset.cost = data.sell;
                 sellElement.textContent = data.sell;
+                const msElement = document.getElementById(`ms${shpId}`);
+                msElement.value = data.id;
             } else {
                 const el = document.getElementById(`i${shpId}`);
                 el.innerHTML = '---';

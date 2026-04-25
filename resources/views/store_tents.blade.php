@@ -128,7 +128,7 @@
                             <form method="POST" action="/cgi/buy.php">
                                 @csrf
                                 <input type="hidden" name="good_id" value="{{ $id }}" />
-                                <input type="hidden" name="shp_id" value="{{ $item['id'] ?? '' }}" />
+                                <input type="hidden" name="shp_id" id="mb{{ $item['id'] }}" value="" />
                                 <input type="hidden" name="good_type" value="-1" />
                                 <input type="hidden" name="price_quest" value="" />
                                 <input type="hidden" name="capCode" value="" />
@@ -147,7 +147,7 @@
                             <form method="POST" action="/cgi/sell_good_to_shop.php">
                                 @csrf
                                 <input type="hidden" name="good_id" value="{{ $id }}" />
-                                <input type="hidden" name="shp_id" value="{{ $item['id'] ?? '' }}" />
+                                <input type="hidden" name="shp_id" id="ms{{ $item['id'] }}" value="" />
                                 <center>
                                     <input type="submit" value="Продать" /><br />
                                     <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['id'] }}', this.value)" />
