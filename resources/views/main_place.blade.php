@@ -76,6 +76,12 @@
                 </form>
                 @endforeach
                 @endif
+                @if(isset($title_tent))
+                <form method="GET" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                    @csrf
+                    <input type="submit" value="к Торговым рядам" style="width: 100%;" />
+                </form>
+                @endif
                 @if (isset($hasRoad) && $hasRoad)
                     <br />
                     <form method="GET" action="/cgi/map.php" style="margin-bottom: 8px;">

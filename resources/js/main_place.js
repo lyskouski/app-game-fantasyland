@@ -11,3 +11,12 @@ window.updateCost = function(costId, number) {
     const newCost = baseCost * parseInt(number, 10);
     costElement.textContent = newCost;
 }
+
+window.filterTents = function(query) {
+    const items = document.querySelectorAll('.tent_item');
+    const lowerQuery = query.toLowerCase();
+    items.forEach(item => {
+        const name = item.textContent.toLowerCase();
+        item.style.display = name.includes(lowerQuery) ? '' : 'none';
+    });
+}

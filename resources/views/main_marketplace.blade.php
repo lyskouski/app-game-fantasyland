@@ -110,8 +110,12 @@
                 ...
                 </div>
                 <div class="tabcontent" id="tent_table" style="display: @if($tab == 'tent') block @else none @endif;">
+                    <br />
+                    <center><input type="text" placeholder="Поиск палаток по названию" onkeyup="filterTents(this.value)" /></center>
                 @foreach ($tent as $item)
-                    <p><a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{!! $item['name'] !!}</a></p>
+                    <p class="tent_item">
+                        <a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{!! $item['name'] !!}</a>
+                    </p>
                 @endforeach
                 </div>
             </div>
