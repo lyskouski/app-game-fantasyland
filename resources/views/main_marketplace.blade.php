@@ -104,22 +104,24 @@
                 </div>
                 <div class="clear"></div>
                 <div class="tabcontent" id="item_table" style="display: @if($tab == 'item') block @else none @endif;">
-                @foreach($items as $i => $item)
-                    <table class="{{ $i % 2 == 0 ? 'light' : '' }}" width="100%" colspacing="0" cellpadding="0">
+                    <br />
+                    <center>
+                        <input type="text" name="item_name" placeholder="Поиск вещей по названию" onkeyup="filterItems(this.value, 'item_item')" />
+                    </center>
+                @foreach($items as $item)
+                    <table class="colored item_item" width="100%" colspacing="0" cellpadding="0">
                         <tr>
                             <td style="width: 80px" valign="top">
                                 <strong class="main_middle__count">{{ $item['count'] }}</strong>
                                 <img src="{{ $item['image'] }}" width="70" height="70" />
                             </td>
                             <td valign="top">
-                                @if($item['wearable'])
                                 <form method="GET" action="/cgi/v_trade_show_shops.php">
                                     <input type="hidden" name="id" value="{{ $item['id'] }}" />
                                     <input type="hidden" name="t" value="1" />
                                     <input type="hidden" name="name" value="{{ $item['name'] }}" />
                                     <input style="position:relative;float:right;" type="submit" value="Продать" />
                                 </form>
-                                @endif
                                 <small>
                                     <strong>{!! $item['name'] !!}</strong><br />
                                     {!! $item['lvl'] !!}<br />
@@ -131,11 +133,36 @@
                 @endforeach
                 </div>
                 <div class="tabcontent" id="army_table" style="display: @if($tab == 'army') block @else none @endif;">
-                ...
+                    <br />
+                    <center>
+                        <input type="text" name="army_name" placeholder="Поиск юнитов по названию" onkeyup="filterItems(this.value, 'army_item')" />
+                    </center>
+                @foreach($army as $item)
+                    <table class="colored army_item" width="100%" colspacing="0" cellpadding="0">
+                        <tr>
+                            <td style="width: 80px" valign="top">
+                                <strong class="main_middle__count">{{ $item['count'] }}</strong>
+                                <img src="{{ $item['image'] }}" width="70" height="70" />
+                            </td>
+                            <td valign="top">
+                                <form method="GET" action="/cgi/v_trade_show_shops.php">
+                                    <input type="hidden" name="id" value="{{ $item['id'] }}" />
+                                    <input type="hidden" name="t" value="2" />
+                                    <input type="hidden" name="name" value="{{ $item['name'] }}" />
+                                    <input style="position:relative;float:right;" type="submit" value="Продать" />
+                                </form>
+                                <small>
+                                    <strong>{!! $item['name'] !!}</strong><br />
+                                    {!! $item['lvl'] !!}<br />
+                                </small>
+                            </td>
+                        </tr>
+                    </table>
+                @endforeach
                 </div>
                 <div class="tabcontent" id="tent_table" style="display: @if($tab == 'tent') block @else none @endif;">
                     <br />
-                    <center><input type="text" placeholder="Поиск палаток по названию" onkeyup="filterTents(this.value)" /></center>
+                    <center><input type="text" placeholder="Поиск палаток по названию" onkeyup="filterItems(this.value, 'tent_item')" /></center>
                 @foreach ($tent as $item)
                     <p class="tent_item">
                         <a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{!! $item['name'] !!}</a>

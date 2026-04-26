@@ -64,6 +64,12 @@ class MainController extends Controller
         $htmlItem = $this->get('cgi/inv_load_items.php', ['all' => '', 'dv' => 'd1777']);
         $info = new InfoParser();
         $data['items'] = $info->getStuffItems($htmlItem)['items'] ?? [];
+        $post = [
+            InfoController::TYPE_ARMY . '.x' => rand(1, 10),
+            InfoController::TYPE_ARMY . '.y' => rand(1, 10),
+        ];
+        $htmlArmy = $this->post('cgi/change_info.php', [], $post);
+        $data['army'] = $info->getArmy($htmlArmy)['army'] ?? [];
         return view('main_marketplace', $data);
     }
 

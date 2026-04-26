@@ -12,8 +12,8 @@ window.updateCost = function(costId, number) {
     costElement.textContent = newCost;
 }
 
-window.filterTents = function(query) {
-    const items = document.querySelectorAll('.tent_item');
+window.filterItems = function(query, className = 'tent_item') {
+    const items = document.querySelectorAll(`.${className}`);
     const lowerQuery = query.toLowerCase();
     items.forEach(item => {
         const name = item.textContent.toLowerCase();
