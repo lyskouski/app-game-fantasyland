@@ -103,6 +103,7 @@ Route::post('/cgi/sell_good_to_shop.php', [StoreController::class, 'sellItem']);
 Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'tent']);
 Route::get('/cgi/v_trade_show_shops.php', [StoreController::class, 'showTents']);
 Route::get('/store/price', [StoreController::class, 'priceJson']);
+Route::get('/cgi/v_trade_search.php', [StoreController::class, 'search']);
 
 // All other routes
 Route::get('/{any}', [GenericController::class, 'index'])->where('any', '.*');

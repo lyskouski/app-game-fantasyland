@@ -76,4 +76,14 @@ class StoreController extends MainController
         }
         return response()->json($item);
     }
+
+    public function search() {
+        $html = $this->get('cgi/no_combat.php', []);
+        $data = (new LocationParser)->onPlace($html);
+        $data['search_name'] = request()->input('item_name') ?? request()->input('army_name');
+        $htmlSearch = $this->get('cgi/v_trade_search.php');
+        $store = new StoreParser();
+        $data['items'] = $store->parseSearch($htmlSearch);
+        return view('store_search', $data);
+    }
 }

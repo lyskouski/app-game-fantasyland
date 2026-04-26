@@ -171,4 +171,23 @@ class StoreParser
 
         return $items;
     }
+
+    public function parseSearch(string $html) {
+        $items = [];
+
+        // Match each item by finding: img with title/src → expand(id, type)
+        // This avoids nested table issues by chaining distinctive markers
+        if (preg_match_all('#<img[^>]*title=[\'"]([^\'"]+)[\'"][^>]*src=[\'"]([^\'"]+)[\'"][^>]*>[\s\S]*?expand\((\d+),\s*(\d+)\)#i', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $items[] = [
+                    'name' => str_replace('&nbsp;', ' ', trim($match[1])),
+                    'image' => preg_replace('#^\.\./+#', '', $match[2]),
+                    'id' => (int)$match[3],
+                    'type' => (int)$match[4],
+                ];
+            }
+        }
+
+        return $items;
+    }
 }

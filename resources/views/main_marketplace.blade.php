@@ -106,8 +106,12 @@
                 <div class="tabcontent" id="item_table" style="display: @if($tab == 'item') block @else none @endif;">
                     <br />
                     <center>
-                        <input type="text" name="item_name" placeholder="Поиск вещей по названию" onkeyup="filterItems(this.value, 'item_item')" />
+                        <form method="GET" action="/cgi/v_trade_search.php">
+                            <input type="text" name="item_name" placeholder="Поиск вещей по названию" onkeyup="filterItems(this.value, 'item_item')" />
+                            <input type="submit" size="2" value=">>" />
+                        </form>
                     </center>
+                    <br />
                 @foreach($items as $item)
                     <table class="colored item_item" width="100%" colspacing="0" cellpadding="0">
                         <tr>
@@ -135,8 +139,12 @@
                 <div class="tabcontent" id="army_table" style="display: @if($tab == 'army') block @else none @endif;">
                     <br />
                     <center>
-                        <input type="text" name="army_name" placeholder="Поиск юнитов по названию" onkeyup="filterItems(this.value, 'army_item')" />
+                        <form method="GET" action="/cgi/v_trade_search.php">
+                            <input type="text" name="army_name" placeholder="Поиск юнитов по названию" onkeyup="filterItems(this.value, 'army_item')" />
+                            <input type="submit" size="2" value=">>" />
+                        </form>
                     </center>
+                    <br />
                 @foreach($army as $item)
                     <table class="colored army_item" width="100%" colspacing="0" cellpadding="0">
                         <tr>
