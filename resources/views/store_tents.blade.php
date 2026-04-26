@@ -107,10 +107,10 @@
                             Название
                         </th>
                         <th align="center">
-                            &nbsp;<a href="#buy">Покупка</a>&nbsp;
+                            &nbsp;<a href="#buy" onclick="sortByBuy(this); return false;">Покупка</a>&nbsp;
                         </th>
                         <th align="center">
-                            &nbsp;<a href="#sell">Продажа</a>&nbsp;
+                            &nbsp;<a href="#sell" onclick="sortBySell(this); return false;">Продажа</a>&nbsp;
                         </th>
                     </tr>
                     @foreach ($shops as $item)
@@ -121,7 +121,7 @@
                         </td>
                         <td align="center">
                             <small>
-                                <span id="b{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                <span class="item_buy" id="b{{ $item['id'] }}">загрузка...</span>&nbsp;
                                 <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                             </small>
                             <br />
@@ -140,7 +140,7 @@
                         </td>
                         <td align="center" id="i{{ $item['id'] }}">
                             <small>
-                                <span id="s{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                <span class="item_sell" id="s{{ $item['id'] }}">загрузка...</span>&nbsp;
                                 <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                             </small>
                             <br />

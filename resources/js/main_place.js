@@ -27,12 +27,14 @@ window.loadPrice = function(goodId, shpId) {
         .then(data => {
             const buyElement = document.getElementById(`b${shpId}`);
             buyElement.dataset.cost = data.buy;
+            buyElement.closest('tr').dataset.buy = data.buy;
             buyElement.textContent = data.buy;
             const mbElement = document.getElementById(`mb${shpId}`);
             mbElement.value = data.id;
             if (parseInt(data.sell, 10) > 0) {
                 const sellElement = document.getElementById(`s${shpId}`);
                 sellElement.dataset.cost = data.sell;
+                sellElement.closest('tr').dataset.sell = data.sell;
                 sellElement.textContent = data.sell;
                 const msElement = document.getElementById(`ms${shpId}`);
                 msElement.value = data.id;
@@ -66,11 +68,24 @@ window.submitSellForm = function(form) {
     return false;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.buy-form').forEach(form => {
-        form.addEventListener('submit', function(e) { submitBuyForm(this); });
+window.sortByBuy = function(header) {
+    const table = header.closest('table');
+    const rows = Array.from(table.querySelectorAll('tr')).slice(1);
+    rows.sort((a, b) => {
+        const aCost = parseInt(a.dataset.buy || '0', 10);
+        const bCost = parseInt(b.dataset.buy || '0', 10);
+        return aCost - bCost;
     });
-    document.querySelectorAll('.sell-form').forEach(form => {
-        form.addEventListener('submit', function(e) { submitSellForm(this); });
+    rows.forEach(row => table.appendChild(row));
+}
+
+window.sortBySell = function(header) {
+    const table = header.closest('table');
+    const rows = Array.from(table.querySelectorAll('tr')).slice(1);
+    rows.sort((a, b) => {
+        const aCost = parseInt(a.dataset.sell || '0', 10);
+        const bCost = parseInt(b.dataset.sell || '0', 10);
+        return bCost - aCost;
     });
-});
+    rows.forEach(row => table.appendChild(row));
+}
