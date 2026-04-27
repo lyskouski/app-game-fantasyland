@@ -48,7 +48,7 @@ class LocationParser
             $image = str_replace('..', '', $imgMatch[2]);
         }
         $map = [];
-        if (preg_match_all("/<A[^>]*HREF=['\"]javascript:goTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $goToMatches, PREG_SET_ORDER)) {
+        if (preg_match_all("/<A[^>]*HREF=\s*['\"]\\s*javascript:goTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $goToMatches, PREG_SET_ORDER)) {
             foreach ($goToMatches as $m) {
                 $id = (int)$m[1];
                 $loc = trim($m[2]);
