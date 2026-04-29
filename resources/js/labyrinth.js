@@ -89,7 +89,7 @@ function parse(text) {
         const img = match[4];
         a(id, match[2], match[3], img);
         aParams.loc[id] = parseInt(match[3], 10);
-        if (id == 0 || id == 6) {
+        if ([0, 2, 6, 8].includes(id)) {
             aParams.type = 7;
             aParams.info.push([img, match[2]]);
         } else if (~img.indexOf('go') && !~img.indexOf('go_')) {
@@ -264,7 +264,10 @@ function initToCitadel() {
 document.addEventListener('DOMContentLoaded', initToCitadel);
 
 function fcs(id) {
-    if (!~ge('btn' + id).src.indexOf('_s.gif')) {
+    if (
+        !~ge('btn' + id).src.indexOf('_s.gif') ||
+        id == 7 && !~ge('btn' + id).src.indexOf('_s_s.gif')
+    ) {
         ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
     }
 }
@@ -303,6 +306,10 @@ function setStamina(x, max) {
 }
 
 function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
+    if (z != window.aCur[0]) {
+        window.aMap = {};
+        window.location.href = '/cgi/no_combat.php';
+    }
     window.aCur = [z, x, y];
     ge('position').innerHTML = 'L-' + z + ' (' + x + ', ' + y + ')';
     ge('position').style.color = s ? 'white' : 'greenyellow';
