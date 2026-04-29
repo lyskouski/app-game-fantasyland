@@ -86,11 +86,14 @@ function parse(text) {
     const aMatches = text.matchAll(/a\s*\(\s*(\d+)\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/g);
     for (const match of aMatches) {
         const id = parseInt(match[1], 10);
-        a(id, match[2], match[3], match[4]);
+        const img = match[4];
+        a(id, match[2], match[3], img);
         aParams.loc[id] = parseInt(match[3], 10);
         if (id == 0 || id == 6) {
             aParams.type = 7;
-            aParams.info.push([match[4], match[2]]);
+            aParams.info.push([img, match[2]]);
+        } else if (~img.indexOf('go') && !~img.indexOf('go_')) {
+            aParams.loc[id] += '-' + parseInt(img.split('go')[1], 10);
         }
     }
     const bMatches = text.matchAll(/b\s*\(\s*(\d+)\s*\)/g);
@@ -117,9 +120,27 @@ function parse(text) {
             preserveTrapOnMap = mooMatch[6] === 'true'
         );
         aParams.curr = [z, x, y];
-        if (isTrap && preserveTrapOnMap) {
+        if (isTrap && preserveTrapOnMap || text.includes('trap')) {
             aParams.type = 9;
+            switch (text.split('trap')[1].split('.')[0]) {
+                case '_ally_00':
+                case '_00':
+                    aParams.info.push(['hp.gif', 'Ловушка (Минус к здоровью)']);
+                    break;
+                case '_ally_01':
+                case '_01':
+                    aParams.info.push(['hp.gif', 'Ловушка (Порезы)']);
+                    break;
+                case '_02':
+                case '_ally_02':
+                    aParams.info.push(['regen_hp.gif', 'Ядовитый газ']);
+                    break;
+            }
         }
+    }
+    if (~text.indexOf("RoomImg('flag.jpg', true")) {
+        aParams.type = 8;
+        aParams.info.push(['q_action.gif', 'Флаг']);
     }
     // Quest Action
     const questMatch = text.match(/ShowQuestAction\s*\(\s*'([^']*)'\s*,\s*(\d+)\s*,\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/);
@@ -525,7 +546,7 @@ window.drawMap = function(aCurr, aFocus) {
 
         if (typeof window.aScrolling[i] !== 'undefined') {
             if (window.bScrolling) {
-                aFirst[i] += parseInt(aMapSize[i] * window.aScrolling[i] / (aNum[i]-1));
+                aFirst[i] += parseInt(aMapSize[i] * window.aScrolling[i] / (aNum[i]-1), 10);
                 if (aFirst[i] + Math.round(aNum[i]/2) > aMapSize[i]) {
                     aFirst[i] = aMapSize[i] - aNum[i] + 2;
                 }
@@ -555,7 +576,7 @@ window.drawMap = function(aCurr, aFocus) {
                 a = {type: 0, time: 0};
             }
 
-            if (parseInt(a.type) === 0) {
+            if (parseInt(a.type, 10) === 0) {
                 if (a.time && a.time > iTime - 86400) {
                     sColor = aColors.fone[aColors.fone.length - 1];
                     fcolor: for (i = 1; i < aColors.fone.length; i++) {
@@ -620,15 +641,15 @@ window.drawMap = function(aCurr, aFocus) {
                 for (i in {2:'t',4:'l',5:'r',7:'b'}) {
                     if (a.loc[i] == 0) {
                         sColorB = aColors.wall;
-                    } else if(a.loc[i] == parseInt(a.loc[i])) {
+                    } else if(a.loc[i] == parseInt(a.loc[i], 10)) {
                         continue;
                     } else {
-                        sColorB = aColors.doors[a.loc[i].split('-')[1]];
+                        sColorB = aColors.doors[a.loc[i].split('-')[1]] || '000000';
                         bKeysRequired = true;
                     }
                     draw(['f', sColorB]);
                     aTemp = [iInitSpace + x*iSizeSpace - iSizeBorder/2, iInitSpace + y*iSizeSpace - iSizeBorder/2, iSizeBorder, iSizeBorder, iSizeCell];
-                    switch (parseInt(i)) {
+                    switch (parseInt(i, 10)) {
                         case 7: aTemp[1] += iSizeCell + iSizeBorder;
                         case 2: aTemp[2] += iSizeCell; aTemp[1] -= iSizeBorder/2; break;
                         case 5: aTemp[0] += iSizeCell + iSizeBorder;
@@ -640,7 +661,7 @@ window.drawMap = function(aCurr, aFocus) {
                 var sTemp = '';
                 for (i in {1:0, 3:0, 6:0, 8:0}) {
                     if (a.loc[i] != 0) {
-                        switch (parseInt(a.loc[i])) {
+                        switch (parseInt(a.loc[i], 10)) {
                             case 7: sTemp = 'go_out.gif'; break;
                             case 5: sTemp = 'go_u.gif'; break;
                             case 6: sTemp = 'go_d.gif'; break;
@@ -738,6 +759,7 @@ window.drawMap = function(aCurr, aFocus) {
 
 function draw(a) {
     var o = window.oCanvas;
+    if (!o) return;
     switch (a[0]) {
         case 'txt':
             if (typeof a[1][3] !== 'undefined' && a[1][3] !== '') {
@@ -866,3 +888,11 @@ function draw(a) {
     }
     o = null;
 }
+
+window.addEventListener('error', (e) => {
+    alert('🔴 JS Error: "' + e.message + '" at ' + e.filename + ' line ' + e.lineno);
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    alert('🔴 Promise Rejection: "' + e.reason + '"');
+});
