@@ -83,6 +83,7 @@ Route::post('/labyrinth/save', [LabController::class, 'save']);
 Route::get('/labyrinth/config', [LabController::class, 'config']);
 Route::get('/labyrinth/clear', [LabController::class, 'clear']);
 Route::get('/labyrinth/sync', [LabController::class, 'sync']);
+Route::get('/labyrinth/load', [LabController::class, 'load']);
 Route::post('/labyrinth/citadel/save', [LabController::class, 'saveToCitadel']);
 Route::get('/labyrinth/citadel/init', [LabController::class, 'initToCitadel']);
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);

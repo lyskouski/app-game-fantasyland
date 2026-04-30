@@ -181,4 +181,12 @@ class LabController extends Controller
         $html = $this->get('/cgi/technical_lab_info.php');
         return view('empty', ['data' => $html]);
     }
+
+    public function load() {
+        $loc = $this->get('cgi/ch_who.php', []);
+        $locData = (new LabParser)->getLocation($loc);
+        $z = request()->query('z', 0);
+        $mapData = \App\Models\Map::getByLocation($locData['loc'], $locData['place'], $z);
+        return view('empty', ['data' => $mapData]);
+    }
 }

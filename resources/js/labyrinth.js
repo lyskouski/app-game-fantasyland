@@ -45,6 +45,70 @@ window.doQuestAction = function(id) {
         });
 }
 
+function ShowQuestAction(s, id, im, im_s) {
+    if (s) {
+        ge('btn6').src = 'https://www.fantasyland.ru/images/miscellaneous/' + im;
+        ge('btn6').onclick = function() { fcs(6); doQuestAction(id) };
+        ge('btn6').title = s;
+    }
+}
+
+function fcs(id) {
+    if (
+        !~ge('btn' + id).src.indexOf('_s.gif') ||
+        id == 7 && !~ge('btn' + id).src.indexOf('_s_s.gif')
+    ) {
+        ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
+    }
+}
+
+function a(id, str, num, img) {
+    ge('btn' + id).src = 'https://www.fantasyland.ru/images/miscellaneous/' + img;
+    ge('btn' + id).onclick = function() { fcs(id); goTo(num); };
+    ge('btn' + id).title = str;
+}
+
+function b(id) {
+    ge('btn' + id).src = 'https://www.fantasyland.ru/images/miscellaneous/go_default.gif';
+    ge('btn' + id).onclick = null;
+    ge('btn' + id).title = '';
+}
+
+var stamina = 0;
+var maxStamina = 100;
+var tm;
+
+function updateStamina() {
+    ge('stamina').innerHTML = stamina++;
+    if (stamina > maxStamina) {
+        stamina = maxStamina;
+        Device.vibrate();
+        return;
+    }
+    tm = setTimeout(updateStamina, 1000);
+}
+
+function setStamina(x, max) {
+    stamina = Math.round(x / 10);
+    maxStamina = Math.round(max / 10);
+    clearTimeout(tm);
+    updateStamina();
+}
+
+function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
+    if (z != window.aCur[0]) {
+        window.aMap = {};
+        fetch(`/labyrinth/load?z=${z}`)
+            .then(response => response.text())
+            .then(text => drawMap(JSON.parse(text)));
+        // FIXME: Citadel do not handle lvl properly
+        //    .then(initToCitadel);
+    }
+    window.aCur = [z, x, y];
+    ge('position').innerHTML = 'L-' + z + ' (' + x + ', ' + y + ')';
+    ge('position').style.color = s ? 'white' : 'greenyellow';
+}
+
 window.getSource = function() {
     const id = ge('source').dataset.id;
     fetch(`/cgi/technical_lab_info.php?maze_id=${id}`)
@@ -262,66 +326,6 @@ function initToCitadel() {
     }
 }
 document.addEventListener('DOMContentLoaded', initToCitadel);
-
-function fcs(id) {
-    if (
-        !~ge('btn' + id).src.indexOf('_s.gif') ||
-        id == 7 && !~ge('btn' + id).src.indexOf('_s_s.gif')
-    ) {
-        ge('btn' + id).src = ge('btn' + id).src.replace('.gif', '_s.gif');
-    }
-}
-
-function a(id, str, num, img) {
-    ge('btn' + id).src = 'https://www.fantasyland.ru/images/miscellaneous/' + img;
-    ge('btn' + id).onclick = function() { fcs(id); goTo(num); };
-    ge('btn' + id).title = str;
-}
-
-function b(id) {
-    ge('btn' + id).src = 'https://www.fantasyland.ru/images/miscellaneous/go_default.gif';
-    ge('btn' + id).onclick = null;
-    ge('btn' + id).title = '';
-}
-
-var stamina = 0;
-var maxStamina = 100;
-var tm;
-
-function updateStamina() {
-    ge('stamina').innerHTML = stamina++;
-    if (stamina > maxStamina) {
-        stamina = maxStamina;
-        Device.vibrate();
-        return;
-    }
-    tm = setTimeout(updateStamina, 1000);
-}
-
-function setStamina(x, max) {
-    stamina = Math.round(x / 10);
-    maxStamina = Math.round(max / 10);
-    clearTimeout(tm);
-    updateStamina();
-}
-
-function moo(z, x, y, s, isTrap, preserveTrapOnMap=true) {
-    if (z != window.aCur[0]) {
-        window.aMap = {};
-        window.location.href = '/cgi/no_combat.php';
-    }
-    window.aCur = [z, x, y];
-    ge('position').innerHTML = 'L-' + z + ' (' + x + ', ' + y + ')';
-    ge('position').style.color = s ? 'white' : 'greenyellow';
-}
-
-function ShowQuestAction(s, id, im, im_s) {
-    if (s) {
-        ge('btn6').src = 'https://www.fantasyland.ru/images/miscellaneous/' + im;
-        ge('btn6').onclick = function() { fcs(6); doQuestAction(id) };
-        ge('btn6').title = s;
-    }
-}
 
 // ----------- Map -----------
 window.aCur = [0, 1, 1];
