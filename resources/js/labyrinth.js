@@ -244,6 +244,48 @@ function parse(text) {
         space.innerHTML = '&nbsp;';
         ge('items').appendChild(space);
     }
+    // Unlock chests
+    const psdMatch = text.matchAll(/psd\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*'([^']*)'\s*\)/g);
+    for (const match of psdMatch) {
+        const item = {
+            id: parseInt(match[1], 10),
+            type: parseInt(match[2], 10),
+            name: match[3]
+        }
+        if (isFirst) {
+            ge('btn2').src = 'https://www.fantasyland.ru/images/miscellaneous/unlock_' + item.type + '.gif';
+            ge('btn2').onclick = function() { fcs(2); pickUp(item.id, item.type); };
+            ge('btn2').title = item.name;
+            aParams.info.push(['unlock_' + item.type + '.gif', item.name]);
+            isFirst = false;
+        }
+        const el = document.createElement('a');
+        el.onclick = function() { pickUp(item.id, item.type) };
+        el.innerHTML = `Сундук с ${item.name} замком`;
+        ge('items').appendChild(el);
+        const space = document.createElement('span');
+        space.innerHTML = '&nbsp;';
+        ge('items').appendChild(space);
+    }
+    // Pick up money
+    const pkmMatch = text.match(/pkm\s*\(\s*(\d+)\s*\)/);
+    if (pkmMatch) {
+        const title = `Золото (${pkmMatch[1]})`;
+        if (isFirst) {
+            ge('btn2').src = 'https://www.fantasyland.ru/images/miscellaneous/pick_up_gold.gif';
+            ge('btn2').onclick = function() { fcs(2); pickUp(0, 0); };
+            ge('btn2').title = title;
+            aParams.info.push(['pick_up_gold.gif', title]);
+            isFirst = false;
+        }
+        const el = document.createElement('a');
+        el.onclick = function() { pickUp(0, 0) };
+        el.innerHTML = title;
+        ge('items').appendChild(el);
+        const space = document.createElement('span');
+        space.innerHTML = '&nbsp;';
+        ge('items').appendChild(space);
+    }
     // Draw the cell on map
     aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
     aParams.time = Math.floor(new Date().getTime() / 1000);
