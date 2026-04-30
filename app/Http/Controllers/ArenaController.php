@@ -16,6 +16,7 @@ class ArenaController extends Controller
         $htmlArena = $this->get('/cgi/arena.php');
         $parser = new ArenaParser();
         if (strpos($htmlArena, '/cgi/train_start.php') !== false) {
+            $data['captcha'] = $this->captcha(time());
             $arena = $parser->train($htmlArena);
             return view('arena_train', [...$data, ...$arena]);
         } else {

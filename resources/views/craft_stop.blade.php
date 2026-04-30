@@ -139,7 +139,7 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <input type="text" name="value" size="6" autocomplete="off" />
+                                                <input type="text" name="value" size="6" autocomplete="off" inputmode="numeric" />
                                             </td>
                                         </tr>
                                         <tr>

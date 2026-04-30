@@ -8,7 +8,31 @@ class ArenaParser
 {
     public function train(string $html) {
         $train = [];
-        // ...
-        return ['train' => $train];
+        preg_match_all("/addToContent\((.+?)\);/", $html, $matches);
+        foreach ($matches[1] as $match) {
+            $parts = str_getcsv($match, ',', "'");
+            if (count($parts) >= 16) {
+                $train[] = [
+                    'name' => $parts[0],
+                    'img' => $parts[1],
+                    'uid' => $parts[2],
+                    'name2' => $parts[3],
+                    'img2' => $parts[4],
+                    'w1' => (int)$parts[5],
+                    'percent' => (float)$parts[6],
+                    'w2' => (int)$parts[7],
+                    'w3' => (int)$parts[8],
+                    'chck' => (bool)$parts[9],
+                    'level' => (int)$parts[10],
+                    'pid' => (int)$parts[11],
+                    'type' => $parts[12],
+                    'level2' => (int)$parts[13],
+                    'type2' => $parts[14],
+                    'uid2' => $parts[15],
+                ];
+            }
+        }
+        array_shift($train);
+        return ['train' => $train, 'uid' => 0];
     }
 }
