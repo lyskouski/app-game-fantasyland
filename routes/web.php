@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArenaController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CitadelController;
 use App\Http\Controllers\ForumController;
@@ -38,6 +39,9 @@ Route::get('/cgi/no_travel.php', [MainController::class, 'index']);
 Route::get('/cgi/map.php', [MainController::class, 'map']);
 Route::post('/cgi/travel_start.php', [MainController::class, 'map']);
 Route::get('/cgi/travel_stop.php', [MainController::class, 'mapStop']);
+
+// Arena
+Route::get('/cgi/arena.php', [ArenaController::class, 'index']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);

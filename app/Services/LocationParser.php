@@ -84,6 +84,45 @@ class LocationParser
         ];
     }
 
+    public function onArena(string $html) {
+        $title = '';
+        if (preg_match('/show_title\(["\']([^"\']+)["\']\)/', $html, $titleMatch)) {
+            $title = html_entity_decode($titleMatch[1]);
+        }
+        $description = '';
+        if (preg_match('/arenaText=\s*["\']([^\']+)[\']/', $html, $titleMatch)) {
+            $description = $titleMatch[1];
+        }
+        $image = '';
+        if (preg_match('/<image[^>]*class=(["\'])?cssLocImage\1?[^>]*src=(["\'])([^"\']+)\2/i', $html, $imgMatch)) {
+            $image = str_replace('..', '', $imgMatch[3]);
+        }
+        $map = [];
+        if (preg_match_all('/ShowBtn\(\s*["\']([^"\']+)["\']\s*,\s*["\']GoRoom\((\d+)\)["\']\s*,\s*\d+\s*\)/i', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $m) {
+                $loc = trim($m[1]);
+                $id = (int)$m[2];
+                $map[] = ['loc' => $loc, 'id' => $id];
+            }
+        }
+        $place = [];
+        if (preg_match_all("/<A[^>]*HREF=\s*['\"]\\s*javascript:goTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $goToMatches, PREG_SET_ORDER)) {
+            foreach ($goToMatches as $m) {
+                $id = (int)$m[1];
+                $loc = trim($m[2]);
+                $place[] = ['loc' => $loc, 'id' => $id];
+            }
+        }
+        return [
+            'title' => $title,
+            'description' => $description,
+            'image' => $image,
+            'map' => $map,
+            'place' => $place,
+            'current' => 0,
+        ];
+    }
+
     public function onMap(string $html) {
         $map = [];
         if (preg_match_all('/<area[^>]+href=["\']javascript:Travel\((\d+)\)["\'][^>]+onmousemove=["\']ToolTipShow\(([^)]*)\)/i', $html, $matches, PREG_SET_ORDER)) {

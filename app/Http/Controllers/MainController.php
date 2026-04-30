@@ -41,6 +41,8 @@ class MainController extends Controller
             return redirect('/cgi/mc_main.php');
         } elseif (strpos($html, "action='v_trade_search.php'") !== false) {
             return $this->marketplace($html);
+        } elseif (strpos($html, "id='ArenaText'") !== false) {
+            return $this->arena($html);
         } elseif (strpos($html, 'id="LocTable"') !== false) {
             return view('main_location', $loc->onLocation($html));
         } elseif (
@@ -71,6 +73,11 @@ class MainController extends Controller
         $htmlArmy = $this->post('cgi/change_info.php', [], $post);
         $data['army'] = $info->getArmy($htmlArmy)['army'] ?? [];
         return view('main_marketplace', $data);
+    }
+
+    protected function arena($html) {
+        $data = (new LocationParser)->onArena($html);
+        return view('main_arena', $data);
     }
 
     protected function place($html = null) {
