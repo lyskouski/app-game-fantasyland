@@ -14,10 +14,10 @@ class ArenaParser
             $parts = array_map('trim', $parts);
             if (count($parts) >= 16) {
                 $train[] = [
-                    'name' => $parts[0],
+                    'name' => trim($parts[0], "'"),
                     'img' => $parts[1],
                     'uid' => $parts[2],
-                    'name2' => $parts[3],
+                    'name2' => trim($parts[3], "'"),
                     'img2' => $parts[4],
                     'w1' => (int)$parts[5],
                     'percent' => (float)$parts[6],
