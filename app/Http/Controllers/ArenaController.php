@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Services\ArenaParser;
 use App\Services\LocationParser;
+use Native\Mobile\Facades\Device;
 
 class ArenaController extends Controller
 {
@@ -34,6 +35,9 @@ class ArenaController extends Controller
     public function trainStart() {
         $data = $this->mainPage();
         $htmlStart = $this->get('/cgi/train_start.php');
+        if (!$htmlStart || strpos($htmlStart, 'parent.no_combat.ReloadFrame') !== false) {
+            $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1]);
+        }
         $parser = new ArenaParser();
         $data['timer'] = $parser->timer($htmlStart);
         Notification::addIfExists($htmlStart);
@@ -41,6 +45,7 @@ class ArenaController extends Controller
     }
 
     public function trainStop() {
+        Device::vibrate();
         $htmlStop = $this->get('/cgi/train_stop.php');
         Notification::addIfExists($htmlStop);
         $data = $this->mainPage();

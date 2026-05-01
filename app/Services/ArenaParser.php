@@ -8,9 +8,10 @@ class ArenaParser
 {
     public function train(string $html) {
         $train = [];
-        preg_match_all("/addToContent\((.+?)\);/", $html, $matches);
+        preg_match_all("/addToContent\('(.+?'\s*,\s*'.+?'\s*,\s*'.+?'.+?)\);/", $html, $matches);
         foreach ($matches[1] as $match) {
-            $parts = str_getcsv($match, ',', "'");
+            $parts = str_getcsv(trim($match), ',', "'");
+            $parts = array_map('trim', $parts);
             if (count($parts) >= 16) {
                 $train[] = [
                     'name' => $parts[0],
@@ -32,12 +33,11 @@ class ArenaParser
                 ];
             }
         }
-        array_shift($train);
-        return ['train' => $train, 'uid' => 0];
+        return ['train' => $train];
     }
 
     public function timer(string $html) {
-        preg_match("/getPreTimerString\(\s*(\d+),/", $html, $matches);
+        preg_match("/getPreTimerString\s*\(\s*(\d+)\s*,/", $html, $matches);
         return isset($matches[1]) ? (int)$matches[1] : 0;
     }
 }
