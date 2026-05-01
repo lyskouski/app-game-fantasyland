@@ -76,6 +76,9 @@ class MainController extends Controller
     }
 
     protected function arena($html) {
+        if (strpos($html, 'ReloadFrame();') !== false) {
+            return redirect('/cgi/train_start.php');
+        }
         $data = (new LocationParser)->onArena($html);
         return view('main_arena', $data);
     }
