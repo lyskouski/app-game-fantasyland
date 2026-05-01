@@ -4,15 +4,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\ArenaParser;
 use App\Services\LocationParser;
 
 class ArenaController extends Controller
 {
-    public function index() {
+    protected function mainPage() {
         $html = $this->get('cgi/no_combat.php', []);
         $data = (new LocationParser)->onArena($html);
         $data['current'] = request()->input('g', 0);
+        $data['unit_id'] = request()->input('unit_id', 0);
+        return $data;
+    }
+
+    public function index() {
+        $data = $this->mainPage();
         $htmlArena = $this->get('/cgi/arena.php');
         $parser = new ArenaParser();
         if (strpos($htmlArena, '/cgi/train_start.php') !== false) {
@@ -22,5 +29,25 @@ class ArenaController extends Controller
         } else {
             return view('main_arena', $data);
         }
+    }
+
+    public function trainStart() {
+        $data = $this->mainPage();
+        $htmlStart = $this->get('/cgi/train_start.php');
+        $parser = new ArenaParser();
+        $data['timer'] = $parser->timer($htmlStart);
+        Notification::addIfExists($htmlStart);
+        return view('arena_train_start', $data);
+    }
+
+    public function trainStop() {
+        $htmlStop = $this->get('/cgi/train_stop.php');
+        Notification::addIfExists($htmlStop);
+        $data = $this->mainPage();
+        $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
+        $parser = new ArenaParser();
+        $data['captcha'] = $this->captcha(time());
+        $arena = $parser->train($htmlArena);
+        return view('arena_train', [...$data, ...$arena]);
     }
 }

@@ -42,6 +42,8 @@ Route::get('/cgi/travel_stop.php', [MainController::class, 'mapStop']);
 
 // Arena
 Route::get('/cgi/arena.php', [ArenaController::class, 'index']);
+Route::get('/cgi/train_start.php', [ArenaController::class, 'trainStart']);
+Route::get('/cgi/train_stop.php', [ArenaController::class, 'trainStop']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);

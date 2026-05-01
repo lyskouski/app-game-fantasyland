@@ -35,4 +35,9 @@ class ArenaParser
         array_shift($train);
         return ['train' => $train, 'uid' => 0];
     }
+
+    public function timer(string $html) {
+        preg_match("/getPreTimerString\(\s*(\d+),/", $html, $matches);
+        return isset($matches[1]) ? (int)$matches[1] : 0;
+    }
 }
