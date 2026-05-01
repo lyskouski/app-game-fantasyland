@@ -39,18 +39,23 @@ class ArenaController extends Controller
             $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1]);
         }
         $parser = new ArenaParser();
-        $data['timer'] = $parser->timer($htmlStart);
+        $start = $parser->timer($htmlStart);
         Notification::addIfExists($htmlStart);
-        return view('arena_train_start', $data);
+        return view('arena_train_start', [...$data, ...$start]);
     }
 
     public function trainStop() {
-        Device::vibrate();
         $htmlStop = $this->get('/cgi/train_stop.php');
         Notification::addIfExists($htmlStop);
-        $data = $this->mainPage();
-        $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
         $parser = new ArenaParser();
+        $data = $this->mainPage();
+        if (strpos($htmlStop, "parent.no_combat.ReloadFrame('&rws=1');") !== false) {
+            $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1, 'rws' => 1]);
+            $start = $parser->timer($htmlStart);
+            return view('arena_train_start', [...$data, ...$start]);
+        }
+        Device::vibrate();
+        $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
         $data['captcha'] = $this->captcha(time());
         $arena = $parser->train($htmlArena);
         return view('arena_train', [...$data, ...$arena]);

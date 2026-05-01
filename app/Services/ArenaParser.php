@@ -38,6 +38,9 @@ class ArenaParser
 
     public function timer(string $html) {
         preg_match("/getPreTimerString\s*\(\s*(\d+)\s*,/", $html, $matches);
-        return isset($matches[1]) ? (int)$matches[1] : 0;
+        $timer = isset($matches[1]) ? (int)$matches[1] : 0;
+        preg_match("/Осталось перезапусков: <font color=F9FBA8><b>(\d+)<\/b><\/font>/", $html, $matches);
+        $restarts = isset($matches[1]) ? (int)$matches[1] : 0;
+        return ['timer' => $timer, 'restarts' => $restarts];
     }
 }

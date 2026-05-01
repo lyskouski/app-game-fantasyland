@@ -67,6 +67,11 @@
                     Время ожидания:
                     <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/train_stop.php?g={{ $current }}&unit_id={{ $unit_id }}'">-- : --</strong>
                 </p>
+                @if($restarts > 0)
+                <p>
+                    Руна помощника. Осталось перезапусков: <strong>{{ $restarts }}</strong>
+                </p>
+                @endif
             </div>
         </div>
     </body>
