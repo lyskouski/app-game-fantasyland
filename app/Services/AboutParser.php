@@ -4,66 +4,13 @@
 
 namespace App\Services;
 
+use App\Settings\Defines;
+
 class AboutParser
 {
     use \App\Helpers\StringTrait;
 
-    protected $aProperties = array(
-        'золото' => 'https://www.fantasyland.ru/images/items/coins.gif',
-        'золотые монеты' => 'https://www.fantasyland.ru/images/items/coins.gif',
-        'ум' => 'https://www.fantasyland.ru/images/miscellaneous/quest.gif',
-        'Уровень' => 'http://citadel-liga.info/img/games/lvl.gif',
-        'Длительность' => 'https://www.fantasyland.ru/images/miscellaneous/time.gif',
-        'Ум' => 'https://www.fantasyland.ru/images/miscellaneous/intelligence.gif',
-        'Сила' => 'https://www.fantasyland.ru/images/miscellaneous/strength.gif',
-        'Тип' => 'https://www.fantasyland.ru/images/i/b1.gif',
-        'Атака' => 'https://www.fantasyland.ru/images/miscellaneous/attack_all.gif',
-        'Атака Драконов' => 'https://www.fantasyland.ru/images/miscellaneous/attack_d.gif',
-        'Атака Рыцарей' => 'https://www.fantasyland.ru/images/miscellaneous/attack_k.gif',
-        'Атака Дам' => 'https://www.fantasyland.ru/images/miscellaneous/attack_l.gif',
-        'Атака Хаоса' => 'https://www.fantasyland.ru/images/miscellaneous/attack_c.gif',
-        'Атака Света' => 'https://www.fantasyland.ru/images/miscellaneous/attack_h.gif',
-        'Атака Колдовства' => 'https://www.fantasyland.ru/images/miscellaneous/attack_s.gif',
-        'Атака Астрала' => 'https://www.fantasyland.ru/images/miscellaneous/attack_a.gif',
-        'Защита' => 'https://www.fantasyland.ru/images/miscellaneous/defence_all.gif',
-        'Защита от Драконов' => 'https://www.fantasyland.ru/images/miscellaneous/defence_d.gif',
-        'Защита от Рыцарей' => 'https://www.fantasyland.ru/images/miscellaneous/defence_k.gif',
-        'Защита от Дам' => 'https://www.fantasyland.ru/images/miscellaneous/defence_l.gif',
-        'Защита от Хаоса' => 'https://www.fantasyland.ru/images/miscellaneous/defence_c.gif',
-        'Защита от Света' => 'https://www.fantasyland.ru/images/miscellaneous/defence_h.gif',
-        'Защита от Колдовства' => 'https://www.fantasyland.ru/images/miscellaneous/defence_s.gif',
-        'Защита от Астрала' => 'https://www.fantasyland.ru/images/miscellaneous/defence_a.gif',
-        'Защита от Яда' => 'https://www.fantasyland.ru/images/miscellaneous/pp.gif',
-        'Cила Эффектов' => 'https://www.fantasyland.ru/images/miscellaneous/m_prot.gif',
-        'Восстановление Жизни' => 'https://www.fantasyland.ru/images/miscellaneous/regen_hp.gif',
-        'Концентрация' => 'https://www.fantasyland.ru/images/miscellaneous/conc.gif',
-        'Удача' => 'https://www.fantasyland.ru/images/miscellaneous/luck.gif',
-        'Размер' => 'https://www.fantasyland.ru/images/miscellaneous/size_pl.png',
-        'Число Ударов' => 'https://www.fantasyland.ru/images/miscellaneous/size_sword.png',
-        'Обучаемость' => 'https://www.fantasyland.ru/images/miscellaneous/learn.gif',
-        'Скорость' => 'https://www.fantasyland.ru/images/miscellaneous/speed.gif',
-        'Макс. Жизнь' => 'https://www.fantasyland.ru/images/miscellaneous/hp.gif',
-        'Сила Эффектов' => 'https://www.fantasyland.ru/images/miscellaneous/m_prot.gif',
-        'Власть над Драконами' => 'https://www.fantasyland.ru/images/miscellaneous/mastery_d.gif',
-        'Власть над Рыцарями' => 'https://www.fantasyland.ru/images/miscellaneous/mastery_k.gif',
-        'Власть над Дамами' => 'https://www.fantasyland.ru/images/miscellaneous/mastery_l.gif',
-        'Магия Хаоса' => 'https://www.fantasyland.ru/images/miscellaneous/magic_c.gif',
-        'Магия Света' => 'https://www.fantasyland.ru/images/miscellaneous/magic_h.gif',
-        'Магия Астрала' => 'https://www.fantasyland.ru/images/miscellaneous/magic_a.gif',
-        'Колдовство' => 'https://www.fantasyland.ru/images/miscellaneous/magic_s.gif',
-        'Атака Всех' => 'https://www.fantasyland.ru/images/miscellaneous/attack_all.gif',
-        'Атака трех магий' => 'https://www.fantasyland.ru/images/miscellaneous/attack_mall.gif',
-        'Атака Трех Магий' => 'https://www.fantasyland.ru/images/miscellaneous/attack_mall.gif',
-        'Атака Всех Магий' => 'https://www.fantasyland.ru/images/miscellaneous/attack_mall.gif',
-        'Защита от Всех Магий' => 'https://www.fantasyland.ru/images/miscellaneous/defence_mall.gif',
-        'Защита от трех магий' => 'https://www.fantasyland.ru/images/miscellaneous/defence_mall.gif',
-        'Защита от Трех Магий' => 'https://www.fantasyland.ru/images/miscellaneous/defence_mall.gif',
-        'Защита от Нейтральных Заклятий' => 'https://www.fantasyland.ru/images/effects/pn_15.png',
-        'Защита от Нейтральных За' => 'https://www.fantasyland.ru/images/effects/pn_15.png',
-        'Защита от Всех' => 'https://www.fantasyland.ru/images/miscellaneous/defence_all.gif',
-        'Защита от Нейтральных Заклятий' => 'https://www.fantasyland.ru/images/miscellaneous/pn.gif',
-        'Защита от Нейтральных За' => 'https://www.fantasyland.ru/images/miscellaneous/pn.gif',
-
+    private const RECIPE_IMAGES = [
         'Рецепт Купцов' => 'https://www.fantasyland.ru/images/clans/merch_small.gif',
         'Рецепт Кузнецов' => 'https://www.fantasyland.ru/images/clans/smith_capital_small.gif',
         'Рецепт Ювелиров' => 'https://www.fantasyland.ru/images/clans/jewelry_small.gif',
@@ -73,15 +20,29 @@ class AboutParser
         'Рецепт Фальшивомонетчиков' => 'https://www.citadel-liga.info/images/empty.gif',
         'Рецепт Искусных Мастеров' => 'https://www.fantasyland.ru/images/clans/fim_small.png',
         'Рецепт Механистов' => 'https://www.fantasyland.ru/images/clans/mechanists_small.png',
-    );
+    ];
 
-    protected function findProperty(string $sPropName) {
+    protected function findProperty(string $sPropName, array $propertyImageMap): string {
+        $fullMap = array_merge(self::RECIPE_IMAGES, $propertyImageMap);
         $aSearch = [];
-        foreach (array_keys($this->aProperties) as $sValue) {
-            $aSearch[$sValue] = similar_text(str_replace('&nbsp;', ' ', $sPropName),  $sValue);
+        foreach (array_keys($fullMap) as $sValue) {
+            $aSearch[$sValue] = similar_text(str_replace('&nbsp;', ' ', $sPropName), $sValue);
         }
         arsort($aSearch);
-        return key($aSearch);
+        return key($aSearch) ?? $sPropName;
+    }
+
+    private function extractPropertyImages(\DOMElement $tableElement): array {
+        $imageMap = [];
+        $oImg = $tableElement->getElementsByTagName('img');
+        for ($i = 0; $i < $oImg->length; $i++) {
+            $title = $oImg->item($i)->getAttribute('title');
+            $src = $oImg->item($i)->getAttribute('src');
+            if ($title && $src && !isset($imageMap[$title])) {
+                $imageMap[$title] = $src;
+            }
+        }
+        return $imageMap;
     }
 
     protected function fixHtml(string $content, bool $closeTagsOnly = false) {
@@ -174,6 +135,13 @@ class AboutParser
             ];
         }
 
+        $propertyImageMap = [];
+        $tables = $o->getElementsByTagName('table');
+        for ($t = 1; $t < $tables->length; $t++) {
+            $tableImages = $this->extractPropertyImages($tables->item($t));
+            $propertyImageMap = array_merge($propertyImageMap, $tableImages);
+        }
+
         $oProp = $o->getElementsByTagName('table')->item(1)->getElementsByTagName('td');
         $aProp = [];
         for ($i = 0; $i < $oProp->length; $i = $i+2) {
@@ -188,13 +156,14 @@ class AboutParser
                 $aProp['properties'][] = array(
                     'type' => 'property',
                     'property' => 'Длительность',
-                    'value'    => trim($oProp->item($i+1)->textContent)
+                    'value' => trim($oProp->item($i+1)->textContent)
                 );
 
             } elseif (in_array($sPropName, array('Эффекты:','Эффект:'))) {
                 $oImg = $oProp->item($i+1)->getElementsByTagName('img');
                 for ($k = 0; $k < $oImg->length; $k++) {
-                    $aText = explode("\n", $oImg->item($k)->getAttribute('title'));
+                    $imgNode = $oImg->item($k);
+                    $aText = explode("\n", $imgNode->getAttribute('title'));
                     $sEffect = $aText[sizeof($aText)-1];
                     $sCount = '';
                     if (preg_match("/на \d{1,} ход/", $sEffect, $aLen)) {
@@ -207,15 +176,16 @@ class AboutParser
 
                     $aProp['properties'][] = array(
                         'type' => 'property',
-                        'property' => $this->findProperty( $sEffect ),
-                        'value'    => filter_var($sEffect, FILTER_SANITIZE_NUMBER_INT) . $sCount
+                        'property' => $this->findProperty($sEffect, $propertyImageMap),
+                        'value' => filter_var($sEffect, FILTER_SANITIZE_NUMBER_INT) . $sCount,
+                        'image' => Defines::URL . trim($imgNode->getAttribute('src'), '/')
                     );
                     $aType = explode(':', trim($aText[sizeof($aText)-2]));
                     if ($aType[0] === 'Тип') {
                         $aProp['properties'][] = array(
                             'type' => 'property',
                             'property' => $aType[0],
-                            'value'    => $aType[1]
+                            'value' => $aType[1]
                         );
                     }
                 }
@@ -224,11 +194,18 @@ class AboutParser
                 $oImg = $oProp->item($i+1)->getElementsByTagName('img');
                 $oB = $oProp->item($i+1)->getElementsByTagName('b');
                 for ($k = 0; $k < $oImg->length; $k++) {
-                    $aProp['properties'][] = array(
-                        'type' => ($sPropName === 'Требования:') ? 'required' : 'property',
-                        'property' => $oImg->item($k)->getAttribute('title'),
-                        'value'    => $oB->item($k)->textContent
+                    $imgNode = $oImg->item($k);
+                    $aData = array(
+                        'type' => 'property',
+                        'property' => $imgNode->getAttribute('title'),
+                        'value' => $oB->item($k)->textContent,
+                        'image' => Defines::URL . trim($imgNode->getAttribute('src'), '/')
                     );
+                    if ($sPropName === 'Требования:') {
+                        $aProp['required'][] = $aData;
+                    } else {
+                        $aProp['properties'][] = $aData;
+                    }
                 }
 
             } else {
@@ -236,13 +213,15 @@ class AboutParser
             }
         }
 
-        $fAddItem = function($sMadeName, $iGroup, $sType, $sNam, $sVal) {
+        $fAddItem = function($sMadeName, $iGroup, $sType, $sNam, $sVal, $sId = null, $sImage = null) {
             return array(
                 'who_can' => $sMadeName,
                 'group'   => $iGroup,
                 'pro_type' => $sType,
                 'type' => $sNam,
-                'value' => $sVal
+                'value' => $sVal,
+                'id' => $sId,
+                'image' => $sImage
             );
         };
 
@@ -261,6 +240,10 @@ class AboutParser
                 $aMadeExist[$sMadeName] = 0;
             }
             $iGroup = $aMadeExist[$sMadeName];
+            $joinType = $iGroup . $sMadeName;
+            if (!isset($aProp['made'][$joinType])) {
+                $aProp['made'][$joinType] = [];
+            }
 
             if (!$oMade->textContent) {
                 $sTemp = explode("<div id=moo{$iMade} style='display:none'>", $sContent);
@@ -273,14 +256,32 @@ class AboutParser
                     )
                 );
             }
-            $oTemp = $oMade->getElementsByTagName('table')->item(0)->getElementsByTagName('td');
-            $iCount = $oTemp->length/2;
-            for ($j = 0; $j < $iCount; $j++) {
-                $aProp['made'][] = $fAddItem(
-                    $sMadeName, $iGroup, 'items',
-                    $oTemp->item($j)->getElementsByTagName('a')->item(0)->getAttribute('title'),
-                    $oTemp->item($j+$iCount)->textContent
-                );
+            $madeTable = $oMade->getElementsByTagName('table')->item(0);
+            if ($madeTable) {
+                $oTemp = $madeTable->getElementsByTagName('td');
+                $iCount = $oTemp->length/2;
+                for ($j = 0; $j < $iCount; $j++) {
+                    $linkNode = $oTemp->item($j)->getElementsByTagName('a')->item(0);
+                    if ($linkNode) {
+                        $href = $linkNode->getAttribute('href');
+                        $itemId = null;
+                        $itemImage = null;
+                        if (preg_match('/id=(\d+)/', $href, $matches)) {
+                            $itemId = $matches[1];
+                        }
+                        $imgNode = $linkNode->getElementsByTagName('img')->item(0);
+                        if ($imgNode) {
+                            $itemImage = Defines::URL . str_replace('../', '', $imgNode->getAttribute('src'));
+                        }
+                        $aProp['made'][$joinType][] = $fAddItem(
+                            $sMadeName, $iGroup, 'items',
+                            $linkNode->getAttribute('title'),
+                            trim($oTemp->item($j+$iCount)->textContent),
+                            $itemId,
+                            $itemImage
+                        );
+                    }
+                }
             }
 
             $aTemp = [];
@@ -289,13 +290,13 @@ class AboutParser
             for ($j = 0; $j < $oTemp->length; $j++) {
                 $aTemp = explode(':', $oTemp->item($j)->textContent);
                 if ($aTemp[0] === 'Монет') {
-                    $aProp['made'][] = $fAddItem(
+                    $aProp['made'][$joinType][] = $fAddItem(
                         $sMadeName, $iGroup, 'items',
                         'золотые монеты',
                         $aTemp[1]
                     );
                 } elseif ($aTemp[0] === 'Количество') {
-                    $aProp['made'][] = $fAddItem(
+                    $aProp['made'][$joinType][] = $fAddItem(
                         $sMadeName, $iGroup, 'required',
                         $aTemp[0],
                         $oTemp->item($j+1)->textContent
@@ -309,7 +310,7 @@ class AboutParser
                     continue;
                 }
 
-                $aProp['made'][] = $fAddItem(
+                $aProp['made'][$joinType][] = $fAddItem(
                     $sMadeName, $iGroup, 'required',
                     $aTemp[0],
                     $aTemp[1]
@@ -332,7 +333,7 @@ class AboutParser
                         if (!$iNext) {
                             $iNext = trim($this->substr(trim($aTemp[$i+1]), 0, $this->substr_compare($aTemp[$i+1], $this->strtolower($aTemp[$i+1]), 2)));
                         }
-                        $aProp['made'][] = $fAddItem(
+                        $aProp['made'][$joinType][] = $fAddItem(
                             $sMadeName, $iGroup, 'required',
                             mb_substr(trim($s), mb_strlen($sPrev)),
                             $iNext
@@ -350,15 +351,16 @@ class AboutParser
                 'value'    => $aProp['Тип:']
             );
         }
-
+        $image = $o->getElementsByTagName('img')->item(2)->getAttribute('src');
         return [
             'name' => $sName,
             'lvl' => $aProp['Уровень:'] ?? 0,
             'cost' => $aProp['Цена:'][0] ?? 0,
             'cost_type' => $aProp['Цена:'][1] ?? 'ум',
-            'image' => $o->getElementsByTagName('img')->item(2)->getAttribute('src'),
+            'image' => Defines::URL . trim($image, '/'),
             'description' => $aProp['Описание:'] ?? '',
             'properties' => $aProp['properties'] ?? [],
+            'required' => $aProp['required'] ?? [],
             'made' => $aProp['made'] ?? [],
         ];
     }

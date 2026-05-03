@@ -136,3 +136,9 @@ a:active {
     margin-top: 0;
     box-shadow: inset 1px 1px 1px black, inset -1px 1px 1px black, 0px 1px 1px white;
 }
+
+.back {
+    float: right;
+    color: white;
+    padding: 0 12px 12px;
+}

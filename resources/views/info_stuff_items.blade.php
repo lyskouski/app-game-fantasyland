@@ -22,7 +22,7 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;TBD&nbsp;</b></small>
+                            <small><b>&nbsp;{{ $title }}&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
@@ -32,12 +32,14 @@
                 <br />
             </div>
             <div class="main_middle">
-                @foreach($items as $i => $item)
-                <table class="{{ $i % 2 == 0 ? 'light' : '' }}" width="100%" colspacing="0" cellpadding="0">
+                @foreach($items as $item)
+                <table class="colored" width="100%" colspacing="0" cellpadding="0">
                     <tr>
                         <td style="width: 80px" valign="top">
                             <strong class="main_middle__count">{{ $item['count'] }}</strong>
-                            <img src="{{ $item['image'] }}" width="70" height="70" />
+                            <a href="/cgi/item_desc.php?id={{ $item['id'] }}">
+                                <img src="{{ $item['image'] }}" width="70" height="70" />
+                            </a>
                         </td>
                         <td valign="top">
                             @if($item['wearable'])
@@ -58,5 +60,6 @@
             </div>
         </div>
         <br />
+        <a class="back" href="#back" onclick="history.back();">Вернуться назад</a>
     </body>
 </html>

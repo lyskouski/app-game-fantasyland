@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\InfoParser;
 use Native\Mobile\Facades\Dialog;
 
@@ -103,7 +104,8 @@ class InfoController extends Controller
     }
 
     public function wear() {
-        $this->get('cgi/inv_wear.php');
+        $html = $this->get('cgi/inv_wear.php');
+        Notification::addIfExists($html);
         return $this->indexPost([self::OPTION => self::TYPE_STUFF]);
     }
 
@@ -129,7 +131,27 @@ class InfoController extends Controller
 
     public function loadItems() {
         $html = $this->get('cgi/inv_load_items.php');
-        return view('info_stuff_items', $this->parser->getStuffItems($html));
+        $data = $this->parser->getStuffItems($html);
+
+        $titles = [
+            'd10' => 'Шлемы',
+            'd11' => 'Амулеты',
+            'd12' => 'Броня',
+            'd13' => 'Оружие',
+            'd14' => 'Щиты',
+            'd15' => 'Кольца',
+            'd16' => 'Перчатки',
+            'd18' => 'Обувь',
+            'd19' => 'Пояса',
+            'd110' => 'Браслеты',
+            'd113' => 'Боевые свитки',
+            'd124' => 'Ключи',
+            'd126' => 'Свитки',
+            'd127' => 'Квестовые предметы',
+        ];
+        $data['title'] = $titles[request()->input('dv')] ?? '?';
+
+        return view('info_stuff_items', $data);
     }
 
     public function addUmEffect() {
