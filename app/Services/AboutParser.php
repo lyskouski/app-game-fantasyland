@@ -352,14 +352,14 @@ class AboutParser
         }
 
         return [
-            'name' => str_replace("'", "`", $sName),
-            'lvl' => isset($aProp['Уровень:']) ? $aProp['Уровень:'] : 0,
-            'cost' => isset($aProp['Цена:']) ? $aProp['Цена:'][0] : 0,
-            'cost_type' => isset($aProp['Цена:']) ? $aProp['Цена:'][1] : 'ум',
+            'name' => $sName,
+            'lvl' => $aProp['Уровень:'] ?? 0,
+            'cost' => $aProp['Цена:'][0] ?? 0,
+            'cost_type' => $aProp['Цена:'][1] ?? 'ум',
             'image' => $o->getElementsByTagName('img')->item(2)->getAttribute('src'),
-            'description' => isset($aProp['Описание:']) ? str_replace("'", "`", $aProp['Описание:']) : '',
-            'properties' => isset($aProp['properties']) ? $aProp['properties'] : false,
-            'made' => isset($aProp['made']) ? $aProp['made'] : false,
+            'description' => $aProp['Описание:'] ?? '',
+            'properties' => $aProp['properties'] ?? [],
+            'made' => $aProp['made'] ?? [],
         ];
     }
 }
