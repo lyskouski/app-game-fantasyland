@@ -19,6 +19,7 @@
 <img alt="Настройки лабиринта" style="border-width:0;width:200px" src="./docs/design-flow/lab_2.jpg" /> . <img alt="Боковая панель" style="border-width:0;width:200px" src="./docs/design-flow/sidebar.jpg" /> .  <img alt="Системное сообщение" style="border-width:0;width:200px" src="./docs/design-flow/chat_1.jpg" /> . <img alt="Сообщения" style="border-width:0;width:200px" src="./docs/design-flow/chat_2.jpg" />
 <img alt="Руны" style="border-width:0;width:200px" src="./docs/design-flow/info_6.jpg" /> . <img alt="Магазин Вещей" style="border-width:0;width:200px" src="./docs/design-flow/store_1.jpg" /> . <img alt="Магазин Последователей" style="border-width:0;width:200px" src="./docs/design-flow/store_2.jpg" /> . <img alt="Палатки" style="border-width:0;width:200px" src="./docs/design-flow/store_3.jpg" />
 <img alt="Выбор айтема" style="border-width:0;width:200px" src="./docs/design-flow/store_4.jpg" /> . <img alt="Лабиринт с дверьми" style="border-width:0;width:200px" src="./docs/design-flow/lab_3.jpg" /> . <img alt="Тренировка последователей" style="border-width:0;width:200px" src="./docs/design-flow/arena_1.jpg" /> . <img alt="Тренировка последователей" style="border-width:0;width:200px" src="./docs/design-flow/arena_2.jpg" />
+<img alt="Детализация по предметам" style="border-width:0;width:200px" src="./docs/design-flow/info_7.jpg" /> .
 
 ## Поддержка (Спонсорство)
 

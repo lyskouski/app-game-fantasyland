@@ -18,6 +18,7 @@ Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://ww
 <img alt="Labyrinth Settings" style="border-width:0;width:200px" src="./docs/design-flow/lab_2.jpg" /> . <img alt="Sidebar" style="border-width:0;width:200px" src="./docs/design-flow/sidebar.jpg" /> . <img alt="System Message" style="border-width:0;width:200px" src="./docs/design-flow/chat_1.jpg" /> . <img alt="Chat" style="border-width:0;width:200px" src="./docs/design-flow/chat_2.jpg" />
 <img alt="Runes" style="border-width:0;width:200px" src="./docs/design-flow/info_6.jpg" /> . <img alt="Store Items" style="border-width:0;width:200px" src="./docs/design-flow/store_1.jpg" /> . <img alt="Store Army" style="border-width:0;width:200px" src="./docs/design-flow/store_2.jpg" /> . <img alt="Tents" style="border-width:0;width:200px" src="./docs/design-flow/store_3.jpg" />
 <img alt="Tent Selection" style="border-width:0;width:200px" src="./docs/design-flow/store_4.jpg" /> . <img alt="Labyrinth with doors" style="border-width:0;width:200px" src="./docs/design-flow/lab_3.jpg" /> . <img alt="Arena Training" style="border-width:0;width:200px" src="./docs/design-flow/arena_1.jpg" /> . <img alt="Arena Training" style="border-width:0;width:200px" src="./docs/design-flow/arena_2.jpg" />
+<img alt="Detailed info: Items" style="border-width:0;width:200px" src="./docs/design-flow/info_7.jpg" /> .
 
 ## Support (Sponsorship)
 
