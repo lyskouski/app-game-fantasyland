@@ -80,8 +80,5 @@
             </div>
         </div>
         <a class="back" href="#back" onclick="history.back();">Вернуться назад</a>
-        <pre>
-        {{ print_r($debug) }}
-        </pre>
     </body>
 </html>

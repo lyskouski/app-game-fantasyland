@@ -437,7 +437,6 @@ class AboutParser
             }
             $aResult['description'] = ''; // TBD
         }
-        $aResult['debug'] = $aResult;
         return $aResult;
     }
 
@@ -447,7 +446,6 @@ class AboutParser
 
         $imgs = $oDoc->getElementsByTagName('img');
         $bTags = $oDoc->getElementsByTagName('b');
-        $textContent = trim(strip_tags($content));
 
         if ($imgs->length > 0) {
             if ($bTags->length > 0) {
@@ -469,29 +467,21 @@ class AboutParser
                     );
                 }
             } else {
-                // If only images (effects format) - split text by effects
-                $effects = preg_split('/\s{2,}/', $textContent);
-                $imgIndex = 0;
+                for ($i = 0; $i < $imgs->length; $i++) {
+                    $imgNode = $imgs->item($i);
+                    $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
+                    $property = $imgNode->getAttribute('title') ?? '';
+                    $property = preg_replace(['/[\r\n]+/', '/[ \t]+/'], ['.', ' '], $property);
+                    $property = trim($property);
 
-                foreach ($effects as $effect) {
-                    $effect = trim($effect);
-                    if (empty($effect)) {
-                        continue;
+                    if (!empty($property)) {
+                        $properties[] = array(
+                            'type' => $propType,
+                            'image' => $image,
+                            'property' => $property,
+                            'value' => ''
+                        );
                     }
-
-                    $image = '';
-                    if ($imgIndex < $imgs->length) {
-                        $imgNode = $imgs->item($imgIndex);
-                        $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
-                        $imgIndex++;
-                    }
-
-                    $properties[] = array(
-                        'type' => $propType,
-                        'image' => $image,
-                        'property' => $effect,
-                        'value' => ''
-                    );
                 }
             }
         }
