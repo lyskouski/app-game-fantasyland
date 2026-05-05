@@ -43,6 +43,7 @@ Route::get('/cgi/travel_stop.php', [MainController::class, 'mapStop']);
 
 // About
 Route::get('/cgi/item_desc.php', [AboutController::class, 'item']);
+Route::get('/cgi/army_desc.php', [AboutController::class, 'army']);
 
 // Arena
 Route::get('/cgi/arena.php', [ArenaController::class, 'index']);

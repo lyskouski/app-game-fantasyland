@@ -364,4 +364,136 @@ class AboutParser
             'made' => $aProp['made'] ?? [],
         ];
     }
+
+    public function army(string $html, string $id) {
+        $sContent = str_replace('&nbsp;', ' ', $html);
+        $aResult = array(
+            'name' => '?',
+            'game_id' => $id,
+            'lvl' => 0,
+            'cost' => 0,
+            'cost_type' => '',
+            'type' => '',
+            'image' => '',
+            'description' => '',
+            'properties' => [],
+            'required' => []
+        );
+
+        preg_match('{<TITLE>(.*?)</TITLE>}si', $sContent, $aPregMatch);
+        if ($aPregMatch && trim($aPregMatch[1]) <> '') {
+            $aResult['name'] = trim($aPregMatch[1]);
+            $aResult['game_id'] = $id;
+
+            switch (substr($id, 0, 1)) {
+                case '1': $aResult['type'] = 'Дракон';
+                    break;
+                case '2': $aResult['type'] = 'Рыцарь';
+                    break;
+                case '3': $aResult['type'] = 'Дама';
+                    break;
+                default: $aResult['type'] = 'Уникальные';
+            }
+
+            preg_match('{<img src="(.*?)"}si', $sContent, $aPregMatch);
+            $aResult['image'] = Defines::URL . trim($aPregMatch[1], '/.');
+
+            preg_match('{<table>(.*?)</table>}si', $sContent, $aPregMatch);
+            $tableContent = $aPregMatch[1];
+
+            $aPregMatch = explode('</td>', $tableContent);
+            $aResult['cost'] = 0;
+            $aResult['cost_type'] = 'ум';
+            $aResult['lvl'] = 0;
+            $iSize = sizeof($aPregMatch);
+
+            for ($i = 0; $i < $iSize; $i = $i + 2) {
+                if (!isset($aPregMatch[$i + 1])) {
+                    break;
+                }
+                $propType = strip_tags($aPregMatch[$i]);
+                $propType = trim($propType);
+                $propContent = $aPregMatch[$i + 1];
+
+                if (strpos($propType, 'Уровень') !== false) {
+                    $aResult['lvl'] = trim(strip_tags($propContent));
+
+                } elseif (strpos($propType, 'Цена') !== false) {
+                    $aResult['cost'] = trim(strip_tags($propContent));
+                    $aResult['cost_type'] = strpos($propContent, 'Золота') ? 'золото' : 'ум';
+
+                } elseif ($propType) {
+                    $propTypeKey = trim(str_replace(':', '', $propType));
+                    if ($propTypeKey === 'Требования') {
+                        $this->parseProperties($propContent, $aResult['required'], $propTypeKey);
+                    } else {
+                        $this->parseProperties($propContent, $aResult['properties'], $propTypeKey);
+                    }
+                }
+            }
+
+            if (!$aResult['lvl'] && strlen($id) > 3) {
+                $aResult['lvl'] = substr($id, 1, -2);
+            }
+            $aResult['description'] = ''; // TBD
+        }
+        $aResult['debug'] = $aResult;
+        return $aResult;
+    }
+
+    private function parseProperties(string $content, array &$properties, string $propType): void {
+        $oDoc = new \DOMDocument();
+        @$oDoc->loadHTML('<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /></head><body>' . $this->fixHtml($content) . '</body></html>');
+
+        $imgs = $oDoc->getElementsByTagName('img');
+        $bTags = $oDoc->getElementsByTagName('b');
+        $textContent = trim(strip_tags($content));
+
+        if ($imgs->length > 0) {
+            if ($bTags->length > 0) {
+                for ($i = 0; $i < $imgs->length; $i++) {
+                    $imgNode = $imgs->item($i);
+                    $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
+                    $property = $imgNode->getAttribute('title') ?? '';
+                    $value = '';
+
+                    if ($bTags->length > $i) {
+                        $value = trim($bTags->item($i)->textContent);
+                    }
+
+                    $properties[] = array(
+                        'type' => $propType,
+                        'image' => $image,
+                        'property' => $property,
+                        'value' => $value
+                    );
+                }
+            } else {
+                // If only images (effects format) - split text by effects
+                $effects = preg_split('/\s{2,}/', $textContent);
+                $imgIndex = 0;
+
+                foreach ($effects as $effect) {
+                    $effect = trim($effect);
+                    if (empty($effect)) {
+                        continue;
+                    }
+
+                    $image = '';
+                    if ($imgIndex < $imgs->length) {
+                        $imgNode = $imgs->item($imgIndex);
+                        $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
+                        $imgIndex++;
+                    }
+
+                    $properties[] = array(
+                        'type' => $propType,
+                        'image' => $image,
+                        'property' => $effect,
+                        'value' => ''
+                    );
+                }
+            }
+        }
+    }
 }

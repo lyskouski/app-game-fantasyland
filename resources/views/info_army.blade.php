@@ -37,7 +37,9 @@
                     <tr>
                         <td style="width: 80px" valign="top">
                             <strong class="main_middle__count">{{ $item['count'] }}</strong>
-                            <img src="{{ $item['image'] }}" width="70" height="70" />
+                            <a href="/cgi/army_desc.php?id={{ $item['id'] }}">
+                                <img src="{{ $item['image'] }}" width="70" height="70" />
+                            </a>
                         </td>
                         <td valign="top">
                             <input style="position:relative;float:right;" class="army_selection" type="checkbox" data-id="{{ $item['id'] }}" @if($item['selected']) checked @endif />
