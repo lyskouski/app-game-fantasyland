@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 
-class ChatController extends Controller
+final class ChatController extends Controller
 {
     public function index() {
         $data = $this->get('cgi/ch_ref.php', []);

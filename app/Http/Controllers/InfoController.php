@@ -8,7 +8,7 @@ use App\Models\Notification;
 use App\Services\InfoParser;
 use Native\Mobile\Facades\Dialog;
 
-class InfoController extends Controller
+final class InfoController extends Controller
 {
     protected InfoParser $parser;
 

@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 
-class GenericController extends Controller
+final class GenericController extends Controller
 {
     public function index($url) {
         $data = request()->all();

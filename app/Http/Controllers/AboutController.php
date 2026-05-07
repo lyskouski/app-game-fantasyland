@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Services\AboutParser;
 
-class AboutController extends Controller
+final class AboutController extends Controller
 {
     protected AboutParser $parser;
 

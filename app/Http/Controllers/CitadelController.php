@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 
-class CitadelController extends Controller
+final class CitadelController extends Controller
 {
     public function index() {
         $url = request()->query('url', '');

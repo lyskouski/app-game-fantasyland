@@ -11,54 +11,63 @@ use App\Services\LocationParser;
 use App\Services\PreyParser;
 use App\Services\StoreParser;
 
-class MainController extends Controller
+final class MainController extends Controller
 {
+    private LocationParser $locationParser;
+    private PreyParser $preyParser;
+
+    public function __construct() {
+        parent::__construct();
+        $this->locationParser = new LocationParser();
+        $this->preyParser = new PreyParser();
+    }
+
     public function index() {
         $html = $this->post('cgi/no_combat.php', []);
-        $loc = new LocationParser();
-        $prey = new PreyParser();
-        // throw new \Exception('Unknown page: ' . $html);
         Notification::addIfExists($html);
-        if (strpos($html, 'work_stop.php') !== false) {
-            return view('prey_start', [
-                ...$loc->onPlace($html),
-                ...$prey->parse($html, $this->captcha(time()))
-            ]);
-        } elseif (strpos($html, 'craft_favorite_ref.php') !== false) {
-            return view('craft_stop', [
-                ...$loc->onPlace($html),
-                ...(new CraftParser)->parse($html),
-                'captcha' => $this->captcha(time())
-            ]);
-        } elseif (strpos($html, 'work_start.php') !== false) {
-            return view('prey_stop', [
-                ...$loc->onPlace($html),
-                ...$prey->parse($html, $this->captcha(time()))
-            ]);
-        } elseif (strpos($html, '/cgi/maze_move.php') !== false) {
-            return redirect('/labyrinth');
-        } elseif (strpos($html, 'src="mc_main.php"') !== false) {
-            return redirect('/cgi/mc_main.php');
-        } elseif (strpos($html, "action='v_trade_search.php'") !== false) {
-            return $this->marketplace($html);
-        } elseif (strpos($html, "id='ArenaText'") !== false) {
-            return $this->arena($html);
-        } elseif (strpos($html, 'id="LocTable"') !== false) {
-            return view('main_location', $loc->onLocation($html));
-        } elseif (
-            strpos($html, 'cssLocImage') !== false ||
-            strpos($html, '<image height=150 width=150') !== false ||
-            strpos($html, "window.open('loc_desc.php") !== false
-        ) {
-            return $this->place($html);
-        } elseif (strpos($html, 'travel_start.php') !== false) {
-            return $this->map();
+
+        foreach ($this->getPageRoutes() as $pattern => $handler) {
+            if (strpos($html, $pattern) !== false) {
+                return $handler($html);
+            }
         }
+
         return view('generic', ['data' => $html]);
     }
 
+    /**
+     * @return array<string, callable>
+     */
+    private function getPageRoutes(): array
+    {
+        return [
+            'work_stop.php' => fn($html) => view('prey_start', [
+                ...$this->locationParser->onPlace($html),
+                ...$this->preyParser->parse($html, $this->captcha(time()))
+            ]),
+            'craft_favorite_ref.php' => fn($html) => view('craft_stop', [
+                ...$this->locationParser->onPlace($html),
+                ...(new CraftParser)->parse($html),
+                'captcha' => $this->captcha(time())
+            ]),
+            'work_start.php' => fn($html) => view('prey_stop', [
+                ...$this->locationParser->onPlace($html),
+                ...$this->preyParser->parse($html, $this->captcha(time()))
+            ]),
+            '/cgi/maze_move.php' => fn($html) => redirect('/labyrinth'),
+            'src="mc_main.php"' => fn($html) => redirect('/cgi/mc_main.php'),
+            "action='v_trade_search.php'" => fn($html) => $this->marketplace($html),
+            "id='ArenaText'" => fn($html) => $this->arena($html),
+            'id="LocTable"' => fn($html) => view('main_location', $this->locationParser->onLocation($html)),
+            'travel_start.php' => fn($html) => $this->map(),
+            'cssLocImage' => fn($html) => $this->place($html),
+            '<image height=150 width=150' => fn($html) => $this->place($html),
+            "window.open('loc_desc.php" => fn($html) => $this->place($html)
+        ];
+    }
+
     protected function marketplace($html) {
-        $data = (new LocationParser)->onPlace($html);
+        $data = $this->locationParser->onPlace($html);
         $data['tab'] = session()->pull('tab', 'tent');
         $store = new StoreParser();
         $htmlTent = $this->get('cgi/v_trade_load_all.php', []);
@@ -79,12 +88,12 @@ class MainController extends Controller
         if (strpos($html, 'ReloadFrame();') !== false) {
             return redirect('/cgi/train_start.php');
         }
-        $data = (new LocationParser)->onArena($html);
+        $data = $this->locationParser->onArena($html);
         return view('main_arena', $data);
     }
 
     protected function place($html = null) {
-        $data = (new LocationParser)->onPlace($html);
+        $data = $this->locationParser->onPlace($html);
         $data['tab'] = session()->pull('tab', 'buy');
         if (preg_match("/v_trade_load_shop\.php\?sid=(\d+)/", $html, $matches)) {
             $store = new StoreParser();
@@ -107,7 +116,7 @@ class MainController extends Controller
             $html = $this->get('cgi/map.php', []);
         }
         Notification::addIfExists($html);
-        return view('main_map', (new LocationParser)->onMap($html));
+        return view('main_map', $this->locationParser->onMap($html));
     }
 
     public function mapStop() {

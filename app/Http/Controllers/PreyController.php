@@ -9,7 +9,7 @@ use App\Services\CraftParser;
 use App\Services\LocationParser;
 use App\Services\PreyParser;
 
-class PreyController extends MainController
+final class PreyController extends Controller
 {
     public function stop() {
         $data = request()->all();
@@ -22,12 +22,11 @@ class PreyController extends MainController
                 ...(new CraftParser)->parse($html),
                 'captcha' => $this->captcha(time())
             ]);
-        } else {
-            return view('prey_stop', [
-                ...$loc->onPlace($html),
-                ...(new PreyParser)->parse($html, $this->captcha(time()))
-            ]);
         }
+        return view('prey_stop', [
+            ...$loc->onPlace($html),
+            ...(new PreyParser)->parse($html, $this->captcha(time()))
+        ]);
     }
 
     public function run() {

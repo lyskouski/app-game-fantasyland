@@ -8,7 +8,7 @@ use App\Models\Notification;
 use App\Services\LocationParser;
 use App\Services\StoreParser;
 
-class StoreController extends MainController
+final class StoreController extends Controller
 {
     public function buyItem() {
         $html = $this->post('cgi/buy.php');

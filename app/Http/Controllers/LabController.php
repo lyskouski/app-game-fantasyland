@@ -10,7 +10,7 @@ use App\Services\InfoParser;
 use App\Services\LabParser;
 use App\Settings\Defines;
 
-class LabController extends Controller
+final class LabController extends Controller
 {
     protected AppProxyProvider $cit;
 

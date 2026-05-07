@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\SecureStorage;
 use App\Settings\Defines;
 
-class LoginController extends Controller
+final class LoginController extends Controller
 {
     private function getTimestamp(): ?string
     {

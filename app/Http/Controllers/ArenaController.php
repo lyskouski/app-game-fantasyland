@@ -9,7 +9,7 @@ use App\Services\ArenaParser;
 use App\Services\LocationParser;
 use Native\Mobile\Facades\Device;
 
-class ArenaController extends Controller
+final class ArenaController extends Controller
 {
     protected function mainPage() {
         $html = $this->get('cgi/no_combat.php', []);
@@ -27,9 +27,8 @@ class ArenaController extends Controller
             $data['captcha'] = $this->captcha(time());
             $arena = $parser->train($htmlArena);
             return view('arena_train', [...$data, ...$arena]);
-        } else {
-            return view('main_arena', $data);
         }
+        return view('main_arena', $data);
     }
 
     public function trainStart() {

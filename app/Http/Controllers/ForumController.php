@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ForumParser;
 
-class ForumController extends Controller
+final class ForumController extends Controller
 {
     protected ForumParser $parser;
 
