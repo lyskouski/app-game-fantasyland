@@ -95,7 +95,7 @@ class ForumParser
                     "<img src='/images/info_{$args[15]}.gif' alt='[$args[15]]' />";
                 $descCount = $args[16] ?? '';
                 $descAuthor = $args[17] ?? '';
-                $description = "Количество ответов: $descCount. Автор последнего сообщения: $descAuthor.";
+                $description = "Количество ответов: {$descCount}. Автор последнего сообщения: {$descAuthor}.";
             }
             $result[] = [
                 'topic' => $topicHtml,
@@ -108,7 +108,7 @@ class ForumParser
             'title' => $title,
             'pages' => $pages,
             'id' => $id,
-            'hasForm' => strpos($html, '<SCRIPT>ii(') !== false
+            'hasForm' => str_contains($html, '<SCRIPT>ii(')
         ];
     }
 
@@ -134,9 +134,9 @@ class ForumParser
         foreach ($parts as $part) {
             $args = explode(',', str_replace(['"', "'"], '', $part));
             $args = array_map('trim', $args);
-            $postAuthor = "<font color='white'>[Lvl:&nbsp;$args[3]]</font>&nbsp;" .
-                    "<font color='#$args[5]' class='shadow'>$args[1]</font>&nbsp;" .
-                    "<img src='/images/info_{$args[15]}.gif' alt='[$args[15]]' />";
+            $postAuthor = "<font color='white'>[Lvl:&nbsp;{$args[3]}]</font>&nbsp;" .
+                    "<font color='#{$args[5]}' class='shadow'>{$args[1]}</font>&nbsp;" .
+                    "<img src='/images/info_{$args[15]}.gif' alt='[{$args[15]}]' />";
 
             $scriptEnd = strpos($part, '</SCRIPT>');
             $afterScript = substr($part, $scriptEnd + 9);
@@ -164,8 +164,8 @@ class ForumParser
             'title' => htmlspecialchars($title),
             'author' => $author,
             'back' => $back,
-            'hasForm' => strpos($html, '<SCRIPT>jj(') !== false,
-            'hasModeration' => strpos($html, "alt='Закрыть тему'") !== false,
+            'hasForm' => str_contains($html, '<SCRIPT>jj('),
+            'hasModeration' => str_contains($html, "alt='Закрыть тему'"),
         ];
     }
 
@@ -177,7 +177,9 @@ class ForumParser
         }
         $args = explode(',', $match[1]);
         $args = array_map('trim', $args);
-        if (count($args) < 6) return $pages;
+        if (count($args) < 6) {
+            return $pages;
+        }
         list($posts_num, $per_page, $curr, $rid, $direction, $thread_id) = $args;
         $posts_num = (int)$posts_num;
         $per_page = (int)$per_page;
@@ -186,7 +188,7 @@ class ForumParser
         $direction = (int)$direction;
         $thread_id = (int)$thread_id;
 
-        $pages_num = ($posts_num % $per_page == 0) ? intval($posts_num / $per_page) : intval($posts_num / $per_page) + 1;
+        $pages_num = $posts_num % $per_page ? intval($posts_num / $per_page) + 1 : intval($posts_num / $per_page);
         $local_mod = $curr % 20;
         $min = 1;
         $max = $pages_num;
@@ -195,7 +197,7 @@ class ForumParser
         if ($direction === 0) {
             // Forum direction
             $script_name = 'forum.php?';
-            if ($local_mod == 0) {
+            if (!$local_mod) {
                 $min = $curr - 19;
                 $max = $curr;
             } else {
@@ -223,7 +225,7 @@ class ForumParser
         } else {
             $celix = intval(($pages_num - $curr - ($pages_num - $curr) % 20) / 20);
             $celix_pages_total = intval(($pages_num - ($pages_num % 20)) / 20);
-            $show_first = $celix != $celix_pages_total;
+            $show_first = $celix !== $celix_pages_total;
         }
 
         if ($show_first) {

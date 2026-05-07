@@ -148,9 +148,7 @@ class StoreParser
             }
         }
         // sort alphabetically by name
-        usort($items, function($a, $b) {
-            return strcmp($a['name'], $b['name']);
-        });
+        usort($items, fn($a, $b) => strcmp($a['name'], $b['name']));
 
         return $items;
     }

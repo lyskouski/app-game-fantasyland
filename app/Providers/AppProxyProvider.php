@@ -27,9 +27,8 @@ class AppProxyProvider
             return iconv($from, $to, $string);
         } elseif (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($string, $to, $from);
-        } else {
-            return $string;
         }
+        return $string;
     }
 
     protected function convert(array $data, bool $convert = true): string
