@@ -27,7 +27,7 @@ final class MainController extends Controller
         Notification::addIfExists($html);
 
         foreach ($this->getPageRoutes() as $pattern => $handler) {
-            if (strpos($html, $pattern) !== false) {
+            if (str_contains($html, $pattern)) {
                 return $handler($html);
             }
         }
@@ -85,7 +85,7 @@ final class MainController extends Controller
     }
 
     protected function arena($html) {
-        if (strpos($html, 'ReloadFrame();') !== false) {
+        if (str_contains($html, 'ReloadFrame();')) {
             return redirect('/cgi/train_start.php');
         }
         $data = $this->locationParser->onArena($html);

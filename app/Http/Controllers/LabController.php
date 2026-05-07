@@ -103,7 +103,7 @@ final class LabController extends Controller
 
     public function sync() {
         $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
-        if (strpos($conn, 'Прохожий') !== false) {
+        if (str_contains($conn, 'Прохожий')) {
             $this->init();
         }
         $conn = $this->cit->boot(Defines::CITADEL . 'plugin/status/user', [], null, false);
@@ -138,7 +138,7 @@ final class LabController extends Controller
         $content = $this->get('cgi/maze_move.php');
         $content .= $this->get('cgi/maze_ref.php', []);
         Notification::addIfExists($content);
-        if (strpos($content, 'ShowCod()') !== false) {
+        if (str_contains($content, 'ShowCod()')) {
             $content .= 'captcha[' . $this->captcha(time()) . ']';
         }
         return view('empty', ['data' => $content]);
@@ -161,7 +161,7 @@ final class LabController extends Controller
         $content = $this->get('cgi/mc_main.php');
         Notification::addIfExists($content);
         $hid = $this->get('/cgi/mc_hid.php');
-        if (strpos($content, 'mc_hid.php') !== false) {
+        if (str_contains($content, 'mc_hid.php')) {
            $hid .= $this->get('/cgi/mc_hid.php');
         }
         Notification::addIfExists($hid);
@@ -171,7 +171,7 @@ final class LabController extends Controller
     public function questReply() {
         $html = $this->post('/cgi/mc_hid.php');
         Notification::addIfExists($html);
-        if (strpos($html, 'location.href="no_combat.php"') !== false) {
+        if (str_contains($html, 'location.href="no_combat.php"')) {
             return redirect('/cgi/no_combat.php');
         }
         return view('labyrinth_quest', (new LabParser)->getQuest($html));

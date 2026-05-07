@@ -16,7 +16,7 @@ final class PreyController extends Controller
         $html = $this->get('cgi/work_stop.php', $data);
         Notification::addIfExists($html);
         $loc = new LocationParser();
-        if (strpos($html, 'craft_favorite_ref.php') !== false) {
+        if (str_contains($html, 'craft_favorite_ref.php')) {
             return view('craft_stop', [
                 ...$loc->onPlace($html),
                 ...(new CraftParser)->parse($html),

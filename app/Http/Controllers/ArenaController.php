@@ -23,7 +23,7 @@ final class ArenaController extends Controller
         $data = $this->mainPage();
         $htmlArena = $this->get('/cgi/arena.php');
         $parser = new ArenaParser();
-        if (strpos($htmlArena, '/cgi/train_start.php') !== false) {
+        if (str_contains($htmlArena, '/cgi/train_start.php')) {
             $data['captcha'] = $this->captcha(time());
             $arena = $parser->train($htmlArena);
             return view('arena_train', [...$data, ...$arena]);
@@ -34,7 +34,7 @@ final class ArenaController extends Controller
     public function trainStart() {
         $data = $this->mainPage();
         $htmlStart = $this->get('/cgi/train_start.php');
-        if (!$htmlStart || strpos($htmlStart, 'parent.no_combat.ReloadFrame') !== false) {
+        if (!$htmlStart || str_contains($htmlStart, 'parent.no_combat.ReloadFrame')) {
             $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1]);
         }
         $parser = new ArenaParser();
@@ -48,7 +48,7 @@ final class ArenaController extends Controller
         Notification::addIfExists($htmlStop);
         $parser = new ArenaParser();
         $data = $this->mainPage();
-        if (strpos($htmlStop, "parent.no_combat.ReloadFrame('&rws=1');") !== false) {
+        if (str_contains($htmlStop, "parent.no_combat.ReloadFrame('&rws=1');")) {
             $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1, 'rws' => 1]);
             $start = $parser->timer($htmlStart);
             return view('arena_train_start', [...$data, ...$start]);
