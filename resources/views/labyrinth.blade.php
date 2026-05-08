@@ -13,8 +13,6 @@
         @vite(['resources/css/index.css', 'resources/css/labyrinth.css', 'resources/js/ping.js', 'resources/js/labyrinth.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -69,7 +67,7 @@
                 <div id="message"></div>
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -98,14 +96,14 @@
                         <img id="codImage" src="{!! $captcha !!}" width="90" height="40" />
                         &nbsp;<input type="text" id="codInput" inputmode="numeric" maxlength="4" placeholder="Введите код" />
                     </div>
-                    <table border="0">
+                    <table border="0" cellspacing="0" cellpadding="4">
                         <tr>
                         @for($i = 0; $i < 9; $i++)
                             @if($i % 3 == 0 && $i != 0)
                             </tr><tr>
                             @endif
                             <td>
-                                <img id="btn{{ $map[$i]['id'] }}" title="{{ $map[$i]['title'] }}" onclick="goTo({{ $map[$i]['num'] }})" border="0" height="28" width="28" src="https://www.fantasyland.ru/images/miscellaneous/{{ $map[$i]['img'] }}" />
+                                <img id="btn{{ $map[$i]['id'] }}" title="{{ $map[$i]['title'] }}" onclick="goTo({{ $map[$i]['num'] }})" border="0" height="40" width="40" src="https://www.fantasyland.ru/images/miscellaneous/{{ $map[$i]['img'] }}" />
                             </td>
                         @endfor
                         </tr>
@@ -117,7 +115,7 @@
                 <div id="fight"></div>
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -161,7 +159,7 @@
                 @endforeach
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -205,6 +203,5 @@
                 @endforeach
             </div>
         </div>
-        <br />
     </body>
 </html>
