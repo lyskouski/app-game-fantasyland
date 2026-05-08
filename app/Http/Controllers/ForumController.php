@@ -24,13 +24,15 @@ final class ForumController extends Controller
     public function room() {
         $data = request()->input();
         $html = $this->post('cgi/forum.php', $data);
-        return view('forum', [...$this->parser->parseForum($html), ...$data]);
+        $w = $this->get('cgi/w.JS', []);
+        return view('forum', [...$this->parser->parseForum($html, $w), ...$data]);
     }
 
     public function topic() {
         $data = request()->input();
         $html = $this->get('cgi/f_show_thread.php', $data);
-        return view('forum_topic', [...$this->parser->parseTopic($html), ...$data]);
+        $w = $this->get('cgi/w.JS', []);
+        return view('forum_topic', [...$this->parser->parseTopic($html, $w), ...$data]);
     }
 
     public function topicPost() {
