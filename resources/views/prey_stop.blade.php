@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -35,7 +33,7 @@
                 <img src="https://www.fantasyland.ru/{{ $image }}" width="100%" />
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -73,7 +71,7 @@
                 @endforeach
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -99,6 +97,5 @@
                 @endif
             </div>
         </div>
-        <br />
     </body>
 </html>

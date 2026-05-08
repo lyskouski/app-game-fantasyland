@@ -8,8 +8,6 @@
         @vite(['resources/css/index.css', 'resources/js/forum.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_middle">
                 <h2>{!! $title !!}</h2>
@@ -59,7 +57,6 @@
         </div>
         @endif
         @if ($hasModeration)
-        <br />
         <script language="JAVASCRIPT">
             function set_mark(old_mark_text, tid, rid) {
                 var set_mark_text = prompt('Укажите заметку', '');
@@ -87,6 +84,5 @@
             </div>
         </div>
         @endif
-        <br />
     </body>
 </html>

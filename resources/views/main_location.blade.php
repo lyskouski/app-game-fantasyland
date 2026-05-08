@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -35,7 +33,7 @@
                 <img src="https://www.fantasyland.ru/images/{{ $image }}" width="100%" />
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -71,6 +69,5 @@
                 @endif
             </div>
         </div>
-        <br />
     </body>
 </html>

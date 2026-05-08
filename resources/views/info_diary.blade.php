@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -40,7 +38,7 @@
                 @endforeach
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -114,7 +112,7 @@
                 </div>
             </div>
         </div>
-        <br />
+
         <!-- div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -141,8 +139,8 @@
                 <a href="/cgi/deal_arend.php?me&type=2">Выданное в аренду</a><br />
                 <a href="/cgi/deal_arend.php?me&type=3">Взятое в клане</a>
             </div>
-        </div>
-        <br / -->
+        </div -->
+
         <!-- div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -163,8 +161,8 @@
             <div class="main_middle">
                 ...
             </div>
-        </div>
-        <br / -->
+        </div -->
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -189,6 +187,5 @@
                 </form>
             </div>
         </div>
-        <br />
     </body>
 </html>

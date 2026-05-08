@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css', 'resources/js/timer.js'])
     </head>
     <body>
-        <br />
-        <br />
         @if($title)
         <div class="main">
             <div class="main_top">
@@ -36,8 +34,8 @@
                 {!! $message !!}
             </div>
         </div>
-        <br />
         @endif
+
         <div class="main main--light">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -79,6 +77,5 @@
                 </form>
             </div>
         </div>
-        <br />
     </body>
 </html>

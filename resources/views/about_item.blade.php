@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -78,7 +76,7 @@
                 </table>
             </div>
         </div>
-        <br />
+
         @if($made)
             @foreach($made as $group)
             <div class="main">
@@ -126,7 +124,6 @@
                     </table>
                 </div>
             </div>
-            <br />
             @endforeach
         @endif
         <a class="back" href="#back" onclick="history.back();">Вернуться назад</a>

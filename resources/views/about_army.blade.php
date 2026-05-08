@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">

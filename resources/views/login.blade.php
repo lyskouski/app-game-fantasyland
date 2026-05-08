@@ -15,7 +15,7 @@
         <br />
         <br />
         <div class="header">Лига Героев</div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -70,7 +70,7 @@
                 <p class="error">{{ $error }}</p>
             @endif
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -95,7 +95,6 @@
                 </form>
             </div>
         </div>
-        <br />
 
         <div class="main">
             <div class="main_top">

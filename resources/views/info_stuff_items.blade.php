@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -59,7 +57,6 @@
                 @endforeach
             </div>
         </div>
-        <br />
         <a class="back" href="#back" onclick="history.back();">Вернуться назад</a>
     </body>
 </html>

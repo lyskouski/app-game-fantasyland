@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -35,7 +33,7 @@
                 <img src="https://www.fantasyland.ru/images/places/map_new_3.png" width="100%" />
             </div>
         </div>
-        <br />
+
         @if ($timer != null)
         <div class="main">
             <div class="main_top">
@@ -59,8 +57,8 @@
                 <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/travel_stop.php';">-- : --</strong>
             </div>
         </div>
-        <br />
         @endif
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -97,6 +95,5 @@
                 </form>
             </div>
         </div>
-        <br />
     </body>
 </html>

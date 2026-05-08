@@ -12,8 +12,6 @@
         @vite(['resources/css/index.css', 'resources/js/main_place.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -37,7 +35,7 @@
                 <div class="clear"></div>
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -91,7 +89,7 @@
                 @endif
             </div>
         </div>
-        <br />
+
         @if (isset($buy))
         <div class="main">
             <div class="main_top">

@@ -8,8 +8,6 @@
         @vite(['resources/css/index.css', 'resources/js/forum.js'])
     </head>
     <body>
-        <br />
-        <br />
         <div class="main main--light">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -40,7 +38,6 @@
             </div>
         </div>
         @if ($hasForm)
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -84,6 +81,5 @@
             </div>
         </div>
         @endif
-        <br />
     </body>
 </html>

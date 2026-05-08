@@ -39,8 +39,6 @@
         </script>
     </head>
     <body>
-        <br />
-        <br />
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -74,7 +72,7 @@
                 <div class="clear"></div>
             </div>
         </div>
-        <br />
+
         <div class="main main--dark">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -259,7 +257,7 @@
                 </center>
             </div>
         </div>
-        <br />
+
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -289,7 +287,6 @@
                 <a href="#0" onclick="wear_set(0)">Снять все</a>
             </div>
         </div>
-        <br />
 
         <div class="main">
             <div class="main_top">
@@ -320,6 +317,5 @@
                 <a href="#0" onclick="wear_scrolls(0)">Снять все</a>
             </div>
         </div>
-        <br />
     </body>
 </html>
