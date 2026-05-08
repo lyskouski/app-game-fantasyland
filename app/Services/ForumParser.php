@@ -72,7 +72,7 @@ class ForumParser
             $this->getClanImage($args[8], $clanData) .
             $this->getClanImage($args[10], $clanData) .
             "&nbsp;<font color='#{$args[5]}' class='shadow'>{$args[1]}</font>" .
-            "&nbsp;<img src='/images/info_{$args[15]}.gif' alt='[{$args[15]}]' />" .
+            "&nbsp;<img align='absmiddle' src='/images/info_{$args[15]}.gif' alt='[{$args[15]}]' />" .
             "</span>";
     }
 
@@ -120,7 +120,7 @@ class ForumParser
             return '';
         }
 
-        return "&nbsp;<img src='https://www.fantasyland.ru/images/clans/{$imgName}' alt='{$clanName}' />";
+        return "&nbsp;<img align='absmiddle' src='https://www.fantasyland.ru/images/clans/{$imgName}' alt='{$clanName}' />";
     }
 
     public function parseForum(string $html, string $w): array
