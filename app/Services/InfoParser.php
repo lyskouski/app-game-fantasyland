@@ -497,6 +497,10 @@ class InfoParser
                     $descriptionParts = array_slice($parts, 2);
                     $description = implode('<br>', $descriptionParts);
                 }
+                $toSkip = 'Более не функционирует';
+                if (str_contains($description, $toSkip) || str_contains($level, $toSkip)) {
+                    continue;
+                }
                 $items[] = [
                     'id' => $id,
                     'image' => Defines::URL . 'images/items/' . $image,
