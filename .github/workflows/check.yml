@@ -7,7 +7,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +17,13 @@ jobs:
       - run: composer install
       - run: npm ci
 
-      - name: Run PHP Linter
+      - name: Run draw PHP Linter
+        continue-on-error: true
+        run: "vendor/bin/mago lint || true"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Store PHP Linter results
         id: lint
         continue-on-error: true
         run: "vendor/bin/mago lint 2>&1 | grep -A 1 'found.*issues' > lint-output.txt || true"
