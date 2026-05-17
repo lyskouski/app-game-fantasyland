@@ -1,0 +1,45 @@
+name: Quality Gates (Pull-Request, Branches)
+
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+      - run: composer install
+      - run: npm ci
+
+      - name: Run draw PHP Linter
+        continue-on-error: true
+        run: "vendor/bin/mago lint --reporting-format=github || true"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Store PHP Linter results
+        id: lint
+        continue-on-error: true
+        run: "vendor/bin/mago lint 2>&1 | grep -A 1 'found.*issues' > lint-output.txt || true"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add PHP Linter results to PR summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const lintOutput = fs.readFileSync('lint-output.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## PHP Linter Results\n\n\`\`\`\n${lintOutput}\n\`\`\``
+            });
