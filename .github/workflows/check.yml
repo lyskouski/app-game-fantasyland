@@ -1,0 +1,27 @@
+name: Quality Gates (Pull-Request, Branches)
+
+on:
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: composer install
+      - run: npm ci
+
+      - name: Run PHP Linter
+        id: lint
+        continue-on-error: true
+        run: vendor/bin/mago lint 2>&1 | tee lint-output.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add PHP Linter results to PR summary
+        if: always()
+        run: |
+          echo "## PHP Linter Results" >> $GITHUB_STEP_SUMMARY
+          cat lint-output.txt >> $GITHUB_STEP_SUMMARY
