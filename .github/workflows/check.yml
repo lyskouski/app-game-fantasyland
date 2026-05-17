@@ -3,7 +3,8 @@ name: Quality Gates (Pull-Request, Branches)
 on:
   pull_request:
 
-permissions: read-all
+permissions:
+  pull-requests: write
 
 jobs:
   build:
@@ -19,12 +20,20 @@ jobs:
       - name: Run PHP Linter
         id: lint
         continue-on-error: true
-        run: vendor/bin/mago lint 2>&1 | tee lint-output.txt
+        run: vendor/bin/mago lint 2>&1 | tee /tmp/lint-full.txt | tail -5 > lint-output.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add PHP Linter results to PR summary
         if: always()
-        run: |
-          echo "## PHP Linter Results" >> $GITHUB_STEP_SUMMARY
-          cat lint-output.txt >> $GITHUB_STEP_SUMMARY
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const lintOutput = fs.readFileSync('lint-output.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## PHP Linter Results\n\n\`\`\`\n${lintOutput}\n\`\`\``
+            });
