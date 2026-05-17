@@ -19,7 +19,7 @@ jobs:
 
       - name: Run draw PHP Linter
         continue-on-error: true
-        run: "vendor/bin/mago lint || true"
+        run: "vendor/bin/mago lint --reporting-format=github || true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
