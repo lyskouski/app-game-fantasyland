@@ -99,7 +99,7 @@
                 <br />
             </div>
             <div class="main_middle">
-                <table width="100%" colspacing="0" cellpadding="0">
+                <table width="100%" cellpadding="4" cellspacing="0">
                     <tr class="colored">
                         <th align="left">
                             Название
@@ -117,37 +117,39 @@
                             <a href="/cgi/v_trade_load_shop.php?id={{ $item['id'] }}">{{ $item['name'] }}</a><br />
                             <small>Кол-во: {{ $item['count'] }}</small>
                         </td>
-                        <td align="center">
-                            <small>
-                                <span class="item_buy" id="b{{ $item['id'] }}">загрузка...</span>&nbsp;
-                                <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
-                            </small>
-                            <br />
+                        <td valign="top" align="center">
                             <center>
                                 <form method="POST" onsubmit="return submitBuyForm(this)">
                                     @csrf
+                                    <input type="submit" value="Купить" />
+                                    <br />
+                                    <small>
+                                        <span class="item_buy" id="b{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
+                                    </small>
+                                    <br />
                                     <input type="hidden" name="good_id" value="{{ $id }}" />
                                     <input type="hidden" name="shp_id" id="mb{{ $item['id'] }}" value="" />
                                     <input type="hidden" name="good_type" value="-1" />
                                     <input type="hidden" name="price_quest" value="" />
                                     <input type="hidden" name="capCode" value="" />
-                                    <input type="submit" value="Купить" /><br />
                                     <input type="text" name="number" value="1" size="3" onkeyup="updateCost('b{{ $item['id'] }}', this.value)" />
                                 </form>
                             </center>
                         </td>
-                        <td align="center" id="i{{ $item['id'] }}">
-                            <small>
-                                <span class="item_sell" id="s{{ $item['id'] }}">загрузка...</span>&nbsp;
-                                <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
-                            </small>
-                            <br />
+                        <td valign="top" align="center" id="i{{ $item['id'] }}">
                             <center>
                                 <form method="POST" onsubmit="return submitSellForm(this)">
                                     @csrf
+                                    <input type="submit" value="Продать" />
+                                    <br />
+                                    <small>
+                                        <span class="item_sell" id="s{{ $item['id'] }}">загрузка...</span>&nbsp;
+                                        <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
+                                    </small>
+                                    <br />
                                     <input type="hidden" name="good_id" value="{{ $id }}" />
                                     <input type="hidden" name="shp_id" id="ms{{ $item['id'] }}" value="" />
-                                    <input type="submit" value="Продать" /><br />
                                     <input type="text" name="number" value="{{ $item['number'] ?? 1 }}" size="3" onkeyup="updateCost('s{{ $item['id'] }}', this.value)" />
                                 </form>
                             </center>

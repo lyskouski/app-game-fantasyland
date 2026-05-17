@@ -161,7 +161,7 @@ class StoreParser
             foreach ($matches as $match) {
                 $items[] = [
                     'id' => $match[1],
-                    'name' => trim($match[2]),
+                    'name' => str_replace('&quot;', '"', trim($match[2])),
                     'count' => $match[3],
                 ];
             }
