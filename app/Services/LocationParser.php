@@ -91,7 +91,7 @@ class LocationParser
         }
         $description = '';
         if (preg_match('/arenaText=\s*["\']([^\']+)[\']/', $html, $titleMatch)) {
-            $description = $titleMatch[1];
+            $description = strip_tags(html_entity_decode($titleMatch[1]));
         }
         $image = '';
         if (preg_match('/<image[^>]*class=(["\'])?cssLocImage\1?[^>]*src=(["\'])([^"\']+)\2/i', $html, $imgMatch)) {

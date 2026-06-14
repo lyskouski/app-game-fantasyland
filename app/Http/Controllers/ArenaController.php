@@ -20,8 +20,8 @@ final class ArenaController extends Controller
     }
 
     public function index() {
-        $data = $this->mainPage();
         $htmlArena = $this->get('/cgi/arena.php');
+        $data = $this->mainPage();
         $parser = new ArenaParser();
         if (str_contains($htmlArena, '/cgi/train_start.php')) {
             $data['captcha'] = $this->captcha(time());
