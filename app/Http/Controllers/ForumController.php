@@ -38,6 +38,7 @@ final class ForumController extends Controller
     public function topicPost() {
         $data = request()->input();
         $html = $this->post('cgi/f_show_thread.php', $data);
-        return view('forum', [...$this->parser->parseForum($html), 'p' => 1, ...$data]);
+        $w = $this->get('cgi/w.JS', []);
+        return view('forum', [...$this->parser->parseForum($html, $w), 'p' => 1, ...$data]);
     }
 }
