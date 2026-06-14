@@ -17,7 +17,7 @@ class PreyParser
             $content = preg_replace_callback(
                 "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
                 function ($m) use ($captcha) {
-                    return "<img src='" . $captcha . "'" . $m[2] . ">";
+                    return "<img src='" . $captcha . "'" . $m[2] . ">&nbsp;<input type='submit' value='>>' />";
                 },
                 $content
             );
