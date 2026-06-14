@@ -73,6 +73,7 @@
             </div>
         </div>
 
+        @if(isset($captcha))
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -125,5 +126,6 @@
                 </form>
             </div>
         </div>
+        @endif
     </body>
 </html>

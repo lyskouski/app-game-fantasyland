@@ -55,8 +55,10 @@ final class ArenaController extends Controller
         }
         Device::vibrate();
         $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
-        $data['captcha'] = $this->captcha(time());
         $arena = $parser->train($htmlArena);
+        if (sizeof($arena['train']) > 0) {
+            $data['captcha'] = $this->captcha(time());
+        }
         return view('arena_train', [...$data, ...$arena]);
     }
 }
