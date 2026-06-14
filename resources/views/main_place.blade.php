@@ -124,7 +124,7 @@
                     </td>
                     <td>
                         <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
-                        <span data-cost="{{ $item['cost'] }}" id="b{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
+                        <span data-cost="{{ $item['cost'] ?? 0 }}" id="b{{ $item['good_id'] }}">{{ $item['cost'] ?? '-' }}</span>
                         <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                     </td>
                     <td>
@@ -153,7 +153,7 @@
                     </td>
                     <td>
                         <small>({{ $item['count'] }}) {{ $item['title'] }}</small><br />
-                        <span data-cost="{{ $item['cost'] }}" id="s{{ $item['good_id'] }}">{{ $item['cost'] }}</span>
+                        <span data-cost="{{ $item['cost'] ?? 0 }}" id="s{{ $item['good_id'] }}">{{ $item['cost'] ?? '-' }}</span>
                         <img src="https://www.fantasyland.ru/images/miscellaneous/money.gif" align="absmiddle" />
                     </td>
                     <td>
