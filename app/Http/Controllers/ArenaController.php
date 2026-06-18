@@ -27,6 +27,9 @@ final class ArenaController extends Controller
             $data['captcha'] = $this->captcha(time());
             $arena = $parser->train($htmlArena);
             return view('arena_train', [...$data, ...$arena]);
+        } elseif (str_contains($htmlArena, 'attack_mob.php')) {
+            $data['captcha'] = $this->captcha(time());
+            return view('arena_mob', $data);
         }
         return view('main_arena', $data);
     }
