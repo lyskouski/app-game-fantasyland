@@ -55,11 +55,11 @@
                     document.addEventListener('DOMContentLoaded', () => window.drawMap({!! $map_data !!}));
                 </script>
                 <div id="cibuffer" style="display:none"></div>
-                <div>
+                <div style="margin-top:2px">
                     <small>
-                        <button style="float:right;margin-top:2px" onclick="window.location.href='/labyrinth/config'">Настройки</button>
-                        <button style="float:right;margin:2px 6px 0 0" command="show-modal" commandfor="info-data" onclick="getLabInfo()">Инфо</button>
-                        <button onclick="canvasZoomOut()">&nbsp;-&nbsp;</button>
+                        <button style="float:right" onclick="window.location.href='/labyrinth/config'">Настройки</button>
+                        <button style="float:right;margin-right:6px" command="show-modal" commandfor="info-data" onclick="getLabInfo()">Инфо</button>
+                        <button onclick="canvasZoomOut()">&nbsp;—&nbsp;</button>
                         &nbsp;
                         <button onclick="canvasZoomIn()">&nbsp;+&nbsp;</button>
                     </small>
