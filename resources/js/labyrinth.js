@@ -433,6 +433,63 @@ window.canvasZoomOut = function() {
     updateConfigState();
 };
 
+window.getLabInfo = function() {
+    const groupedByType = {};
+    const typeTitles = {
+        5: 'Подъем',
+        6: 'Спуск',
+        7: 'Выход',
+        8: 'Локация / Объект',
+        9: 'Ловушка'
+    };
+
+    for (const x in window.aMap) {
+        if (!Object.prototype.hasOwnProperty.call(window.aMap, x)) {
+            continue;
+        }
+        const column = window.aMap[x];
+        if (!column || typeof column !== 'object') {
+            continue;
+        }
+
+        for (const y in column) {
+            if (!Object.prototype.hasOwnProperty.call(column, y)) {
+                continue;
+            }
+            const cell = column[y];
+            const type = Number(cell && cell.type ? cell.type : 0);
+            if (type === 0) {
+                continue;
+            }
+
+            if (!groupedByType[type]) {
+                groupedByType[type] = [];
+            }
+            groupedByType[type].push({x: Number(x), y: Number(y), info: cell.info});
+        }
+    }
+
+    const infoContent = document.getElementById('info-data__content');
+    if (infoContent) {
+        const sections = [];
+        for (const type of [5, 6, 7, 8, 9]) {
+            const points = groupedByType[type];
+            if (!points || !points.length) {
+                continue;
+            }
+            const items = points.map((point) => {
+                let pointLabel = '';
+                if (Array.isArray(point.info) && point.info.length > 0) {
+                    pointLabel = point.info[0][1];
+                }
+                return `<li>[${point.x}, ${point.y}] ${pointLabel}</li>`;
+            }).join('');
+            sections.push(`<b>${typeTitles[type]}</b><ul>${items}</ul>`);
+        }
+        infoContent.innerHTML = sections.join('');
+    }
+};
+
 function updateConfigState() {
     localStorage.config = JSON.stringify(window.aConfig);
     drawMap();

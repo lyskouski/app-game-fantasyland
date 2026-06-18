@@ -57,16 +57,21 @@
                 <div id="cibuffer" style="display:none"></div>
                 <div>
                     <small>
-                        <a style="float:right;padding-top:2px" href="/labyrinth/config">Настройки</a>
-                        Масштаб:
-                        <a href="#more" onclick="canvasZoomOut();return false">меньше</a>
-                        &nbsp;/&nbsp;
-                        <a href="#less" onclick="canvasZoomIn(); return false">больше<a>
+                        <button style="float:right;margin-top:2px" onclick="window.location.href='/labyrinth/config'">Настройки</button>
+                        <button style="float:right;margin:2px 6px 0 0" command="show-modal" commandfor="info-data" onclick="getLabInfo()">Инфо</button>
+                        <button onclick="canvasZoomOut()">&nbsp;-&nbsp;</button>
+                        &nbsp;
+                        <button onclick="canvasZoomIn()">&nbsp;+&nbsp;</button>
                     </small>
                 </div>
                 <div id="message"></div>
             </div>
         </div>
+        <dialog id="info-data" style="background:silver;padding:4px;">
+            <div id="info-data__content">Загрузка...</div>
+            <br />
+            <button style="float:right" commandfor="info-data" command="close">Закрыть</button>
+        </dialog>
 
         <div class="main">
             <div class="main_top">
