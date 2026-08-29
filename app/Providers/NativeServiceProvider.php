@@ -21,21 +21,4 @@ class NativeServiceProvider extends ServiceProvider
     {
         //
     }
-
-    /**
-     * The NativePHP plugins to enable.
-     *
-     * Only plugins listed here will be compiled into your native builds.
-     * This is a security measure to prevent transitive dependencies from
-     * automatically registering plugins without your explicit consent.
-     *
-     * @return array<int, class-string<\Illuminate\Support\ServiceProvider>>
-     */
-    public function plugins(): array
-    {
-        return [
-            \Native\Mobile\Providers\DialogServiceProvider::class,
-            \Native\Mobile\Providers\DeviceServiceProvider::class,
-        ];
-    }
 }
