@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ArenaController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CitadelController;
+use App\Http\Controllers\FightController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\InfoController;
@@ -49,6 +50,10 @@ Route::get('/cgi/army_desc.php', [AboutController::class, 'army']);
 Route::get('/cgi/arena.php', [ArenaController::class, 'index']);
 Route::get('/cgi/train_start.php', [ArenaController::class, 'trainStart']);
 Route::get('/cgi/train_stop.php', [ArenaController::class, 'trainStop']);
+Route::get('/cgi/attack_mob.php', [ArenaController::class, 'attackMob']);
+
+// Fight
+Route::get('/cgi/combat.php', [FightController::class, 'combat']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);

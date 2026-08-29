@@ -64,4 +64,13 @@ final class ArenaController extends Controller
         }
         return view('arena_train', [...$data, ...$arena]);
     }
+
+    public function attackMob() {
+        $html = $this->get('/cgi/attack_mob.php');
+        Notification::addIfExists($html);
+        if (str_contains($html, "location.href = 'combat.php'")) {
+            return redirect('/cgi/combat.php');
+        }
+        return redirect('/cgi/arena.php');
+    }
 }
