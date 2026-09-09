@@ -82,7 +82,7 @@ function updateStamina() {
     ge('stamina').innerHTML = stamina++;
     if (stamina > maxStamina) {
         stamina = maxStamina;
-        Device.vibrate();
+        void Device.vibrate().catch(() => {});
         return;
     }
     tm = setTimeout(updateStamina, 1000);
@@ -142,7 +142,7 @@ function parse(text) {
         ge('cod').style.display = 'block';
         ge('codInput').value = '';
         ge('codInput').focus();
-        Device.vibrate();
+        void Device.vibrate().catch(() => {});
     } else {
         ge('cod').style.display = 'none';
     }
