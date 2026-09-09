@@ -384,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasElement.width = Math.floor(rect.width);
     canvasElement.height = Math.floor(rect.height);
     window.oCanvas = canvasElement.getContext('2d');
+    window.dispatchEvent(new Event('labyrinth:canvas-ready'));
 });
 window.aConfig = JSON.parse(localStorage.config || null) || {
     space: 20,
