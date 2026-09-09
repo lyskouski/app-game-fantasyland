@@ -1,1 +1,1 @@
-<native:webview php src="/cgi/ch_ref.php" fullscreen />
+<native:webview php src="/ch/chout.php" fullscreen />
