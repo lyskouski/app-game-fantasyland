@@ -42,14 +42,14 @@ final class LoginController extends Controller
             SecureStorage::set('login', $data['login']);
             SecureStorage::set('password', $data['password']);
         }
-        return view('home');
+        return redirect('/shell/home');
     }
 
     public function guestLogin() {
         $data = request()->only(['t']);
         $this->get('guestlogin.php', $data);
         $this->get('ch/chch.php', []);
-        return view('home');
+        return redirect('/shell/home');
     }
 
     public function indexRegister() {
@@ -63,7 +63,7 @@ final class LoginController extends Controller
         if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
             return view('registry', ['error' => $registerResult]);
         }
-        return view('home');
+        return redirect('/shell/home');
     }
 
     public function rules() {
