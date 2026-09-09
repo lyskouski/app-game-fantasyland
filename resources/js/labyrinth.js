@@ -378,13 +378,14 @@ window.aFocus = [];
 window.aMap = {};
 window.oCanvas = null;
 document.addEventListener('DOMContentLoaded', () => {
-    const canvasElement = ge('cimap');
-    const rect = canvasElement.getBoundingClientRect();
-    // Set canvas resolution to match displayed size
-    canvasElement.width = Math.floor(rect.width);
-    canvasElement.height = Math.floor(rect.height);
-    window.oCanvas = canvasElement.getContext('2d');
-    window.dispatchEvent(new Event('labyrinth:canvas-ready'));
+    requestAnimationFrame(() => {
+        const canvasElement = ge('cimap');
+        const rect = canvasElement.getBoundingClientRect();
+        canvasElement.width = Math.floor(rect.width);
+        canvasElement.height = Math.floor(rect.height);
+        window.oCanvas = canvasElement.getContext('2d');
+        window.dispatchEvent(new Event('labyrinth:canvas-ready'));
+    });
 });
 window.aConfig = JSON.parse(localStorage.config || null) || {
     space: 20,
