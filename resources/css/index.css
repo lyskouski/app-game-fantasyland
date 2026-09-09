@@ -1,8 +1,21 @@
 body {
     background: #666666;
-    background-image: url("https://www.fantasyland.ru/images/pic/bg.jpg");
     padding: 0;
     margin: 0;
+}
+
+body::before {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    content: '';
+    pointer-events: none;
+    background: url("/images/ui/bg.jpg") repeat;
+}
+
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 .header {
@@ -11,14 +24,14 @@ body {
     font-weight: bold;
     text-align: center;
     margin-bottom: 2px;
-    background: #000 url("https://www.fantasyland.ru/img/bg01.gif") 0 0 repeat-x;
+    background: #000 url("/images/ui/bg01.gif") 0 0 repeat-x;
     text-transform: uppercase;
     color: #F9D3B0;
 }
 
 .cell_title {
     background: #898989;
-    background-image: url("https://www.fantasyland.ru/images/buttons/tab_c.gif");
+    background-image: url("/images/ui/tab_c.gif");
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 8pt;
     border: 0;
@@ -33,7 +46,7 @@ body {
     display: block;
     clear: both;
     background: #898989;
-    background-image: url("https://www.fantasyland.ru/images/pic/bg_title.jpg");
+    background-image: url("/images/ui/bg_title.jpg");
     padding: 0;
     margin: 28px 12px 12px;
     border-radius: 6px;
@@ -45,11 +58,11 @@ body > .main:first-of-type {
 }
 
 .main--light {
-    background-image: url("https://www.fantasyland.ru/images/pic.new/battle_bg.jpg");
+    background-image: url("/images/ui/battle_bg.jpg");
 }
 
 .main--dark {
-    background-image: url("https://www.fantasyland.ru/images/pic/bg.jpg");
+    background-image: url("/images/ui/bg.jpg");
 }
 
 .light, .colored:nth-child(even) {
@@ -57,7 +70,7 @@ body > .main:first-of-type {
 }
 
 .main_top {
-    background-image: url("https://www.fantasyland.ru/images/buttons/line_t.gif");
+    background-image: url("/images/ui/line_t.gif");
     background-repeat: repeat-x;
     height: 10px;
     margin-top: -14px;
@@ -151,7 +164,7 @@ a:active {
     font-size: 14px;
     text-decoration: none;
     color: white;
-    background-image: url("https://www.fantasyland.ru/images/pic/bg.jpg");
+    background-image: url("/images/ui/bg.jpg");
     box-shadow: inset 1px -1px 1px black, inset -1px 1px 1px black, 0px 0px 1px white;
     border: none;
     border-radius: 6px 6px 0 0;

@@ -6,7 +6,7 @@
     float: left;
     width: 58px;
     height: 58px;
-    background: url(https://www.fantasyland.ru/images/grey.gif);
+    background: url("/images/ui/grey.gif");
     box-sizing: border-box;
     position: relative;
     margin: 4px;
