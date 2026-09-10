@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d078c1fc427608487e7d85319d05d7c7",
+    "content-hash": "4839565edb3196814653a7e4d87f1a6a",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4114,6 +4114,66 @@
                 }
             ],
             "time": "2026-08-26T09:13:25+00:00"
+        },
+        {
+            "name": "srwiez/nativephp-mobile-screen",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SRWieZ/nativephp-mobile-screen.git",
+                "reference": "56e1bf21b915b1593fd5860412672de871db0518"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SRWieZ/nativephp-mobile-screen/zipball/56e1bf21b915b1593fd5860412672de871db0518",
+                "reference": "56e1bf21b915b1593fd5860412672de871db0518",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "nativephp/mobile": "^3.0|^4.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.24",
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "pestphp/pest": "^3.0|^4.0"
+            },
+            "type": "nativephp-plugin",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Screen": "SRWieZ\\NativePHP\\Mobile\\Screen\\Facades\\Screen"
+                    },
+                    "providers": [
+                        "SRWieZ\\NativePHP\\Mobile\\Screen\\ScreenServiceProvider"
+                    ]
+                },
+                "nativephp": {
+                    "manifest": "nativephp.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SRWieZ\\NativePHP\\Mobile\\Screen\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eser Deniz",
+                    "email": "srwiez@gmail.com"
+                }
+            ],
+            "description": "Screen wake lock and brightness control for NativePHP Mobile apps",
+            "support": {
+                "issues": "https://github.com/SRWieZ/nativephp-mobile-screen/issues",
+                "source": "https://github.com/SRWieZ/nativephp-mobile-screen/tree/v2.0.0"
+            },
+            "time": "2026-08-24T13:37:30+00:00"
         },
         {
             "name": "symfony/clock",

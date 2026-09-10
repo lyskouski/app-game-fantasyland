@@ -30,6 +30,11 @@ NATIVEPHP_APP_VERSION=1.0.0
 NATIVEPHP_APP_VERSION_CODE=1
 
 
+## Keep the display awake while the native app is running
+composer require srwiez/nativephp-mobile-screen
+php artisan vendor:publish --tag=nativephp-plugins-provider
+php artisan native:plugin:register srwiez/nativephp-mobile-screen
+
 ## Run your app on a mobile device
 npm run build
 php artisan native:run

@@ -35,6 +35,7 @@ class NativeServiceProvider extends ServiceProvider
     {
         return [
             \Native\Mobile\UI\NativeUIServiceProvider::class,
+            \SRWieZ\NativePHP\Mobile\Screen\ScreenServiceProvider::class,
         ];
     }
 }

@@ -6,9 +6,15 @@ namespace App\NativeComponents;
 
 use Illuminate\View\View;
 use Native\Mobile\Edge\NativeComponent;
+use SRWieZ\NativePHP\Mobile\Screen\Facades\Screen;
 
 class ChatShell extends NativeComponent
 {
+    public function mount(): void
+    {
+        Screen::keepAwake();
+    }
+
     public function render(): View
     {
         return view('native.chat');
