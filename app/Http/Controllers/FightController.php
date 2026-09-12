@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ArenaParser;
+use App\Services\FightParser;
 
 final class FightController extends Controller
 {
@@ -13,7 +13,7 @@ final class FightController extends Controller
         $htmlArmy = $this->get('/cgi/armylist_yours.php', []);
         $htmlEnemy = $this->get('/cgi/armylist_enemy.php', []);
         $htmlPanel = $this->get('/cgi/combat_panel.php', []);
-        $parser = new ArenaParser();
+        $parser = new FightParser();
 
         return view('combat', []);
     }

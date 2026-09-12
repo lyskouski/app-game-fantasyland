@@ -187,14 +187,30 @@ a:active {
     padding: 0 12px 12px;
 }
 
-.bar {
-    accent-color: green;
+progress.bar[value] {
+  --w: 200px; /* The width */
+  /* The background property */
+  --b: /* static layers */
+      linear-gradient(#fff8,#fff0),
+      repeating-linear-gradient(135deg,#0003 0 10px,#0000 0 20px),
+      /* dynamic layers */
+      /* if < 30% "red" */
+      conic-gradient(red    0 0) 0 /calc(var(--w)*.3 - 100%) 1%,
+      /* if < 60% "orange" */
+      conic-gradient(orange 0 0) 0 /calc(var(--w)*.6 - 100%) 1%,
+      /* else "green" */
+      green;
+  width: var(--w);
+  appearance: none;
+  border: none;
+  width: var(--w);
+  height: 20px;
+  background-color: lightgrey;
+  border-radius: 50px;
 }
-
-.bar--warning {
-    accent-color: orange;
+progress.bar[value]::-webkit-progress-value {
+  background: var(--b);
 }
-
-.bar--critical {
-    accent-color: maroon;
+progress.bar[value]::-moz-progress-bar {
+  background: var(--b);
 }

@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @vite(['resources/css/index.css'])
+        @vite(['resources/css/index.css', 'resources/js/fight.js'])
     </head>
     <body>
         <div class="main">
@@ -17,9 +17,6 @@
                 <summary>
                     Имя пользователя<br />
                     <label>
-                        <!-- (width >= 67) 'hp_green'
-                             (width <= 20) 'hp_red'
-                             (width < 67 && width > 20) 'hp_yellow' -->
                         XP: <progress class="bar" value="20" max="100"></progress>
                     </label>
                 </summary>
