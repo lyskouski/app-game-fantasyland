@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/index.css',
                 'resources/css/labyrinth.css',
                 'resources/js/app.js',
+                'resources/js/fight.js',
                 'resources/js/forum.js',
                 'resources/js/info_runes.js',
                 'resources/js/labyrinth.js',

@@ -10,11 +10,14 @@ final class FightController extends Controller
 {
     public function combat() {
         $this->get('/cgi/combat.php');
-        $htmlArmy = $this->get('/cgi/armylist_yours.php', []);
-        $htmlEnemy = $this->get('/cgi/armylist_enemy.php', []);
-        $htmlPanel = $this->get('/cgi/combat_panel.php', []);
         $parser = new FightParser();
+        $htmlArmy = $this->get('/cgi/armylist_yours.php', []);
+        //$htmlEnemy = $this->get('/cgi/armylist_enemy.php', []);
+        //$htmlPanel = $this->get('/cgi/combat_panel.php', []);
 
-        return view('combat', []);
+        return view('combat', [
+            'scrolls' => $parser->getScrolls($htmlArmy),
+            'army' => $parser->getArmy($htmlArmy),
+        ]);
     }
 }
