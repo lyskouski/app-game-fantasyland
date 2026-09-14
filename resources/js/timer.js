@@ -26,10 +26,11 @@ window.getTimer = function (a) {
 
 window.startTimer = function() {
     var timerElement = document.getElementById('timer');
-    var seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
     function updateTimer() {
+        var seconds = parseInt(timerElement.getAttribute('data-seconds'), 10);
         if (seconds > 0) {
             seconds--;
+            timerElement.setAttribute('data-seconds', seconds);
             timerElement.innerHTML = window.getTimer(seconds);
         } else {
             clearInterval(timerInterval);

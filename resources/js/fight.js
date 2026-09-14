@@ -1,22 +1,52 @@
-document.addEventListener('DOMContentLoaded', () => window.goTo(0));
+window.getInitialState = function() {
+    fetch(`/cgi/armylist_yours.php`)
+            .then(response => response.text())
+            .then(text => extractContent(text))
+            .then(content => bindContent('fight_opponents', content));
+    fetch(`/cgi/armylist_enemy.php`)
+            .then(response => response.text())
+            .then(text => extractContent(text))
+            .then(content => bindContent('fight_enemy', content));
+};
+document.addEventListener('DOMContentLoaded', () => window.getInitialState());
 
-/*
+function extractContent(text) {
+    var content = [];
+    var startMatch = text.match(/var allinfo\s*=\s*\[/);
+    if (startMatch) {
+        var startIndex = startMatch.index + startMatch[0].length - 1;
+        var bracketCount = 1;
+        var endIndex = startIndex + 1;
+        while (bracketCount > 0 && endIndex < text.length) {
+            if (text[endIndex] === '[') bracketCount++;
+            if (text[endIndex] === ']') bracketCount--;
+            endIndex++;
+        }
+        var jsonStr = text.substring(startIndex, endIndex).replace(/'([^']*)'/g, function(_, s) {
+            return '"' + s.replace(/"/g, '\\"') + '"';
+        });
+        try {
+            content = JSON.parse(jsonStr);
+        } catch (e) {
+            content = [];
+        }
+    }
+    return content;
+}
 
-            <details name="tech-specs">
-                <summary>
-                    Имя пользователя<br />
-                    <label>
-                        XP: <progress class="bar" value="20" max="100"></progress>
-                    </label>
-                </summary>
-                <ul>
-                    <li>...</li>
-                    <li>...</li>
-                    <li>...</li>
-                </ul>
-            </details>
-
-*/
+function bindContent(id, content) {
+    const container = document.getElementById(id);
+    container.innerHTML = '';
+    if (content.length === 0 || content[0].length === 0) {
+        return;
+    }
+    const template = document.querySelector("#fight_template").content;
+    content[0].forEach(item => {
+        const clone = document.importNode(template, true);
+        // TBD
+        container.appendChild(clone);
+    });
+}
 
 /* https://www.fantasyland.ru/cgi/combat_ref.php?lid=undefined
 

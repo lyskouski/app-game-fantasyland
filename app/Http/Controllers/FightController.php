@@ -20,4 +20,14 @@ final class FightController extends Controller
             'army' => $parser->getArmy($htmlArmy),
         ]);
     }
+
+    public function armylistYours() {
+        $result = $this->get('/cgi/armylist_yours.php', []);
+        return view('empty', ['data' => $result]);
+    }
+
+    public function armylistEnemy() {
+        $result = $this->get('/cgi/armylist_enemy.php', []);
+        return view('empty', ['data' => $result]);
+    }
 }
