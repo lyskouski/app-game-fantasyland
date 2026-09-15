@@ -8,7 +8,12 @@ window.getInitialState = function() {
             .then(text => extractContent(text))
             .then(content => bindContent('fight_enemy', content));
 };
-document.addEventListener('DOMContentLoaded', () => window.getInitialState());
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.getInitialState);
+} else {
+    window.getInitialState();
+}
 
 function extractContent(text) {
     var content = [];
@@ -37,11 +42,11 @@ function extractContent(text) {
 function bindContent(id, content) {
     const container = document.getElementById(id);
     container.innerHTML = '';
-    if (content.length === 0 || content[0].length === 0) {
+    if (!content || content.length === 0 || content[0].length === 0) {
         return;
     }
     let users = content;
-    while (Array.isArray(users[0])) {
+    while (users && Array.isArray(users[0]) && Array.isArray(users[0][0])) {
         users = users[0];
     }
     users.forEach(info => addUserinfo(container, info));
@@ -63,7 +68,7 @@ function addUserinfo(container, info) {
     clone.querySelector(".level").innerHTML = info[3];
     clone.querySelector(".h_actual").innerHTML = info[4];
     clone.querySelector(".h_full").innerHTML = info[5];
-    var hp = Math.floor(100 * info[4] / info[5]);
+    var hp = info[5] ? Math.floor(100 * info[4] / info[5]) : 0;
     if (hp < 0) {
         hp = 0;
     }
@@ -100,8 +105,10 @@ function addUserinfo(container, info) {
 
 function bindEffects(eff, info) {
     const effectList = info[18][0];
-    for (i = 0; i < effectList.length; i++) {
-        effect = effectList[i];
+    for (let i = 0; i < effectList.length; i++) {
+        const raw = effectList[i];
+        const turnsLeft = raw.slice(2).sort((a, b) => a - b);
+        const effect = [raw[0], raw[1], turnsLeft];
         var countText = ''
         if (effect[2].length > 1) {
             countText = 'x' + effect[2].length

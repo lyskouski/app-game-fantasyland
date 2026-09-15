@@ -93,6 +93,7 @@ body > .main:first-of-type {
 .main_middle .item {
     margin: 0 2px;
     padding: 0;
+    clear: both;
 }
 
 .main_middle__count {
