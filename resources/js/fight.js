@@ -40,12 +40,93 @@ function bindContent(id, content) {
     if (content.length === 0 || content[0].length === 0) {
         return;
     }
+    let users = content;
+    while (Array.isArray(users[0])) {
+        users = users[0];
+    }
+    users.forEach(info => addUserinfo(container, info));
+    // TBD: scrolls
+    // TBD: army
+}
+
+function addUserinfo(container, info) {
     const template = document.querySelector("#fight_template").content;
-    content[0].forEach(item => {
-        const clone = document.importNode(template, true);
-        // TBD
-        container.appendChild(clone);
-    });
+    const clone = document.importNode(template, true);
+    clone.id = 'usr_' + info[0];
+    clone.querySelector(".name").innerHTML = info[1];
+    let sex = clone.querySelector(".gender");
+    if (info[2].length === 1) {
+        sex.src = `https://www.fantasyland.ru/images/miscellaneous/info_${info[2]}.gif`;
+    } else {
+        sex.style.display = 'none';
+    }
+    clone.querySelector(".level").innerHTML = info[3];
+    clone.querySelector(".h_actual").innerHTML = info[4];
+    clone.querySelector(".h_full").innerHTML = info[5];
+    var hp = Math.floor(100 * info[4] / info[5]);
+    if (hp < 0) {
+        hp = 0;
+    }
+    clone.querySelector(".bar").value = hp;
+
+    clone.querySelector(".drak").innerHTML = `${info[6]}/${info[7]}`;
+    clone.querySelector(".ric").innerHTML = `${info[8]}/${info[9]}`;
+    clone.querySelector(".dam").innerHTML = `${info[10]}/${info[11]}`;
+    clone.querySelector(".haos").innerHTML = `${info[12]}/${info[13]}`;
+    clone.querySelector(".svet").innerHTML = `${info[14]}/${info[15]}`;
+    clone.querySelector(".kold").innerHTML = `${info[16]}/${info[17]}`;
+    clone.querySelector(".astrl").innerHTML = `${info[25]}/${info[26]}`;
+
+    let effects = {
+        19: ['.luckSh1', '.luckSh2', '.luck'],
+        20: ['.regSh1', '.regSh2', '.reg'],
+        21: ['.learnSh1', '.learnSh2', '.learn'],
+        22: ['.concSh1', '.concSh2', '.conc'],
+        23: ['.ppSh1', '.ppSh2', '.pp'],
+        24: ['.m_protSh1', '.m_protSh2', '.m_prot'],
+        27: ['.pnSh1', '.pnSh2', '.pn']
+    }
+    for (const [id, cls] of Object.entries(effects)) {
+        if (info[id]) {
+            clone.querySelector(cls[0]).style.display = '';
+            clone.querySelector(cls[1]).style.display = '';
+            clone.querySelector(cls[2]).innerHTML = info[id];
+        }
+    }
+
+    bindEffects(clone.querySelector('.eff'), info);
+    container.appendChild(clone);
+}
+
+function bindEffects(eff, info) {
+    const effectList = info[18][0];
+    for (i = 0; i < effectList.length; i++) {
+        effect = effectList[i];
+        var countText = ''
+        if (effect[2].length > 1) {
+            countText = 'x' + effect[2].length
+        }
+        var leftText = ''
+        if (effect[2][0] !== 100) {
+            leftText = " (осталось ходов: " + (effect[2].join(',')) + ")"
+        }
+
+        const img = document.createElement('img');
+        img.height = '20';
+        img.width = '20';
+        img.src = 'https://www.fantasyland.ru/images/effects/' + effect[0];
+        img.title = effect[1] + leftText;
+        eff.appendChild(img);
+
+        const el = document.createElement('span');
+        el.style['vertical-align'] = '5px';
+        el.innerHTML = countText;
+        eff.appendChild(el);
+        eff.appendChild(document.createElement('br'));
+    }
+    const extra = document.createElement('span');
+    extra.innerHTML = info[18][1];
+    eff.appendChild(extra);
 }
 
 /* https://www.fantasyland.ru/cgi/combat_ref.php?lid=undefined

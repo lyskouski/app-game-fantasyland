@@ -35,10 +35,15 @@
             <template id="fight_template">
                 <details name="tech-specs">
                     <summary>
+                        <div style="float:right">
+                            [TBD: army, scroll]
+                        </div>
                         [<span class="level">?</span>]&nbsp;
-                        <span class="username">Имя пользователя</span><br />
+                        <span class="name">Имя пользователя</span>&nbsp;
+                        <image width="10" height="10" class="gender" src="https://www.fantasyland.ru/images/miscellaneous/info_?.gif" /><br />
                         <label>
-                            XP: <progress class="bar" value="20" max="100"></progress>
+                            <progress class="bar" value="20" max="100"></progress>&nbsp;
+                            [<span class="h_actual">?</span>/<span class="h_full">?</span>]
                         </label>
                     </summary>
                     <table>
