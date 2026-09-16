@@ -31,79 +31,92 @@
             </table>
             <br />
         </div>
-        <div class="main_middle" id="opponents">
+        <div class="main_middle">
             <template id="fight_template">
                 <details name="tech-specs">
-                    <summary>
-                        <div style="float:right">
-                            [TBD: army, scroll]
+                    <summary class="fight_summary">
+                        <div class="fight_army">
+                            <div class="fight_army_scroll">
+                                <img src="https://www.fantasyland.ru/cgi/1x1_tr.gif" width="30px" height="30px" />
+                            </div>
+                            <div class="fight_army_follower">
+                                <img src="https://www.fantasyland.ru/cgi/1x1_tr.gif" width="74px" height="74px" />
+                            </div>
                         </div>
                         [<span class="level">?</span>]&nbsp;
                         <span class="name">Имя пользователя</span>&nbsp;
                         <image width="10" height="10" class="gender" src="https://www.fantasyland.ru/images/miscellaneous/info_?.gif" /><br />
-                        <label>
-                            <progress class="bar" value="20" max="100"></progress>&nbsp;
-                            [<span class="h_actual">?</span>/<span class="h_full">?</span>]
+                        <label class="bar_row">
+                            <img width="20" height="20" src="https://www.fantasyland.ru/images/miscellaneous/hp.gif" title="Здоровье" />
+                            <progress class="bar" value="20" max="100"></progress>
+                            <span class="bar_row__value">[<span class="h_actual">?</span>/<span class="h_full">?</span>]</span>
                         </label>
                     </summary>
                     <table>
                         <tr>
-                            <td width=70 style='vertical-align: top;'>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_d.gif' title='Атака Драконов'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_d.gif' title='Защита от Драконов'>
-                                        </td>
-                                        <td nowrap><span class="drak">?</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_k.gif' title='Атака Рыцарей'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_k.gif' title='Защита от Рыцарей'>
-                                        </td>
-                                        <td nowrap><span class="ric">?</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_l.gif' title='Атака Дам'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_l.gif' title='Защита от Дам'>
-                                        </td>
-                                        <td nowrap><span class="dam">?</span></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td width=70>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_c.gif' title='Атака Хаоса'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_c.gif' title='Защита от Хаоса'>
-                                        </td>
-                                        <td nowrap><span class="haos">?</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_h.gif' title='Атака Света'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_h.gif' title='Защита от Света'>
-                                        </td>
-                                        <td nowrap><span class="svet">?</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_s.gif' title='Атака Колдовства'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_s.gif' title='Защита от Колдовства'>
-                                        </td>
-                                        <td nowrap><span class="kold">?</span></td>
-                                    </tr>
-                                    <tr class="astralSh">
-                                        <td>
-                                            <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_a.gif' title='Атака Астрала'>&nbsp;<image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_a.gif' title='Защита от Астрала'>
-                                        </td>
-                                        <td nowrap><span class="astrl">?</span></td>
-                                    </tr>
-                                </table>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_d.gif' title='Атака Драконов'>
                             </td>
                             <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_d.gif' title='Защита от Драконов'>
+                            </td>
+                            <td nowrap><span class="drak">?</span>&nbsp;</td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_c.gif' title='Атака Хаоса'></td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_c.gif' title='Защита от Хаоса'>
+                            </td>
+                            <td nowrap><span class="haos">?</span>&nbsp;</td>
+                            <td rowspan="4">
                                 <div class="eff"></div>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan=3>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_k.gif' title='Атака Рыцарей'>
+                            </td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_k.gif' title='Защита от Рыцарей'>
+                            </td>
+                            <td nowrap><span class="ric">?</span>&nbsp;</td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_h.gif' title='Атака Света'>
+                            </td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_h.gif' title='Защита от Света'>
+                            </td>
+                            <td nowrap><span class="svet">?</span>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_l.gif' title='Атака Дам'>
+                            </td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_l.gif' title='Защита от Дам'>
+                            </td>
+                            <td nowrap><span class="dam">?</span>&nbsp;</td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_s.gif' title='Атака Колдовства'>
+
+                            </td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_s.gif' title='Защита от Колдовства'>
+                            </td>
+                            <td nowrap><span class="kold">?</span>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/attack_a.gif' title='Атака Астрала'>
+
+                            </td>
+                            <td>
+                                <image width="20" height="20" src='https://www.fantasyland.ru/images/miscellaneous/defence_a.gif' title='Защита от Астрала'>
+                            </td>
+                            <td nowrap><span class="astrl">?</span></td>
+                            <td colspan="3">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
                                 <table>
                                     <tr>
                                         <td class="luckSh1" style="display:none">
@@ -148,7 +161,11 @@
                 </details>
             </template>
             <div id="fight_opponents"></div>
-            <div id="timer" data-seconds="180">Загрузка...</div>
+            <hr />
+            <center>
+                <strong id="timer" data-seconds="180" data-infinite="1">Загрузка...</strong>
+            </center>
+            <hr />
             <div id="fight_enemy"></div>
         </div>
     </div>

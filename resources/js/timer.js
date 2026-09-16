@@ -32,7 +32,7 @@ window.startTimer = function() {
             seconds--;
             timerElement.setAttribute('data-seconds', seconds);
             timerElement.innerHTML = window.getTimer(seconds);
-        } else {
+        } else if (timerElement.getAttribute('data-infinite') == null) {
             clearInterval(timerInterval);
             timerElement.click();
         }

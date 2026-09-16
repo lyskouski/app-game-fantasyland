@@ -188,9 +188,20 @@ a:active {
     padding: 0 12px 12px;
 }
 
+.bar_row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.bar_row img {
+    flex: 0 0 auto;
+}
+.bar_row .bar_row__value {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
 progress.bar[value] {
-  --w: 200px; /* The width */
-  /* The background property */
+  --w: 100%;
   --b: /* static layers */
       linear-gradient(#fff8,#fff0),
       repeating-linear-gradient(135deg,#0003 0 10px,#0000 0 20px),
@@ -202,16 +213,45 @@ progress.bar[value] {
       /* else "green" */
       green;
   width: var(--w);
+  flex: 1 1 auto;
+  min-width: 0;
   appearance: none;
   border: none;
-  width: var(--w);
-  height: 20px;
+  height: 14px;
   background-color: lightgrey;
-  border-radius: 50px;
+  box-shadow: inset 1px 1px 1px black, inset -1px 1px 1px black;
 }
 progress.bar[value]::-webkit-progress-value {
   background: var(--b);
 }
 progress.bar[value]::-moz-progress-bar {
   background: var(--b);
+}
+
+.fight_summary {
+    min-height: 78px;
+}
+.fight_army {
+    position: relative;
+    float: right;
+    width: 74px;
+    height: 74px;
+}
+.fight_army_follower, .fight_army_scroll {
+    display: block;
+    background-color: grey;
+    border: 2px solid lightgrey;
+    border-radius: 3px;
+    box-shadow: inset 1px 1px 1px black, inset -1px -1px 1px black, 0px 0px 2px black;
+}
+.fight_army_follower {
+    width: 74px;
+    height: 74px;
+}
+.fight_army_scroll {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    width: 30px;
+    height: 30px;
 }
