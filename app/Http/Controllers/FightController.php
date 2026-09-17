@@ -37,4 +37,19 @@ final class FightController extends Controller
         $result = $this->get('/cgi/combat_ref.php');
         return view('empty', ['data' => $result]);
     }
+
+    public function addScroll() {
+        $result = $this->get('/cgi/combat_scroll_ins.php');
+        return view('empty', ['data' => $result]);
+    }
+
+    public function addArmy() {
+        $result = $this->get('/cgi/combat_ins.php');
+        return view('empty', ['data' => $result]);
+    }
+
+    public function leaveCombat() {
+        $this->get('/cgi/leave_combat.php');
+        return redirect('/cgi/no_combat.php');
+    }
 }

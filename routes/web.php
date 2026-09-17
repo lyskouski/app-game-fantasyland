@@ -71,7 +71,9 @@ Route::get('/cgi/armylist_yours.php', [FightController::class, 'armylistYours'])
 Route::get('/cgi/armylist_enemy.php', [FightController::class, 'armylistEnemy']);
 Route::get('/cgi/combat_panel.php', [FightController::class, 'combatPanel']);
 Route::get('/cgi/combat_ref.php', [FightController::class, 'combatRef']);
-
+Route::get('/cgi/combat_scroll_ins.php', [FightController::class, 'addScroll']);
+Route::get('/cgi/combat_ins.php', [FightController::class, 'addArmy']);
+Route::get('/cgi/leave_combat.php', [FightController::class, 'leaveCombat']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);

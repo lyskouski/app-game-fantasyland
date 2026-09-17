@@ -9,7 +9,7 @@ window.getInitialState = function() {
             .then(response => response.text())
             .then(text => extractContent(text))
             .then(content => bindContent('fight_enemies', content));
-    // TBD: logs... fetch(`/cgi/combat_panel.php`);
+    // TODO: logs... fetch(`/cgi/combat_panel.php`); and from `/cgi/combat_ref.php`
 };
 
 if (document.readyState === 'loading') {
@@ -25,6 +25,25 @@ window.checkState = function() {
 };
 
 setInterval(window.checkState, 5000);
+
+window.useScroll = function(scrollId) {
+    fetch(`/cgi/combat_scroll_ins.php?id=${scrollId}&show=1`)
+        .then(checkState);
+};
+
+window.useArmy = function(armyId) {
+    fetch(`/cgi/combat_ins.php?id=${armyId}&show=1`)
+        .then(checkState);
+};
+
+window.showArmy = function(id) {
+    if (!id) {
+        document.querySelectorAll(".army-type").forEach(el => el.style.display = '');
+    } else {
+        document.querySelectorAll(".army-type").forEach(el => el.style.display = 'none');
+        document.querySelectorAll(`.army-type_${id}`).forEach(el => el.style.display = '');
+    }
+};
 
 function extractContent(text) {
     var startMatch = text.match(/var allinfo\s*=\s*\[/);
@@ -97,7 +116,7 @@ function bindContent(id, content) {
 function addUserinfo(container, info) {
     const template = document.querySelector("#fight_template").content;
     const clone = document.importNode(template, true);
-    clone.id = 'usr_' + info[0];
+    clone.querySelector('details').id = 'usr_' + info[0];
     clone.querySelector(".name").innerHTML = info[1];
     let sex = clone.querySelector(".gender");
     if (info[2].length === 1) {
@@ -112,7 +131,9 @@ function addUserinfo(container, info) {
     if (hp < 0) {
         hp = 0;
     }
-    clone.querySelector(".bar").value = hp;
+    const bar = clone.querySelector(".bar");
+    bar.value = hp;
+    bar.style.setProperty('--bar-color', hp < 30 ? 'red' : hp < 60 ? 'orange' : 'green');
 
     clone.querySelector(".drak").innerHTML = `${info[6]}/${info[7]}`;
     clone.querySelector(".ric").innerHTML = `${info[8]}/${info[9]}`;
@@ -208,10 +229,9 @@ function applyCombatContext(text) {
         const json = armysMatch[1].replace(/'([^']*)'/g, function(_, value) {
             return '"' + value.replace(/"/g, '\\"') + '"';
         });
-        let armys = [];
         try {
-            armys = JSON.parse(json);
-            armys.flat(2).forEach(updateOpponentState);
+            const armys = JSON.parse(json);
+            armys.flat(1).forEach(updateOpponentState);
         } catch (e) {
             // skip step if JSON parsing fails
         }
@@ -238,6 +258,14 @@ function applyCombatContext(text) {
         if (timerElement) {
             timerElement.setAttribute('data-seconds', Number(timeoutMatch[1]));
         }
+    }
+    // Check exit link
+    const exitRndMatch = text.match(/leave_combat\.php\?rnd=([^>\s"]+)/i);
+    if (exitRndMatch) {
+        const exitLink = document.createElement('a');
+        exitLink.href = `/cgi/leave_combat.php?rnd=${exitRndMatch[1]}`;
+        exitLink.innerHTML = 'выйти>>>';
+        document.getElementById('fight_enemies').appendChild(exitLink);
     }
 }
 

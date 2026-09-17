@@ -190,7 +190,7 @@
         <div class="main_middle">
             @foreach($scrolls as $i => $scroll)
             <p class="item {{ $i % 2 == 0 ? 'light' : '' }} scroll_item">
-                <button style="position:relative;float:right;" type="button" onclick="useArmy('{{ $scroll['id'] }}')">Выбрать</button>
+                <button style="position:relative;float:right;" type="button" onclick="useScroll('{{ $scroll['id'] }}')">Выбрать</button>
                 <img src="https://www.fantasyland.ru{{ $scroll['image'] }}" width="20" height="20" align="absmiddle" />&nbsp;
                 <small>{!! $scroll['title'] !!}</small>
             </p>
