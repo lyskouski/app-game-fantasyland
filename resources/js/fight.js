@@ -253,11 +253,11 @@ function applyCombatContext(text) {
     combatId = refMatch && refMatch[1] ? refMatch[1].trim() : 'undefined';
     // Update timer
     const timeoutMatch = text.match(/parent\.combat_panel\.oink\s*=\s*(\d+)\s*;/);
+    const elapsedMatch = text.match(/parent\.combat_panel\.tm\s*=\s*d0\.getTime\(\)\s*-\s*(\d+)\s*;/);
     if (timeoutMatch) {
+        const combatElapsed = elapsedMatch ? Number(elapsedMatch[1]) : 0;
         const timerElement = document.getElementById('timer');
-        if (timerElement) {
-            timerElement.setAttribute('data-seconds', Number(timeoutMatch[1]));
-        }
+        timerElement.setAttribute('data-seconds', Number(timeoutMatch[1]) - combatElapsed / 1000);
     }
     // Check exit link
     const exitRndMatch = text.match(/leave_combat\.php\?rnd=([^>\s"]+)/i);
