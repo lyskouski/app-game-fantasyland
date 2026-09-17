@@ -166,10 +166,10 @@
                 <strong id="timer" data-seconds="180" data-infinite="1">Загрузка...</strong>
             </center>
             <hr />
-            <div id="fight_enemy"></div>
+            <div id="fight_enemies"></div>
         </div>
     </div>
-    <br />
+
     <div class="main main--light">
         <div class="main_top">
             <table cellpadding="0" cellspacing="0" align="center">

@@ -8,7 +8,7 @@ window.getInitialState = function() {
     fetch(`/cgi/armylist_enemy.php`)
             .then(response => response.text())
             .then(text => extractContent(text))
-            .then(content => bindContent('fight_enemy', content));
+            .then(content => bindContent('fight_enemies', content));
     // TBD: logs... fetch(`/cgi/combat_panel.php`);
 };
 
@@ -27,30 +27,42 @@ window.checkState = function() {
 setInterval(window.checkState, 5000);
 
 function extractContent(text) {
-    var content = [];
     var startMatch = text.match(/var allinfo\s*=\s*\[/);
-    if (startMatch) {
-        var startIndex = startMatch.index + startMatch[0].length - 1;
-        var bracketCount = 1;
-        var endIndex = startIndex + 1;
-        while (bracketCount > 0 && endIndex < text.length) {
-            if (text[endIndex] === '[') bracketCount++;
-            if (text[endIndex] === ']') bracketCount--;
-            endIndex++;
-        }
-        var jsonStr = text.substring(startIndex, endIndex).replace(/'([^']*)'/g, function(_, s) {
-            return '"' + s.replace(/"/g, '\\"') + '"';
-        });
-        try {
-            content = JSON.parse(jsonStr);
-        } catch (e) {
-            content = [];
+    return startMatch ? extractLegacyArray(text, startMatch.index + startMatch[0].length - 1) : [];
+}
+
+function extractLegacyArray(text, startIndex) {
+    const arrayStart = text.indexOf('[', startIndex);
+    if (arrayStart === -1) {
+        return [];
+    }
+
+    let depth = 0;
+    let arrayEnd = arrayStart;
+    for (; arrayEnd < text.length; arrayEnd++) {
+        if (text[arrayEnd] === '[') {
+            depth++;
+        } else if (text[arrayEnd] === ']') {
+            depth--;
+            if (depth === 0) {
+                arrayEnd++;
+                break;
+            }
         }
     }
-    return content;
+
+    const json = text.substring(arrayStart, arrayEnd).replace(/'([^']*)'/g, function(_, value) {
+        return '"' + value.replace(/"/g, '\\"') + '"';
+    });
+    try {
+        return JSON.parse(json);
+    } catch (e) {
+        return [];
+    }
 }
 
 function bindContent(id, content) {
+    // Apply user info
     const container = document.getElementById(id);
     container.innerHTML = '';
     if (!content || content.length === 0 || content[0].length === 0) {
@@ -148,7 +160,60 @@ function bindEffects(eff, info) {
 }
 
 function applyCombatContext(text) {
-    // TBD: parse combat_ref states
+    // Parse army state
+    const armysMatch = text.match(/armys\s*=\s*(\[[\s\S]*?\]);/);
+    if (armysMatch) {
+        const json = armysMatch[1].replace(/'([^']*)'/g, function(_, value) {
+            return '"' + value.replace(/"/g, '\\"') + '"';
+        });
+        let armys = [];
+        try {
+            armys = JSON.parse(json);
+            armys.flat(2).forEach(updateOpponentState);
+        } catch (e) {
+            // skip step if JSON parsing fails
+        }
+    }
+    // Parse opponents state
+    const oppMatch = text.match(/parent\.your_army\.update\s*\(/);
+    if (oppMatch) {
+        const opponents = extractLegacyArray(text, oppMatch.index + oppMatch[0].length);
+        bindContent('fight_opponents', opponents);
+    }
+    // Parse enemy state
+    const enemyMatch = text.match(/parent\.enemy_army\.update\s*\(/);
+    if (enemyMatch) {
+        const enemies = extractLegacyArray(text, enemyMatch.index + enemyMatch[0].length);
+        bindContent('fight_enemies', enemies);
+    }
+    // Parse ID
+    const reffMatch = text.match(/parent\.combat_panel\.reff\(\s*([^)]*?)\s*\);/);
+    combatId = reffMatch && reffMatch[1] ? reffMatch[1].trim() : 'undefined';
+}
+
+function updateOpponentState(opponent) {
+    if (!Array.isArray(opponent) || opponent.length < 6) {
+        return;
+    }
+    const desc = {
+        id: opponent[5],
+        title: opponent[0],
+        img: opponent[1],
+        title_scroll: opponent[2],
+        img_scroll: opponent[3]
+    };
+    const army = document.querySelector(`#usr_${desc.id} .fight_army_follower img`);
+    if (army) {
+        const isEmpty = desc.img === '1x1_tr.gif';
+        army.src = isEmpty ? 'https://www.fantasyland.ru/cgi/1x1_tr.gif' : 'https://www.fantasyland.ru/images/armies/' + desc.img;
+        army.alt = desc.title;
+    }
+    const scroll = document.querySelector(`#usr_${desc.id} .fight_army_scroll img`);
+    if (scroll) {
+        const isEmpty = desc.img_scroll === '1x1_tr.gif';
+        scroll.src = isEmpty ? 'https://www.fantasyland.ru/cgi/1x1_tr.gif' : 'https://www.fantasyland.ru/images/items/' + desc.img_scroll;
+        scroll.alt = desc.title_scroll;
+    }
 }
 
 /* https://www.fantasyland.ru/cgi/combat_ref.php?lid=undefined
