@@ -62,19 +62,36 @@ function extractLegacyArray(text, startIndex) {
 }
 
 function bindContent(id, content) {
-    // Apply user info
     const container = document.getElementById(id);
     container.innerHTML = '';
     if (!content || content.length === 0 || content[0].length === 0) {
         return;
     }
+    // Apply user info
     let users = content;
     while (users && Array.isArray(users[0]) && Array.isArray(users[0][0])) {
         users = users[0];
     }
     users.forEach(info => addUserinfo(container, info));
-    // TBD: scrolls
-    // TBD: army
+    // Actualize scrolls state
+    if (content[1]) {
+        updateScrollsState(content[1]);
+    }
+    // Update army
+    if (content[2]) {
+        content[2].forEach(info => {
+            const army = document.getElementById(`army_${info[0]}`);
+            if (army) {
+                if (info[1] === 0) {
+                    army.style.display = 'none';
+                }
+                const countElement = army.querySelector(".main_middle__count");
+                if (countElement) {
+                    countElement.innerHTML = info[1];
+                }
+            }
+        });
+    }
 }
 
 function addUserinfo(container, info) {
@@ -124,6 +141,31 @@ function addUserinfo(container, info) {
 
     bindEffects(clone.querySelector('.eff'), info);
     container.appendChild(clone);
+}
+
+function updateScrollsState(scrollsState) {
+    let scrolls = document.querySelectorAll(".scroll_item");
+    if (scrolls && scrolls.length > 0) {
+        if (scrolls[0].getAttribute('data-id') === null) {
+            let j = 0;
+            for (let i = 0; i < scrollsState.length; i++) {
+                if (!scrollsState[i]) {
+                    continue;
+                }
+                if (scrolls[j]) {
+                    scrolls[j].setAttribute('data-id', i);
+                    j++;
+                }
+            }
+        }
+        scrolls.forEach(scroll => {
+            if (scrollsState[scroll.getAttribute('data-id')]) {
+                scroll.style.display = '';
+            } else {
+                scroll.style.display = 'none';
+            }
+        });
+    }
 }
 
 function bindEffects(eff, info) {
@@ -186,9 +228,17 @@ function applyCombatContext(text) {
         const enemies = extractLegacyArray(text, enemyMatch.index + enemyMatch[0].length);
         bindContent('fight_enemies', enemies);
     }
-    // Parse ID
-    const reffMatch = text.match(/parent\.combat_panel\.reff\(\s*([^)]*?)\s*\);/);
-    combatId = reffMatch && reffMatch[1] ? reffMatch[1].trim() : 'undefined';
+    // Parse global combat identifier
+    const refMatch = text.match(/parent\.combat_panel\.reff\(\s*([^)]*?)\s*\);/);
+    combatId = refMatch && refMatch[1] ? refMatch[1].trim() : 'undefined';
+    // Update timer
+    const timeoutMatch = text.match(/parent\.combat_panel\.oink\s*=\s*(\d+)\s*;/);
+    if (timeoutMatch) {
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.setAttribute('data-seconds', Number(timeoutMatch[1]));
+        }
+    }
 }
 
 function updateOpponentState(opponent) {
@@ -238,11 +288,4 @@ parent.combat_panel.SetArmies(armys);
 moo=parent.combat_panel.f1;
 moo("la").style.display = "none";var d0=new Date(); parent.combat_panel.tm=d0.getTime()-1000;parent.combat_panel.timeOut = parent.combat_panel.oink = 180; parent.combat_panel.addTurn("<font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b>Росомаха</b></font> <font color=00AAAA>[117/117]</font>  vs <font color=FFFFFF><b><i>Маг</b></i></font> <font color=00AAAA>[94/99]</font> <BR><font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b><i>Маг</b></i></font> теряет здоровья: <font color=#FF0000><b>-1</b></font><BR><font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b>Росомаха</b></font> атакует противника магией хаоса c силой <font color=#F9FBA8><b>8</b></font>! <font color=FFFFFF><b><i>Маг</b></i></font> частично противостоит атаке и получает <font color=#F9FBA8><b>3</b></font> повреждения!<BR><font color='b6b6b6'>19:09:23> </font> <b>Карательница</b>(<font color=FFFFFF><b>Росомаха</b></font>) влюбляет в себя <b>Рыцаря&nbsp;Короля</b>(<font color=FFFFFF><b><i>Маг</b></i></font>)!! <font color=FFFFFF><b><i>Маг</b></i></font> получает <font color=#F9FBA8><b>1</b></font> повреждения!<BR><font color='b6b6b6'>19:09:23> </font>  <b>Карательница</b> колдует <font color=#F9FBA8><b>Яд&nbsp;-1</b></font>!! <font color='b6b6b6'><шанс блока: 67%></font> <BR><font color='b6b6b6'>19:09:23> </font>  <b>Карательница</b> <font color=#F9FBA8><b>не может применить заклинание</b></font>!! <font color='b6b6b6'><шанс блока: 28%></font> <BR><table align=center cellpadding=0 cellspacing=0 width=100% height=12><tr><td><img src='/images/buttons/point.gif' width='6' height='12'></td><td background='/images/buttons/line.gif' width=100%></td><td><img src='/images/buttons/point.gif' width='6' height='12'></td></tr></table>", 6);
 parent.combat_panel.reff( 468316992 );</script>
-*/
-
-/* https://www.fantasyland.ru/cgi/armylist_yours.php
-
-var allinfo=[
-[[125569, 'Росомаха', 'M', 6, 117, 117, 0, 15, 0, 15, 0, 15, 8, 8, 0, 0, 0, 0, [[], ""], 5, 0, 0, 4, 0, 0,
-     0, 0, 0, 0]], [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [[1301, 1, 1], [1401, 2, 1], [1601, 30, 1], [1602, 30, 1], [1664, 6, 1], [1696, 10, 1], [2566, 10, 2], [2577, 6, 2], [2601, 30, 2], [2602, 30, 2], [2606, 1, 2], [2612, 10, 2], [2664, 5, 2], [3601, 30, 3], [3602, 30, 3], [3664, 10, 3]]];
 */

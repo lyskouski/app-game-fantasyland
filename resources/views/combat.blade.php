@@ -189,7 +189,7 @@
         </div>
         <div class="main_middle">
             @foreach($scrolls as $i => $scroll)
-            <p class="item {{ $i % 2 == 0 ? 'light' : '' }}">
+            <p class="item {{ $i % 2 == 0 ? 'light' : '' }} scroll_item">
                 <button style="position:relative;float:right;" type="button" onclick="useArmy('{{ $scroll['id'] }}')">Выбрать</button>
                 <img src="https://www.fantasyland.ru{{ $scroll['image'] }}" width="20" height="20" align="absmiddle" />&nbsp;
                 <small>{!! $scroll['title'] !!}</small>
@@ -202,7 +202,7 @@
                 <button type="button" onclick="showArmy(3)">Дамы</button>
             </p>
             @foreach($army as $i => $item)
-            <table class="{{ $i % 2 == 0 ? 'light' : '' }} army-type army-type_{{ $item['type'] }}" id="army_{{ $item['id'] }}" data-count="{{ $item['count'] }}" width="100%" colspacing="0" cellpadding="0">
+            <table class="{{ $i % 2 == 0 ? 'light' : '' }} army-type army-type_{{ $item['type'] }}" id="army_{{ $item['id'] }}" width="100%" colspacing="0" cellpadding="0">
                 <tr>
                     <td style="width: 80px" valign="top">
                         <strong class="main_middle__count">{{ $item['count'] }}</strong>
