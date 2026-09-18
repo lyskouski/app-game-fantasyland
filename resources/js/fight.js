@@ -93,10 +93,12 @@ function bindContent(id, content) {
     }
     users.forEach(info => addUserinfo(container, info));
     // Actualize scrolls state
+    alert('Scrolls:' + JSON.stringify(content[1]));
     if (content[1]) {
         updateScrollsState(content[1]);
     }
     // Update army
+    alert('Army:' + JSON.stringify(content[2]));
     if (content[2]) {
         content[2].forEach(info => {
             const army = document.getElementById(`army_${info[0]}`);
@@ -236,6 +238,8 @@ function applyCombatContext(text) {
             // skip step if JSON parsing fails
         }
     }
+    // Adjust to a single array
+    text = text.replaceAll('update([[', 'update([[[').replaceAll(']]);', ']]]);');
     // Parse opponents state
     const oppMatch = text.match(/parent\.your_army\.update\s*\(/);
     if (oppMatch) {
@@ -262,10 +266,12 @@ function applyCombatContext(text) {
     // Check exit link
     const exitRndMatch = text.match(/leave_combat\.php\?rnd=([^>\s"]+)/i);
     if (exitRndMatch) {
+        const enemy = document.getElementById('fight_enemies');
+        enemy.innerHTML = '';
         const exitLink = document.createElement('a');
         exitLink.href = `/cgi/leave_combat.php?rnd=${exitRndMatch[1]}`;
         exitLink.innerHTML = 'выйти>>>';
-        document.getElementById('fight_enemies').appendChild(exitLink);
+        enemy.appendChild(exitLink);
     }
 }
 

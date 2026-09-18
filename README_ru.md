@@ -20,6 +20,7 @@
 <img alt="Руны" style="border-width:0;width:200px" src="./docs/design-flow/info_6.jpg" /> . <img alt="Магазин Вещей" style="border-width:0;width:200px" src="./docs/design-flow/store_1.jpg" /> . <img alt="Магазин Последователей" style="border-width:0;width:200px" src="./docs/design-flow/store_2.jpg" /> . <img alt="Палатки" style="border-width:0;width:200px" src="./docs/design-flow/store_3.jpg" />
 <img alt="Выбор айтема" style="border-width:0;width:200px" src="./docs/design-flow/store_4.jpg" /> . <img alt="Лабиринт с дверьми" style="border-width:0;width:200px" src="./docs/design-flow/lab_3.jpg" /> . <img alt="Тренировка последователей" style="border-width:0;width:200px" src="./docs/design-flow/arena_1.jpg" /> . <img alt="Тренировка последователей" style="border-width:0;width:200px" src="./docs/design-flow/arena_2.jpg" />
 <img alt="Детализация по предметам" style="border-width:0;width:200px" src="./docs/design-flow/info_7.jpg" /> . <img alt="Детализация по последователям" style="border-width:0;width:200px" src="./docs/design-flow/info_8.jpg" /> . <img alt="Бой, детализация" style="border-width:0;width:200px" src="./docs/design-flow/fight_1.jpg" /> . <img alt="Бой" style="border-width:0;width:200px" src="./docs/design-flow/fight_2.jpg" />
+<img alt="Процесс боя" style="border-width:0;width:200px" src="./docs/design-flow/fight_3.jpg" /> .
 
 
 ## Поддержка (Спонсорство)
