@@ -93,12 +93,10 @@ function bindContent(id, content) {
     }
     users.forEach(info => addUserinfo(container, info));
     // Actualize scrolls state
-    alert('Scrolls:' + JSON.stringify(content[1]));
     if (content[1]) {
         updateScrollsState(content[1]);
     }
     // Update army
-    alert('Army:' + JSON.stringify(content[2]));
     if (content[2]) {
         content[2].forEach(info => {
             const army = document.getElementById(`army_${info[0]}`);
