@@ -89,7 +89,13 @@ window.toggleCombatLog = function() {
     }, { passive: true });
 })();
 
-function prependTurnLog(html) {
+const seenTurnIds = new Set();
+
+function prependTurnLog(id, html) {
+    if (seenTurnIds.has(id)) {
+        return;
+    }
+    seenTurnIds.add(id);
     const content = document.getElementById('combat_log_content');
     const entry = document.createElement('div');
     entry.className = 'combat_log_entry';
@@ -288,9 +294,6 @@ function applyCombatContext(text) {
             // skip step if JSON parsing fails
         }
     }
-    // Parse turn log entries, newest first
-    const turnMatches = [...text.matchAll(/parent\.combat_panel\.addTurn\(\s*"([\s\S]*?)"\s*,\s*\d+\s*\)/g)];
-    turnMatches.forEach(match => prependTurnLog(match[1]));
     // Adjust to a single array
     text = text.replaceAll('update([[', 'update([[[').replaceAll(']]);', ']]]);');
     // Parse opponents state
@@ -326,6 +329,9 @@ function applyCombatContext(text) {
         exitLink.innerHTML = 'выйти>>>';
         enemy.appendChild(exitLink);
     }
+    // Parse turn log entries, deduplicated by the addTurn turn id (2nd argument)
+    const turnMatches = [...text.matchAll(/parent\.combat_panel\.addTurn\(\s*"([\s\S]*?)"\s*,\s*(\d+)\s*\)/g)];
+    turnMatches.forEach(match => prependTurnLog(match[2], match[1]));
 }
 
 function updateOpponentState(opponent) {
@@ -352,27 +358,3 @@ function updateOpponentState(opponent) {
         scroll.alt = desc.title_scroll;
     }
 }
-
-/* https://www.fantasyland.ru/cgi/combat_ref.php?lid=undefined
-
-------------
-<script> if( typeof parent.your_army.show_far_div != 'undefined' )parent.your_army.show_far_div(0);
-if( typeof parent.your_army.setOnFriend != 'undefined' )parent.your_army.setOnFriend();
- armys=[ [['Нет Последователя', '1x1_tr.gif', 'Нет Свитка', '1x1_tr.gif', false, 125569, false, '', ''] ], [['Нет Последователя', '1x1_tr.gif', 'Нет Свитка', '1x1_tr.gif', false, -48981664, false, '', '']] ];
-parent.combat_panel.SetArmies(armys);
-moo=parent.combat_panel.f1;
-moo("la").style.display = "none";var d0=new Date(); parent.combat_panel.tm=d0.getTime()-14000;parent.combat_panel.timeOut = parent.combat_panel.oink = 180; parent.combat_panel.reff(  );</script>
-
-------------
-<script language='javascript'>parent.your_army.update([[125569, 'Росомаха', 'M', 6, 117, 117, 0, 15, 0, 15, 0, 15, 8, 8, 0, 0, 0, 0, [[], ""], 5, 0, 0, 4, 0, 0,
-     0, 0, 0, 0]], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [[1401, 3, 1], [1601, 30, 1], [1602, 30, 1], [1664, 6, 1], [1696, 10, 1], [2566, 10, 2], [2577, 6, 2], [2601, 30, 2], [2602, 30, 2], [2606, 1, 2], [2612, 10, 2], [2664, 5, 2], [3601, 30, 3], [3602, 30, 3], [3664, 9, 3]]);
-parent.enemy_army.update([[-48981664, 'Маг', '10601', 6, 94, 99, 0, 0, 0, 0, 0, 0, 0, 5, 24, 7, 0, 0, [[["poison_01.gif","Яд&nbsp;-1",9]], ""], 5, -1, 0, 8, 12, 0,
-     0, 0, 0, 0]]);
-</script><script> if( typeof parent.your_army.show_far_div != 'undefined' )parent.your_army.show_far_div(0);
-if( typeof parent.your_army.setOnFriend != 'undefined' )parent.your_army.setOnFriend();
- armys=[ [['Нет Последователя', '1x1_tr.gif', 'Нет Свитка', '1x1_tr.gif', false, 125569, false, '', ''] ], [['Нет Последователя', '1x1_tr.gif', 'Нет Свитка', '1x1_tr.gif', false, -48981664, false, '', '']] ];
-parent.combat_panel.SetArmies(armys);
-moo=parent.combat_panel.f1;
-moo("la").style.display = "none";var d0=new Date(); parent.combat_panel.tm=d0.getTime()-1000;parent.combat_panel.timeOut = parent.combat_panel.oink = 180; parent.combat_panel.addTurn("<font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b>Росомаха</b></font> <font color=00AAAA>[117/117]</font>  vs <font color=FFFFFF><b><i>Маг</b></i></font> <font color=00AAAA>[94/99]</font> <BR><font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b><i>Маг</b></i></font> теряет здоровья: <font color=#FF0000><b>-1</b></font><BR><font color='b6b6b6'>19:09:23> </font> <font color=FFFFFF><b>Росомаха</b></font> атакует противника магией хаоса c силой <font color=#F9FBA8><b>8</b></font>! <font color=FFFFFF><b><i>Маг</b></i></font> частично противостоит атаке и получает <font color=#F9FBA8><b>3</b></font> повреждения!<BR><font color='b6b6b6'>19:09:23> </font> <b>Карательница</b>(<font color=FFFFFF><b>Росомаха</b></font>) влюбляет в себя <b>Рыцаря&nbsp;Короля</b>(<font color=FFFFFF><b><i>Маг</b></i></font>)!! <font color=FFFFFF><b><i>Маг</b></i></font> получает <font color=#F9FBA8><b>1</b></font> повреждения!<BR><font color='b6b6b6'>19:09:23> </font>  <b>Карательница</b> колдует <font color=#F9FBA8><b>Яд&nbsp;-1</b></font>!! <font color='b6b6b6'><шанс блока: 67%></font> <BR><font color='b6b6b6'>19:09:23> </font>  <b>Карательница</b> <font color=#F9FBA8><b>не может применить заклинание</b></font>!! <font color='b6b6b6'><шанс блока: 28%></font> <BR><table align=center cellpadding=0 cellspacing=0 width=100% height=12><tr><td><img src='/images/buttons/point.gif' width='6' height='12'></td><td background='/images/buttons/line.gif' width=100%></td><td><img src='/images/buttons/point.gif' width='6' height='12'></td></tr></table>", 6);
-parent.combat_panel.reff( 468316992 );</script>
-*/
