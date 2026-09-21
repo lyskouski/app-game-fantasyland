@@ -128,14 +128,18 @@ function extractLegacyArray(text, startIndex) {
         }
     }
 
-    const json = text.substring(arrayStart, arrayEnd).replace(/'([^']*)'/g, function(_, value) {
-        return '"' + value.replace(/"/g, '\\"') + '"';
-    });
+    const json = convertLegacyQuotes(text.substring(arrayStart, arrayEnd));
     try {
         return JSON.parse(json);
     } catch (e) {
         return [];
     }
+}
+
+function convertLegacyQuotes(text) {
+    return text.replace(/"(?:[^"\\]|\\.)*"|'([^']*)'/g, function(match, value) {
+        return value === undefined ? match : '"' + value.replace(/"/g, '\\"') + '"';
+    });
 }
 
 function bindContent(id, content) {
@@ -284,9 +288,7 @@ function applyCombatContext(text) {
     // Parse army state
     const armysMatch = text.match(/armys\s*=\s*(\[[\s\S]*?\]);/);
     if (armysMatch) {
-        const json = armysMatch[1].replace(/'([^']*)'/g, function(_, value) {
-            return '"' + value.replace(/"/g, '\\"') + '"';
-        });
+        const json = convertLegacyQuotes(armysMatch[1]);
         try {
             const armys = JSON.parse(json);
             armys.flat(1).forEach(updateOpponentState);
