@@ -1,7 +1,12 @@
+html, body {
+    height: 100%;
+}
+
 body {
     background: #666666;
     padding: 0;
     margin: 0;
+    overflow-x: hidden;
 }
 
 body::before {
@@ -249,4 +254,50 @@ progress.bar[value]::-moz-progress-bar {
     bottom: -8px;
     width: 30px;
     height: 30px;
+}
+
+.combat_log_toggle {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 101;
+    padding: 10px 6px;
+    color: white;
+    background-image: url("/images/ui/bg.jpg");
+    box-shadow: inset 1px -1px 1px black, inset -1px 1px 1px black, 0px 0px 1px white;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+}
+
+.combat_log_drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    width: 320px;
+    max-width: 80vw;
+    overflow-y: auto;
+    padding: 12px;
+    box-sizing: border-box;
+    background: #898989;
+    background-image: url("/images/ui/bg_title.jpg");
+    box-shadow: 2px 0 6px black;
+    transform: translate3d(-100%, 0, 0);
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+}
+
+.combat_log_drawer.open {
+    transform: translate3d(0, 0, 0);
+}
+
+.combat_log_entry {
+    color: white;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
 }

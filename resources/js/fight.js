@@ -45,6 +45,18 @@ window.showArmy = function(id) {
     }
 };
 
+window.toggleCombatLog = function() {
+    document.getElementById('combat_log_drawer').classList.toggle('open');
+};
+
+function prependTurnLog(html) {
+    const content = document.getElementById('combat_log_content');
+    const entry = document.createElement('div');
+    entry.className = 'combat_log_entry';
+    entry.innerHTML = html;
+    content.insertBefore(entry, content.firstChild);
+}
+
 function extractContent(text) {
     var startMatch = text.match(/var allinfo\s*=\s*\[/);
     return startMatch ? extractLegacyArray(text, startMatch.index + startMatch[0].length - 1) : [];
@@ -236,6 +248,9 @@ function applyCombatContext(text) {
             // skip step if JSON parsing fails
         }
     }
+    // Parse turn log entries, newest first
+    const turnMatches = [...text.matchAll(/parent\.combat_panel\.addTurn\(\s*"([\s\S]*?)"\s*,\s*\d+\s*\)/g)];
+    turnMatches.forEach(match => prependTurnLog(match[1]));
     // Adjust to a single array
     text = text.replaceAll('update([[', 'update([[[').replaceAll(']]);', ']]]);');
     // Parse opponents state

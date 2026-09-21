@@ -14,6 +14,10 @@
 </head>
 
 <body>
+    <button type="button" class="combat_log_toggle" onclick="toggleCombatLog()">☰</button>
+    <div id="combat_log_drawer" class="combat_log_drawer">
+        <div id="combat_log_content"></div>
+    </div>
     <div class="main">
         <div class="main_top">
             <table cellpadding="0" cellspacing="0" align="center">
