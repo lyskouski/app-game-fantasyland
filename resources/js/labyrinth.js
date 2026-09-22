@@ -286,6 +286,26 @@ function parse(text) {
         space.innerHTML = '&nbsp;';
         ge('items').appendChild(space);
     }
+    // Add mobs and users to attack (by default [hot key] attack first mob)
+    const mobMatches = text.matchAll(/attmb\s*\(\s*(-?\d+)\s*\)[\s\S]*?\[Lvl:(\d+)\]\s*<b><i>([^<]+)<\/i><\/b>/g);
+    let fightHtml = '';
+    let isFirstMob = true;
+    for (const match of mobMatches) {
+        const id = match[1];
+        const lvl = match[2];
+        const name = match[3];
+        fightHtml += `[Lvl:${lvl}] <b><i>${name}</i></b> <a id="mob${id}" href="/cgi/maze_attack.php?player_id=${id}">атаковать</a><br />`;
+        if (isFirstMob) {
+            aParams.info.push(['attack_player_s.gif', name]);
+            ge('btn8').src = 'https://www.fantasyland.ru/images/miscellaneous/attack_player_s.gif';
+            ge('btn8').onclick = function() {
+                ge(`mob${id}`).click();
+            };
+            ge('btn8').title = `[Lvl:${lvl}] ${name}`;
+            isFirstMob = false;
+        }
+    }
+    ge('fight').innerHTML = fightHtml;
     // Draw the cell on map
     aParams.loc = {...aParams.loc, 1: aParams.loc[0], 2: aParams.loc[1], 3: aParams.loc[2], 4: aParams.loc[3]};
     aParams.time = Math.floor(new Date().getTime() / 1000);

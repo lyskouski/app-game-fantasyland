@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\FightParser;
 
 final class FightController extends Controller
@@ -16,6 +17,12 @@ final class FightController extends Controller
             'scrolls' => $parser->getScrolls($htmlArmy),
             'army' => $parser->getArmy($htmlArmy),
         ]);
+    }
+
+    public function labAttack() {
+        $result = $this->get('/cgi/maze_attack.php');
+        Notification::addIfExists($result);
+        redirect('/cgi/combat.php');
     }
 
     public function armylistYours() {
