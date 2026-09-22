@@ -30,6 +30,9 @@ final class ArenaController extends Controller
         } elseif (str_contains($htmlArena, 'attack_mob.php')) {
             $data['captcha'] = $this->captcha(time());
             return view('arena_mob', $data);
+        } elseif (str_contains($htmlArena, "id='hpLine'")) {
+            $health = $parser->getHealthState($htmlArena);
+            return view('arena_pause', [...request()->input(), ...$data, ...$health]);
         }
         return view('main_arena', $data);
     }

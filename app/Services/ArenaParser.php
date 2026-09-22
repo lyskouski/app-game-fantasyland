@@ -43,4 +43,18 @@ class ArenaParser
         $restarts = isset($matches[1]) ? (int)$matches[1] : 0;
         return ['timer' => $timer, 'restarts' => $restarts];
     }
+
+    public function getHealthState(string $html) {
+        preg_match("/nm\s*=\s*(\d+)\s*,\s*hm\s*=\s*(\d+)/", $html, $matches);
+        if (!isset($matches[1], $matches[2])) {
+            return ['hp_full' => 0, 'hp_current' => 0, 'hp_description' => ''];
+        }
+        preg_match("/<CENTER>(.+?)<\/CENTER>/i", $html, $descMatches);
+        $description = isset($descMatches[1]) ? trim(strip_tags($descMatches[1])) : '';
+        return [
+            'hp_full' => (int)$matches[1],
+            'hp_current' => (int)$matches[2],
+            'hp_description' => $description
+        ];
+    }
 }
