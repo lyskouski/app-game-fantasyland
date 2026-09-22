@@ -89,13 +89,13 @@ window.toggleCombatLog = function() {
     }, { passive: true });
 })();
 
-const seenTurnIds = new Set();
+// const seenTurnIds = new Set();
 
 function prependTurnLog(id, html) {
-    if (seenTurnIds.has(id)) {
-        return;
-    }
-    seenTurnIds.add(id);
+    //if (seenTurnIds.has(id)) {
+    //    return;
+    //}
+    //seenTurnIds.add(id);
     const content = document.getElementById('combat_log_content');
     const entry = document.createElement('div');
     entry.className = 'combat_log_entry';
