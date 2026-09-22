@@ -210,7 +210,7 @@
                 <tr>
                     <td style="width: 80px" valign="top">
                         <strong class="main_middle__count">{{ $item['count'] }}</strong>
-                        <a href="/cgi/army_desc.php?id=`{{ $item['id'] }}`">
+                        <a href="/cgi/army_desc.php?id={{ $item['id'] }}">
                             <img src="https://www.fantasyland.ru/images/armies/{{ $item['image'] }}" width="70" height="70" />
                         </a>
                     </td>
