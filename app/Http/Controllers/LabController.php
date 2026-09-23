@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Providers\AppProxyProvider;
 use App\Services\InfoParser;
+use App\Services\InfoMobParser;
 use App\Services\LabParser;
 use App\Settings\Defines;
 
@@ -192,7 +193,7 @@ final class LabController extends Controller
 
     public function mobInfo() {
         $html = $this->get('/cgi/mob_info.php');
-        // TBD
-        return view('mob_info', ['data' => $html]);
+        $parser = new InfoMobParser();
+        return view('mob_info', ['data' => $parser->getMobInfo($html)]);
     }
 }
