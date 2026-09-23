@@ -5,7 +5,7 @@
 namespace App\Services;
 
 use App\Settings\Defines;
-use App\Settings\Effects;
+use App\Services\Helpers\Effects;
 
 class InfoParser
 {
@@ -218,6 +218,7 @@ class InfoParser
     private function parseAwardsOrEffects(string $content, bool $isEffects = false): array
     {
         $result = [];
+        $effectsHelper = new Effects();
         if (preg_match_all('/<IMG\s+src="([^"]+)"\s+title="([^"]+)"/s', $content, $matches)) {
             foreach (array_keys($matches[0]) as $key) {
                 $src = $matches[1][$key];
@@ -240,7 +241,7 @@ class InfoParser
                 $item = [
                     'image' => Defines::URL . $image,
                     'title' => $title,
-                    'effect' => Effects::getImage($effect),
+                    'effect' => $effectsHelper->getImage($effect),
                     'time' => null,
                 ];
                 if ($isEffects) {

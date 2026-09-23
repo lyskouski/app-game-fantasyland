@@ -2,11 +2,13 @@
 // Copyright 2026 The terCAD team. All rights reserved.
 // Use of this source code is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
 
-namespace App\Settings;
+namespace App\Services\Helpers;
+
+use App\Settings\Defines;
 
 class Effects
 {
-    public static function getImage(string $str): string
+    public function getImage(string $str): string
     {
         if (str_contains($str, ',')) {
             $items = explode(',', $str);
@@ -14,7 +16,7 @@ class Effects
             foreach ($items as $item) {
                 $item = preg_replace('/(?:(?:^|\n)\s+|\s+(?:$|\n))/u', '', $item);
                 $item = preg_replace('/\s+/u', ' ', $item);
-                $results[] = self::getImage($item);
+                $results[] = $this->getImage($item);
             }
             return implode(' ', $results);
         }
@@ -22,9 +24,9 @@ class Effects
         $text = strtolower($str);
         $firstNumber = explode(' ', $str)[0];
 
-        foreach (self::getEffectPatterns() as $pattern => $effect) {
+        foreach ($this->getEffectPatterns() as $pattern => $effect) {
             if (str_contains($text, $pattern)) {
-                return self::buildImageTag($firstNumber, $effect, $str);
+                return $this->buildImageTag($firstNumber, $effect, $str);
             }
         }
 
@@ -34,7 +36,7 @@ class Effects
     /**
      * @return array<string, string|null>
      */
-    private static function getEffectPatterns(): array
+    private function getEffectPatterns(): array
     {
         return [
             'ции жизни' => '../effects/circle_of_life',
@@ -64,7 +66,7 @@ class Effects
         ];
     }
 
-    private static function buildImageTag(string $number, string $effect, string $str): string
+    private function buildImageTag(string $number, string $effect, string $str): string
     {
         $imgBegin = '&nbsp;<img align=absmiddle width=14 height=14 src="' . Defines::URL . 'images/miscellaneous/';
 
