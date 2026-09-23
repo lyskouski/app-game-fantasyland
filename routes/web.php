@@ -132,6 +132,7 @@ Route::get('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::get('/cgi/technical_lab_info.php', [LabController::class, 'technicalInfo']);
 Route::get('/cgi/maze_pickup.php', [LabController::class, 'pickUp']);
+Route::get('/cgi/mob_info.php', [LabController::class, 'mobInfo']);
 
 // Marketplace (tents)
 //Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'buyList']);

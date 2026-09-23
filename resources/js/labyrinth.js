@@ -279,22 +279,25 @@ function parse(text) {
             isFirst = false;
         }
         const el = document.createElement('a');
+        el.href = "#";
         el.onclick = function() { pickUp(0, 0) };
         el.innerHTML = title;
         ge('items').appendChild(el);
         const space = document.createElement('span');
-        space.innerHTML = '&nbsp;';
+        space.innerHTML = ',&nbsp;';
         ge('items').appendChild(space);
     }
     // Add mobs and users to attack (by default [hot key] attack first mob)
-    const mobMatches = text.matchAll(/attmb\s*\(\s*(-?\d+)\s*\)[\s\S]*?\[Lvl:(\d+)\]\s*<b><i>([^<]+)<\/i><\/b>/g);
+    const mobMatches = text.matchAll(/attmb\s*\(\s*(-?\d+)\s*\)[\s\S]*?\[Lvl:(\d+)\]\s*<b><i>([^<]+)<\/i><\/b>[\s\S]*?src=['"]([^'"]*)['"][\s\S]*?oIm\(\s*(\d+)\s*,/g);
     let fightHtml = '';
     let isFirstMob = true;
     for (const match of mobMatches) {
         const id = match[1];
         const lvl = match[2];
         const name = match[3];
-        fightHtml += `[Lvl:${lvl}] <b><i>${name}</i></b> <a id="mob${id}" href="/cgi/maze_attack.php?player_id=${id}">атаковать</a><br />`;
+        const img = match[4].split('/').pop();
+        const mobType = match[5];
+        fightHtml += `[Lvl:${lvl}] <b><i>${name}</i></b>&nbsp;<a href="/cgi/mob_info.php?type=${mobType}"><img src="https://www.fantasyland.ru/images/miscellaneous/${img}" alt="info" /></a> - <a id="mob${id}" href="/cgi/maze_attack.php?player_id=${id}">атаковать</a><br />`;
         if (isFirstMob) {
             aParams.info.push(['attack_player_s.gif', name]);
             ge('btn8').src = 'https://www.fantasyland.ru/images/miscellaneous/attack_player_s.gif';

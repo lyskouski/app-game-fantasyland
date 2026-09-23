@@ -189,4 +189,10 @@ final class LabController extends Controller
         $mapData = \App\Models\Map::getByLocation($locData['loc'], $locData['place'], $z);
         return view('empty', ['data' => $mapData]);
     }
+
+    public function mobInfo() {
+        $html = $this->get('/cgi/mob_info.php');
+        // TBD
+        return view('mob_info', ['data' => $html]);
+    }
 }
