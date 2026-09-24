@@ -55,7 +55,7 @@
                 </table>
                 <br />
             </div>
-            <div class="main_middle">
+            <div class="main_middle" id="chat-messages">
                 @foreach($data as $item)
                 <p class="item"><small>[{{ $item->created_at->format('H:i') }}] {!! $item->message !!}</small></p>
                 @endforeach
@@ -67,5 +67,18 @@
             <input type="text" id="chat_message" name="a" autocomplete="off" placeholder="Сообщение...">
             <button type="submit" class="button">Отправить</button>
         </form>
+        <script>
+            setInterval(() => {
+                fetch(window.location.href)
+                    .then((response) => response.text())
+                    .then((html) => {
+                        const next = new DOMParser().parseFromString(html, 'text/html').getElementById('chat-messages');
+                        const current = document.getElementById('chat-messages');
+                        if (next && current) {
+                            current.innerHTML = next.innerHTML;
+                        }
+                    });
+            }, 5000);
+        </script>
     </body>
 </html>
