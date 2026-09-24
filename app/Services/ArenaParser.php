@@ -59,36 +59,51 @@ class ArenaParser
     }
 
     public function getRingGroups(string $html, string $w) {
-        $accept = null;
-        $decline = null;
+        $accept = false;
+        $decline = false;
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>согласны/u', $html, $matches)) {
-            $accept = $matches[1];
+            $accept = true;
         }
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>откажетесь/u', $html, $matches)) {
-            $decline = $matches[1];
+            $decline = true;
         } elseif (preg_match('/отозвать свою заявку.*?DoAct\(\\\\?[\'"]([^\'"\\\\]+)\\\\?[\'"]\)/su', $html, $matches)) {
-            $decline = $matches[1];
+            $decline = true;
         }
 
         $groups = [];
-        preg_match_all(
-            '/x\(\'([^\']*)\'\)\s*\+\s*w\((.*?)\)\s*\+\s*"<TD width=220>(?:"\s*\+\s*w\((.*?)\)\s*\+\s*"|([^<"]*))?<td[^>]*>(.*?)<\/td><\/TR>"/su',
-            $html,
-            $matches,
-            PREG_SET_ORDER
-        );
-        foreach ($matches as $match) {
-            $conditions = trim(str_replace('&nbsp;', '', strip_tags($match[5])));
-            if ($match[3] !== '') {
-                $enemy = $this->parseFighter($match[3], $w);
-            } elseif (trim($match[4]) !== '') {
-                $enemy = trim($match[4]);
-            } else {
-                $enemy = '';
+        preg_match_all('/x\(\'([^\']*)\'\)/', $html, $timeMatches, PREG_OFFSET_CAPTURE);
+        $boundary = strpos($html, "arenaContent += '</TABLE>'");
+        if ($boundary === false) {
+            $boundary = strlen($html);
+        }
+        foreach ($timeMatches[1] as $index => [$time, $timePos]) {
+            $segStart = $timePos;
+            $segEnd = isset($timeMatches[1][$index + 1]) ? $timeMatches[1][$index + 1][1] : $boundary;
+            $segment = substr($html, $segStart, $segEnd - $segStart);
+
+            $calls = $this->extractBalancedArgs($segment, 'w(');
+            if (empty($calls)) {
+                continue;
             }
+            $opponent = $this->parseFighter($calls[0]['args'], $w);
+
+            $enemy = '';
+            if (isset($calls[1])) {
+                $enemy = $this->parseFighter($calls[1]['args'], $w);
+                $conditionsSegment = substr($segment, $calls[1]['end']);
+            } else {
+                $conditionsSegment = substr($segment, $calls[0]['end']);
+                if (preg_match('/<TD width=220>([^<]*)<td/isu', $conditionsSegment, $labelMatch) && trim($labelMatch[1]) !== '') {
+                    $enemy = trim($labelMatch[1]);
+                }
+            }
+
+            preg_match('/<td[^>]*>(.*?)<\/td><\/TR>/su', $conditionsSegment, $condMatch);
+            $conditions = isset($condMatch[1]) ? trim(str_replace('&nbsp;', '', strip_tags($condMatch[1]))) : '';
+
             $groups[] = [
-                'time' => $match[1],
-                'opponent' => $this->parseFighter($match[2], $w),
+                'time' => $time,
+                'opponent' => $opponent,
                 'enemy' => $enemy,
                 'conditions' => $conditions,
             ];
@@ -106,5 +121,38 @@ class ArenaParser
         $parser = new ForumParser();
         $parts = str_getcsv(trim($args), ',', '"');
         return $parser->parseUsername([null, ...array_map('trim', $parts)], $w);
+    }
+
+    // Locates each `$needle(` occurrence and extracts its argument text, respecting nested parens/quotes.
+    private function extractBalancedArgs(string $text, string $needle): array {
+        $results = [];
+        $offset = 0;
+        $len = strlen($text);
+        while (($pos = strpos($text, $needle, $offset)) !== false) {
+            $start = $pos + strlen($needle);
+            $depth = 1;
+            $i = $start;
+            $quote = null;
+            while ($i < $len && $depth > 0) {
+                $ch = $text[$i];
+                if ($quote !== null) {
+                    if ($ch === '\\') {
+                        $i++;
+                    } elseif ($ch === $quote) {
+                        $quote = null;
+                    }
+                } elseif ($ch === '"' || $ch === "'") {
+                    $quote = $ch;
+                } elseif ($ch === '(') {
+                    $depth++;
+                } elseif ($ch === ')') {
+                    $depth--;
+                }
+                $i++;
+            }
+            $results[] = ['args' => substr($text, $start, $i - $start - 1), 'end' => $i];
+            $offset = $i;
+        }
+        return $results;
     }
 }
