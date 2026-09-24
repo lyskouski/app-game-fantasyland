@@ -36,7 +36,7 @@ class ListenStream implements ShouldQueue
             CURLOPT_USERAGENT => $proxy->userAgent(),
             CURLOPT_COOKIEFILE => $proxy->cookieFile(),
             CURLOPT_COOKIEJAR => $proxy->cookieFile(),
-            CURLOPT_WRITEFUNCTION => function ($ch, $chunk) use (&$buffer) {
+            CURLOPT_WRITEFUNCTION => function ($ch, $chunk) use (&$buffer, $proxy) {
                 $buffer .= $chunk;
                 while (preg_match(
                     '/<script\b[^>]*>(.*?)<\/script>/is',
@@ -44,13 +44,13 @@ class ListenStream implements ShouldQueue
                     $m,
                     PREG_OFFSET_CAPTURE
                 )) {
-                    $script = $m[1][0];
+                    $script = $proxy->decode($m[1][0]);
                     $end = $m[0][1] + strlen($m[0][0]);
 
-                    if (preg_match('/b\(\s*"((?:[^"\\\\]|\\\\.)*)"\s*,\s*"((?:[^"\\\\]|\\\\.)*)"/s', $script, $call)) {
+                    if (preg_match('/(?<![A-Za-z0-9_])[ab]\(\s*"((?:[^"\\\\]|\\\\.)*)"\s*,\s*"((?:[^"\\\\]|\\\\.)*)"/s', $script, $call)) {
                         $message = $call[1];
                         $user = $call[2];
-                        Notification::addMessage("<p><b>{$user}:</b> {$message}</p>");
+                        Notification::addMessage("<b>{$user}:</b> {$message}");
                     }
 
                     $buffer = substr($buffer, $end);

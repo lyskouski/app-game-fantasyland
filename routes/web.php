@@ -81,6 +81,7 @@ Route::get('/cgi/leave_combat.php', [FightController::class, 'leaveCombat']);
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 Route::get('/ch/chout.php', [ChatController::class, 'messages']);
 Route::get('/chat/clear', [ChatController::class, 'clear']);
+Route::get('/chinp', [ChatController::class, 'send']);
 
 // Mining
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);

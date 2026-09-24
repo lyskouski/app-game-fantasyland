@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css'])
     </head>
-    <body>
+    <body style="padding-bottom: 56px;">
         <div class="main">
             <div class="main_top">
                 <table cellpadding="0" cellspacing="0" align="center">
@@ -62,5 +62,10 @@
             </div>
         </div>
         <br />
+        <form method="GET" action="/chinp" class="chat-input">
+            <input type="hidden" name="chn" value="0">
+            <input type="text" id="chat_message" name="a" autocomplete="off" placeholder="Сообщение...">
+            <button type="submit" class="button">Отправить</button>
+        </form>
     </body>
 </html>

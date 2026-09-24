@@ -271,6 +271,25 @@ progress.bar[value]::-moz-progress-bar {
     cursor: pointer;
 }
 
+.chat-input {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    background-image: url("/images/ui/bg.jpg");
+    box-shadow: 0px -1px 1px black, 0px 1px 1px white;
+}
+
+.chat-input input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+
 .combat_log_drawer {
     position: fixed;
     top: 0;

@@ -14,12 +14,19 @@ final class ChatController extends Controller
     }
 
     public function messages() {
+        // Purge raw <script> payloads accidentally stored by a previous ListenStream bug.
+        Notification::where('message', 'like', '%<script%')->delete();
         $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
         return view('chat', ['data' => $data]);
     }
 
     public function clear() {
         Notification::truncate();
+        return redirect('/ch/chout.php');
+    }
+
+    public function send() {
+        $this->get('chinp');
         return redirect('/ch/chout.php');
     }
 }

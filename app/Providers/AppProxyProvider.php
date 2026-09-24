@@ -31,12 +31,18 @@ class AppProxyProvider
         return $this->browser;
     }
 
+    public function decode(string $string): string
+    {
+        return $this->convertEncoding($string, 'cp1251', 'UTF-8');
+    }
+
     protected function convertEncoding($string, $from, $to)
     {
-        if (function_exists('iconv')) {
-            return iconv($from, $to, $string);
-        } elseif (function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($string, $to, $from);
+        } elseif (function_exists('iconv')) {
+            $result = @iconv($from, $to . '//TRANSLIT//IGNORE', $string);
+            return $result === false ? $string : $result;
         }
         return $string;
     }
