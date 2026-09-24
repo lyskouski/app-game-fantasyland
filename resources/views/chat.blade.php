@@ -46,7 +46,7 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Системные сообщения&nbsp;</b></small>
+                            <small><b>&nbsp;Сообщения&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">

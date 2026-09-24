@@ -23,16 +23,16 @@ final class ArenaController extends Controller
         $htmlArena = $this->get('/cgi/arena.php');
         $data = $this->mainPage();
         $parser = new ArenaParser();
-        if (str_contains($htmlArena, '/cgi/train_start.php')) {
+        if (str_contains($htmlArena, "id='hpLine'")) {
+            $health = $parser->getHealthState($htmlArena);
+            return view('arena_pause', [...request()->input(), ...$data, ...$health]);
+        } elseif (str_contains($htmlArena, '/cgi/train_start.php')) {
             $data['captcha'] = $this->captcha(time());
             $arena = $parser->train($htmlArena);
             return view('arena_train', [...$data, ...$arena]);
         } elseif (str_contains($htmlArena, 'attack_mob.php')) {
             $data['captcha'] = $this->captcha(time());
             return view('arena_mob', $data);
-        } elseif (str_contains($htmlArena, "id='hpLine'")) {
-            $health = $parser->getHealthState($htmlArena);
-            return view('arena_pause', [...request()->input(), ...$data, ...$health]);
         }
         return view('main_arena', $data);
     }
