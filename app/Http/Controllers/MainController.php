@@ -23,7 +23,7 @@ final class MainController extends Controller
     }
 
     public function index() {
-        $html = $this->post('cgi/no_combat.php', []);
+        $html = $this->post('cgi/no_combat.php');
         Notification::addIfExists($html);
 
         foreach ($this->getPageRoutes() as $pattern => $handler) {
@@ -41,6 +41,10 @@ final class MainController extends Controller
     private function getPageRoutes(): array
     {
         return [
+            'show_title("Другой&nbsp;Мир")' => fn($html) => view(
+                'main_killed',
+                $this->locationParser->getKilledState($html)
+            ),
             'work_stop.php' => fn($html) => view('prey_start', [
                 ...$this->locationParser->onPlace($html),
                 ...$this->preyParser->parse($html, $this->captcha(time()))

@@ -155,4 +155,16 @@ class LocationParser
         }
         return ['map' => $map, 'return' => $return, 'timer' => $timer, 'title' => $title];
     }
+
+    public function getKilledState(string $html) {
+        $result = ['description' => '', 'timer' => null, 'link' => null];
+        if (preg_match('/<center><i>(.*?)<\/i>/is', $html, $descMatch)) {
+            $result['description'] = trim(html_entity_decode(strip_tags($descMatch[1])));
+        }
+        if (preg_match('/InsertTimer\(\s*(\d+)\s*,.*?href\s*=\s*["\']([^"\']+)["\']/is', $html, $timerMatch)) {
+            $result['timer'] = $timerMatch[1];
+            $result['link'] = '/cgi/' . $timerMatch[2];
+        }
+        return $result;
+    }
 }
