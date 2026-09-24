@@ -64,6 +64,7 @@ class ForumParser
         }
         //z() => pt,login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex,image,buttons,reputation
         //f() => i,login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex,i2,s2, thid, rid
+        //w() => login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex, fun)
         $clanData = $this->parseClansData($w);
 
         return '<span style="white-space: nowrap;">' .

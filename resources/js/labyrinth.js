@@ -287,7 +287,7 @@ function parse(text) {
         space.innerHTML = ',&nbsp;';
         ge('items').appendChild(space);
     }
-    // Add mobs and users to attack (by default [hot key] attack first mob)
+    // Add mobs to attack (by default [hot key] attack first mob)
     const mobMatches = text.matchAll(/attmb\s*\(\s*(-?\d+)\s*\)[\s\S]*?\[Lvl:(\d+)\]\s*<b><i>([^<]+)<\/i><\/b>[\s\S]*?src=['"]([^'"]*)['"][\s\S]*?oIm\(\s*(\d+)\s*,/g);
     let fightHtml = '';
     let isFirstMob = true;
@@ -307,6 +307,18 @@ function parse(text) {
             ge('btn8').title = `[Lvl:${lvl}] ${name}`;
             isFirstMob = false;
         }
+    }
+    // Add users to attack
+    const userMatches = text.matchAll(/att\(\s*(-?\d+)\s*\)[\s\S]*?w\(\s*((?:"[^"]*"|[^")])*)\)/g);
+    for (const match of userMatches) {
+        const id = match[1];
+        const data = Array.from(match[2].matchAll(/"([^"]*)"|(-?\d+)/g))
+            .map(m => m[1] !== undefined ? m[1] : parseInt(m[2], 10));
+        const name = data[0];
+        fightHtml += `<a href="/cgi/maze_attack.php?player_id=${id}">атаковать</a> - <b id="user${id}">${name}</b><br />`;
+        fetch(`/about/person?data[]=` + data.join('&data[]='))
+            .then(response => response.text())
+            .then(html => ge(`user${id}`).title = html);
     }
     ge('fight').innerHTML = fightHtml;
     // Draw the cell on map

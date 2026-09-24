@@ -5,6 +5,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AboutParser;
+use App\Services\ForumParser;
 
 final class AboutController extends Controller
 {
@@ -24,5 +25,13 @@ final class AboutController extends Controller
         $html = $this->get('/cgi/army_desc.php');
         $id = request()->input('id', '0');
         return view('about_army', $this->parser->army($html, $id));
+    }
+
+    public function person() {
+        $w = $this->get('cgi/w.JS', []);
+        $parser = new ForumParser();
+        return view('empty', [
+            'data' => $parser->parseUsername([null, ...request()->input('data')], $w)
+        ]);
     }
 }
