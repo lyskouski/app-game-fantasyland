@@ -51,6 +51,9 @@ class ListenStream implements ShouldQueue
                         $message = $call[1];
                         $user = $call[2];
                         Notification::addMessage("<b>{$user}:</b> {$message}");
+                    } elseif (preg_match('/(?<![A-Za-z0-9_])c\(\s*\'((?:[^\'\\\\]|\\\\.)*)\'\s*\)/s', $script, $call)) {
+                        $message = str_replace('parent.ch_ref.location.href', 'window.location.href', $call[1]);
+                        Notification::addMessage($message);
                     }
 
                     $buffer = substr($buffer, $end);
