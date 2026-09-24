@@ -4,6 +4,7 @@
 
 namespace App\Providers;
 
+use App\Jobs\ListenStream;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (!$this->app->runningInConsole()) {
+            ListenStream::dispatch();
+        }
     }
 }

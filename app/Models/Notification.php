@@ -26,4 +26,12 @@ class Notification extends Model
             }
         }
     }
+
+    public static function addMessage(string $message): void
+    {
+        self::create([
+            'message' => $message
+        ]);
+        Dialog::toast(strip_tags(str_replace('&nbsp;', ' ', $message)));
+    }
 }

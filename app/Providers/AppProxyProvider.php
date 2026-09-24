@@ -21,6 +21,16 @@ class AppProxyProvider
         }
     }
 
+    public function cookieFile(): string
+    {
+        return $this->fcurl;
+    }
+
+    public function userAgent(): string
+    {
+        return $this->browser;
+    }
+
     protected function convertEncoding($string, $from, $to)
     {
         if (function_exists('iconv')) {

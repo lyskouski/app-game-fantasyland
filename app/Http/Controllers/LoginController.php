@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ListenStream;
 use App\Services\SecureStorage;
 use App\Settings\Defines;
 
@@ -42,6 +43,7 @@ final class LoginController extends Controller
             SecureStorage::set('login', $data['login']);
             SecureStorage::set('password', $data['password']);
         }
+        ListenStream::dispatch();
         return redirect('/shell/home');
     }
 
@@ -49,6 +51,7 @@ final class LoginController extends Controller
         $data = request()->only(['t']);
         $this->get('guestlogin.php', $data);
         $this->get('ch/chch.php', []);
+        ListenStream::dispatch();
         return redirect('/shell/home');
     }
 
