@@ -57,4 +57,54 @@ class ArenaParser
             'hp_description' => $description
         ];
     }
+
+    public function getRingGroups(string $html, string $w) {
+        $accept = null;
+        $decline = null;
+        if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>согласны/u', $html, $matches)) {
+            $accept = $matches[1];
+        }
+        if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>откажетесь/u', $html, $matches)) {
+            $decline = $matches[1];
+        } elseif (preg_match('/отозвать свою заявку.*?DoAct\(\\\\?[\'"]([^\'"\\\\]+)\\\\?[\'"]\)/su', $html, $matches)) {
+            $decline = $matches[1];
+        }
+
+        $groups = [];
+        preg_match_all(
+            '/x\(\'([^\']*)\'\)\s*\+\s*w\((.*?)\)\s*\+\s*"<TD width=220>(?:"\s*\+\s*w\((.*?)\)\s*\+\s*"|([^<"]*))?<td[^>]*>(.*?)<\/td><\/TR>"/su',
+            $html,
+            $matches,
+            PREG_SET_ORDER
+        );
+        foreach ($matches as $match) {
+            $conditions = trim(str_replace('&nbsp;', '', strip_tags($match[5])));
+            if ($match[3] !== '') {
+                $enemy = $this->parseFighter($match[3], $w);
+            } elseif (trim($match[4]) !== '') {
+                $enemy = trim($match[4]);
+            } else {
+                $enemy = '';
+            }
+            $groups[] = [
+                'time' => $match[1],
+                'opponent' => $this->parseFighter($match[2], $w),
+                'enemy' => $enemy,
+                'conditions' => $conditions,
+            ];
+        }
+
+        return [
+            'create' => str_contains($html, "class='selectControl'"),
+            'accept' => $accept,
+            'decline' => $decline,
+            'groups' => $groups,
+        ];
+    }
+
+    private function parseFighter(string $args, string $w): string {
+        $parser = new ForumParser();
+        $parts = str_getcsv(trim($args), ',', '"');
+        return $parser->parseUsername([null, ...array_map('trim', $parts)], $w);
+    }
 }

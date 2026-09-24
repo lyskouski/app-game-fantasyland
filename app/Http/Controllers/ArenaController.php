@@ -21,20 +21,34 @@ final class ArenaController extends Controller
 
     public function index() {
         $htmlArena = $this->get('/cgi/arena.php');
+        if (preg_match('/DoScript\("DoExt\(\'([^\']+)\'\)/', $htmlArena, $matches)) {
+            return redirect('/cgi/' . $matches[1]);
+        }
         $data = $this->mainPage();
+        if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $htmlArena, $matches)) {
+            $data['current'] = (int)$matches[1];
+        }
         $parser = new ArenaParser();
         if (str_contains($htmlArena, "id='hpLine'")) {
             $health = $parser->getHealthState($htmlArena);
             return view('arena_pause', [...request()->input(), ...$data, ...$health]);
-        } elseif (str_contains($htmlArena, '/cgi/train_start.php')) {
-            $data['captcha'] = $this->captcha(time());
-            $arena = $parser->train($htmlArena);
-            return view('arena_train', [...$data, ...$arena]);
-        } elseif (str_contains($htmlArena, 'attack_mob.php')) {
-            $data['captcha'] = $this->captcha(time());
-            return view('arena_mob', $data);
+        } else {
+            $w = $this->get('cgi/w.JS', []);
+            switch ($data['current']) {
+                case 1: // Ring
+                    $arena = $parser->getRingGroups($htmlArena, $w);
+                    return view('arena_ring', [...request()->input(), ...$data, ...$arena]);
+                case 2: // Mob
+                    $data['captcha'] = $this->captcha(time());
+                    return view('arena_mob', $data);
+                case 9: // Train
+                    $data['captcha'] = $this->captcha(time());
+                    $arena = $parser->train($htmlArena);
+                    return view('arena_train', [...$data, ...$arena]);
+                default:
+                    return view('main_arena', $data);
+            }
         }
-        return view('main_arena', $data);
     }
 
     public function trainStart() {
