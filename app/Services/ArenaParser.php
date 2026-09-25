@@ -47,13 +47,15 @@ class ArenaParser
     public function getHealthState(string $html) {
         preg_match("/nm\s*=\s*(\d+)\s*,\s*hm\s*=\s*(\d+)/", $html, $matches);
         if (!isset($matches[1], $matches[2])) {
-            return ['hp_full' => 0, 'hp_current' => 0, 'hp_description' => ''];
+            return ['hp_full' => 0, 'hp_current' => 0, 'hp_speed' => 0, 'hp_description' => ''];
         }
+        preg_match("/sp\s*=\s*(\d+)/", $html, $spMatch);
         preg_match("/<CENTER>(.+?)<\/CENTER>/i", $html, $descMatches);
         $description = isset($descMatches[1]) ? trim(strip_tags($descMatches[1])) : '';
         return [
             'hp_full' => (int)$matches[1],
             'hp_current' => (int)$matches[2],
+            'hp_speed' => (int)$spMatch[1],
             'hp_description' => $description
         ];
     }

@@ -107,9 +107,12 @@
             (function() {
                 const bar = document.querySelector('.bar_row .bar');
                 const actual = document.querySelector('.bar_row .h_actual');
-                const full = parseInt(document.querySelector('.bar_row .h_full').innerHTML, 10);
+                const full = {{ $hp_full }};
+                const speed = {{ $hp_speed }};
+                const sm = {{ $hp_current }};
+                const t0 = Date.now() - 3000;
                 const tick = () => {
-                    const current = parseInt(actual.innerHTML, 10) + 1;
+                    const current = Math.min(full, Math.round(sm + speed * (Date.now() - t0) / 60000));
                     if (current >= full) {
                         bar.value = full;
                         actual.innerHTML = full;
@@ -118,9 +121,9 @@
                     }
                     bar.value = current;
                     actual.innerHTML = current;
-                    setTimeout(tick, 2000);
+                    setTimeout(tick, 1000);
                 };
-                setTimeout(tick, 2000);
+                setTimeout(tick, 1000);
             })();
         </script>
     </body>
