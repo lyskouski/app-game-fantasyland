@@ -94,7 +94,6 @@
                 @if($create)
                 <p>Вы можете подать заявку на дуэль</p>
                 <form action="/cgi/arena.php" method="GET">
-                    <input type="hidden" name="g" value="1" />
                     <input type="hidden" name="a" value="1" />
                     <input type="hidden" name="qn" value="2" />
                     <table>
@@ -130,29 +129,42 @@
                 <p>
                     @if($decline)
                     <script>
-                        setTimeout(window.location.reload, 5000);
+                        setTimeout(() => {
+                            const timestamp = Date.now();
+                            window.location.href = '/cgi/arena.php?_=' + timestamp + '#fight-list';
+                        }, 7000);
                     </script>
-                    Вы можете <a href="/cgi/arena.php?a=2">отозвать свою заявку</a>
+                    Вы можете <a href="/cgi/arena.php?{{ $decline }}">отозвать свою заявку</a>
                     @endif
                     @if($accept)
-                    ,&nbsp;или <a href="/cgi/arena.php?a=3">начать бой</a>.
+                    ,&nbsp;или <a href="/cgi/arena.php?{{ $accept }}">начать бой</a>.
                     @endif
                 </p>
                 @endif
                 <br />
-
                 @foreach ($groups as $group)
-                <table border="1">
+                <table border="1" width="100%">
                     <tr>
                         <td rowspan="2">{{ $group['time'] }}</td>
                         <td><small>{!! $group['opponent'] !!}</small></td>
-                        <td rowspan="2">{{ $group['conditions'] }}</td>
+                        <td rowspan="2">
+                            {{ $group['conditions'] }}
+                            @if($group['withoutArt'])
+                            <img align="absmiddle" src="https://www.fantasyland.ru/images/miscellaneous/woart.gif" border="0" width="18" height="18" alt="Бой без артефактов" title="Бой без артефактов" />
+                            @endif
+                        </td>
                     </tr>
                     <tr>
-                        <td><small>{!! $group['enemy'] !!}</small></td>
+                        <td>
+                            <small>{!! $group['enemy'] !!}</small>
+                            @if($group['attack'])
+                            <a href="/cgi/arena.php?{{ $group['attack'] }}">Вызвать</a>
+                            @endif
+                        </td>
                     </tr>
                 </table>
                 @endforeach
+                <a name="fight-list"></a>
             </div>
         </div>
     </body>

@@ -57,6 +57,11 @@ final class FightController extends Controller
 
     public function leaveCombat() {
         $this->get('/cgi/leave_combat.php');
-        return redirect('/cgi/no_combat.php');
+        redirect('/cgi/no_combat.php');
+    }
+
+    public function combatSet() {
+        $this->get('/cgi/combat_set.php');
+        redirect('/cgi/combat.php');
     }
 }

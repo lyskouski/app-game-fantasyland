@@ -24,6 +24,12 @@ final class ArenaController extends Controller
         if (preg_match('/DoScript\("DoExt\(\'([^\']+)\'\)/', $htmlArena, $matches)) {
             return redirect('/cgi/' . $matches[1]);
         }
+        if (preg_match('/parent\.document\.location\.href\s*=\s*\'([^\']+)\'/', $htmlArena, $matches)) {
+            return redirect($matches[1]);
+        }
+        if (preg_match('/window\.top\.loc\.location\.href\s*=\s*\'([^\']+)\'/', $htmlArena, $matches)) {
+            return redirect('/cgi/' . $matches[1]);
+        }
         $data = $this->mainPage();
         if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $htmlArena, $matches)) {
             $data['current'] = (int)$matches[1];

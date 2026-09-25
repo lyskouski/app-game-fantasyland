@@ -59,15 +59,15 @@ class ArenaParser
     }
 
     public function getRingGroups(string $html, string $w) {
-        $accept = false;
-        $decline = false;
+        $accept = null;
+        $decline = null;
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>согласны/u', $html, $matches)) {
-            $accept = true;
+            $accept = $matches[1];
         }
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>откажетесь/u', $html, $matches)) {
-            $decline = true;
+            $decline = $matches[1];
         } elseif (preg_match('/отозвать свою заявку.*?DoAct\(\\\\?[\'"]([^\'"\\\\]+)\\\\?[\'"]\)/su', $html, $matches)) {
-            $decline = true;
+            $decline = $matches[1];
         }
 
         $groups = [];
@@ -88,6 +88,7 @@ class ArenaParser
             $opponent = $this->parseFighter($calls[0]['args'], $w);
 
             $enemy = '';
+            $attack = null;
             if (isset($calls[1])) {
                 $enemy = $this->parseFighter($calls[1]['args'], $w);
                 $conditionsSegment = substr($segment, $calls[1]['end']);
@@ -95,17 +96,22 @@ class ArenaParser
                 $conditionsSegment = substr($segment, $calls[0]['end']);
                 if (preg_match('/<TD width=220>([^<]*)<td/isu', $conditionsSegment, $labelMatch) && trim($labelMatch[1]) !== '') {
                     $enemy = trim($labelMatch[1]);
+                } elseif (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\)/u', $conditionsSegment, $attackMatch)) {
+                    $attack = $attackMatch[1];
                 }
             }
 
             preg_match('/<td[^>]*>(.*?)<\/td><\/TR>/su', $conditionsSegment, $condMatch);
-            $conditions = isset($condMatch[1]) ? trim(str_replace('&nbsp;', '', strip_tags($condMatch[1]))) : '';
+            $conditionsHtml = $condMatch[1] ?? '';
+            $conditions = trim(str_replace('&nbsp;', '', strip_tags($conditionsHtml)));
 
             $groups[] = [
                 'time' => $time,
                 'opponent' => $opponent,
                 'enemy' => $enemy,
+                'attack' => $attack,
                 'conditions' => $conditions,
+                'withoutArt' => str_contains($conditionsHtml, 'woart.gif'),
             ];
         }
 
