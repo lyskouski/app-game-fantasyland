@@ -22,7 +22,7 @@ final class FightController extends Controller
     public function labAttack() {
         $result = $this->get('/cgi/maze_attack.php');
         Notification::addIfExists($result);
-        redirect('/cgi/combat.php');
+        return redirect('/cgi/combat.php');
     }
 
     public function armylistYours() {
@@ -57,11 +57,11 @@ final class FightController extends Controller
 
     public function leaveCombat() {
         $this->get('/cgi/leave_combat.php');
-        redirect('/cgi/no_combat.php');
+        return redirect('/cgi/no_combat.php');
     }
 
     public function combatSet() {
         $this->get('/cgi/combat_set.php');
-        redirect('/cgi/combat.php');
+        return redirect('/cgi/combat.php');
     }
 }
