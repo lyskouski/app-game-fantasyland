@@ -256,7 +256,7 @@ progress.bar[value]::-moz-progress-bar {
     height: 30px;
 }
 
-.combat_log_toggle {
+.menu_toggle {
     position: fixed;
     top: 50%;
     left: 0;
@@ -290,7 +290,7 @@ progress.bar[value]::-moz-progress-bar {
 }
 
 
-.combat_log_drawer {
+.menu_sidebar {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -309,7 +309,7 @@ progress.bar[value]::-moz-progress-bar {
     will-change: transform;
 }
 
-.combat_log_drawer.open {
+.menu_sidebar.open {
     transform: translate3d(0, 0, 0);
 }
 

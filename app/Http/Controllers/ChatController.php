@@ -5,19 +5,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Services\ChatParser;
 
 final class ChatController extends Controller
 {
     public function index() {
-        $data = $this->get('cgi/ch_ref.php', []);
-        return view('empty', ['data' => $data]);
+        $html = $this->get('cgi/ch_ref.php', []);
+        $chout = $this->get('ch/chout.php', []);
+        $w = $this->get('cgi/w.JS', []);
+        $data = (new ChatParser)->parseUserList($html . $chout, $w);
+        return view('chat_user_list', $data);
     }
 
     public function messages() {
-        // Purge raw <script> payloads accidentally stored by a previous ListenStream bug.
-        Notification::where('message', 'like', '%<script%')->delete();
+        $html = $this->get('ch/chout.php', []);
+        $me = (new ChatParser)->getOwnName($html);
         $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
-        return view('chat', ['data' => $data]);
+        return view('chat', ['data' => $data, 'me' => $me]);
     }
 
     public function clear() {

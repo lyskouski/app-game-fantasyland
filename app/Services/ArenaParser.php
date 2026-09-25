@@ -4,7 +4,7 @@
 
 namespace App\Services;
 
-class ArenaParser
+class ArenaParser extends UserParser
 {
     public function train(string $html) {
         $train = [];
@@ -87,12 +87,12 @@ class ArenaParser
             if (empty($calls)) {
                 continue;
             }
-            $opponent = $this->parseFighter($calls[0]['args'], $w);
+            $opponent = $this->parseUser($calls[0]['args'], $w);
 
             $enemy = '';
             $attack = null;
             if (isset($calls[1])) {
-                $enemy = $this->parseFighter($calls[1]['args'], $w);
+                $enemy = $this->parseUser($calls[1]['args'], $w);
                 $conditionsSegment = substr($segment, $calls[1]['end']);
             } else {
                 $conditionsSegment = substr($segment, $calls[0]['end']);
@@ -123,44 +123,5 @@ class ArenaParser
             'decline' => $decline,
             'groups' => $groups,
         ];
-    }
-
-    private function parseFighter(string $args, string $w): string {
-        $parser = new ForumParser();
-        $parts = str_getcsv(trim($args), ',', '"');
-        return $parser->parseUsername([null, ...array_map('trim', $parts)], $w);
-    }
-
-    // Locates each `$needle(` occurrence and extracts its argument text, respecting nested parens/quotes.
-    private function extractBalancedArgs(string $text, string $needle): array {
-        $results = [];
-        $offset = 0;
-        $len = strlen($text);
-        while (($pos = strpos($text, $needle, $offset)) !== false) {
-            $start = $pos + strlen($needle);
-            $depth = 1;
-            $i = $start;
-            $quote = null;
-            while ($i < $len && $depth > 0) {
-                $ch = $text[$i];
-                if ($quote !== null) {
-                    if ($ch === '\\') {
-                        $i++;
-                    } elseif ($ch === $quote) {
-                        $quote = null;
-                    }
-                } elseif ($ch === '"' || $ch === "'") {
-                    $quote = $ch;
-                } elseif ($ch === '(') {
-                    $depth++;
-                } elseif ($ch === ')') {
-                    $depth--;
-                }
-                $i++;
-            }
-            $results[] = ['args' => substr($text, $start, $i - $start - 1), 'end' => $i];
-            $offset = $i;
-        }
-        return $results;
     }
 }

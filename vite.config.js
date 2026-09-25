@@ -17,7 +17,8 @@ export default defineConfig({
                 'resources/js/labyrinth.js',
                 'resources/js/main_place.js',
                 'resources/js/ping.js',
-                'resources/js/timer.js'
+                'resources/js/timer.js',
+                'resources/js/swipe.js',
             ],
             refresh: true,
         }),

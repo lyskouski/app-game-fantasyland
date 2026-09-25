@@ -10,12 +10,12 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-    @vite(['resources/css/index.css', 'resources/js/fight.js', 'resources/js/timer.js'])
+    @vite(['resources/css/index.css', 'resources/js/swipe.js', 'resources/js/fight.js', 'resources/js/timer.js'])
 </head>
 
 <body>
-    <button type="button" class="combat_log_toggle" onclick="toggleCombatLog()">☰</button>
-    <div id="combat_log_drawer" class="combat_log_drawer">
+    <button type="button" class="menu_toggle" onclick="toggleSidebar()">☰</button>
+    <div id="menu_sidebar" class="menu_sidebar">
         <div id="combat_log_content"></div>
     </div>
     <div class="main">

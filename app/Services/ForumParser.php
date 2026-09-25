@@ -4,7 +4,7 @@
 
 namespace App\Services;
 
-class ForumParser
+class ForumParser extends UserParser
 {
     public function parse(string $html): array
     {
@@ -57,73 +57,6 @@ class ForumParser
         return $items;
     }
 
-    public function parseUsername(array $args, string $w): string
-    {
-        if (count($args) < 16) {
-            return '?';
-        }
-        //z() => pt,login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex,image,buttons,reputation
-        //f() => i,login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex,i2,s2, thid, rid
-        //w() => login,id,lvl,tagss,col,clan1,zap1,clan2,zap2,clan3,zap3,clan4,zap4,mob,sex, fun)
-        $clanData = $this->parseClansData($w);
-
-        return '<span style="white-space: nowrap;">' .
-            "<font color='white'>[Lvl:&nbsp;{$args[3]}]</font>" .
-            $this->getClanImage($args[6], $clanData) .
-            $this->getClanImage($args[8], $clanData) .
-            $this->getClanImage($args[10], $clanData) .
-            "&nbsp;<font color='#{$args[5]}' class='shadow'>{$args[1]}</font>" .
-            "&nbsp;<img align='absmiddle' src='/images/info_{$args[15]}.gif' alt='[{$args[15]}]' />" .
-            "</span>";
-    }
-
-    private function parseClansData(string $w): array
-    {
-        $clanData = [
-            'idsMap' => [],
-            'cnames' => [],
-            'imgs' => []
-        ];
-
-        if (preg_match('/var\s+ids\s*=\s*new\s+Array\(([^)]+)\)/', $w, $match)) {
-            $ids = array_map('trim', explode(',', $match[1]));
-            foreach ($ids as $index => $id) {
-                $clanData['idsMap'][$id] = $index;
-            }
-        }
-        if (preg_match("/var\s+cnames\s*=\s*new\s+Array\(([^)]+)\)/", $w, $match)) {
-            $cnames = array_map(function($item) {
-                return trim(trim($item), "'\"");
-            }, explode(',', $match[1]));
-            $clanData['cnames'] = $cnames;
-        }
-        if (preg_match("/var\s+imgs\s*=\s*new\s+Array\(([^)]+)\)/", $w, $match)) {
-            $imgs = array_map(function($item) {
-                return trim(trim($item), "'\"");
-            }, explode(',', $match[1]));
-            $clanData['imgs'] = $imgs;
-        }
-
-        return $clanData;
-    }
-
-    private function getClanImage($clanId, array $clanData): string
-    {
-        if (!$clanId || !isset($clanData['idsMap'][$clanId])) {
-            return '';
-        }
-
-        $position = $clanData['idsMap'][$clanId];
-        $clanName = $clanData['cnames'][$position] ?? '';
-        $imgName = $clanData['imgs'][$position] ?? '';
-
-        if (!$imgName) {
-            return '';
-        }
-
-        return "&nbsp;<img align='absmiddle' src='https://www.fantasyland.ru/images/clans/{$imgName}' alt='{$clanName}' />";
-    }
-
     public function parseForum(string $html, string $w): array
     {
         $result = [];
@@ -157,7 +90,7 @@ class ForumParser
                 if (count($args) < 18) {
                     continue;
                 }
-                $author = $this->parseUsername($args, $w);
+                $author = $this->buildUsername($args, $w);
                 $descCount = $args[16] ?? '';
                 $descAuthor = $args[17] ?? '';
                 $description = "Количество ответов: {$descCount}. Автор последнего сообщения: {$descAuthor}.";
@@ -190,7 +123,7 @@ class ForumParser
             $args = array_map('trim', $args);
             if (count($args) >= 15) {
                 array_splice($args, 0, 0, '');
-                $author = $this->parseUsername($args, $w);
+                $author = $this->buildUsername($args, $w);
             }
         }
         $items = [];
@@ -199,7 +132,7 @@ class ForumParser
         foreach ($parts as $part) {
             $args = explode(',', str_replace(['"', "'"], '', $part));
             $args = array_map('trim', $args);
-            $postAuthor = $this->parseUsername($args, $w);
+            $postAuthor = $this->buildUsername($args, $w);
 
             $scriptEnd = strpos($part, '</SCRIPT>');
             $afterScript = substr($part, $scriptEnd + 9);
