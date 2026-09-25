@@ -98,7 +98,7 @@
                     <span class="bar_row__value">[<span class="h_actual">{{ $hp_current }}</span>/<span class="h_full">{{ $hp_full }}</span>]</span>
                 </label>
                 <form id="arena_state" method="GET" action="/cgi/arena.php">
-                    <input type="hidden" name="rld" value="{{ $rld ?? 1 }}" />
+                    <input type="hidden" name="g" value="{{ $current }}" />
                 </form>
             </div>
         </div>
