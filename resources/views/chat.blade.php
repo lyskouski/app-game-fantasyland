@@ -69,7 +69,7 @@
         </form>
         <script>
             setInterval(() => {
-                fetch(window.location.href)
+                fetch('/ch/chout.php')
                     .then((response) => response.text())
                     .then((html) => {
                         const next = new DOMParser().parseFromString(html, 'text/html').getElementById('chat-messages');
