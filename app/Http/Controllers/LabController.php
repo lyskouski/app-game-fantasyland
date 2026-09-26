@@ -29,6 +29,9 @@ final class LabController extends Controller
         Notification::addIfExists($loc);
         $state = $this->get('cgi/maze_ref.php', []);
         $stateData = $parser->getState($state);
+        if (str_contains($state, 'location.href="combat.php')) {
+            return redirect('/cgi/combat.php');
+        }
         Notification::addIfExists($state);
         $scrolls = $this->get('cgi/inv_load_items.php', ['tp' => 26, 'dv' => 'd126', 'expand' => true]);
         $potions = $this->get('cgi/inv_load_items.php', ['tp' => 25, 'dv' => 'd125', 'expand' => true]);

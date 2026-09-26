@@ -128,6 +128,11 @@ function ge(dir) {
 
 function parse(text) {
     const aParams = {loc: {}, curr: [], info: [], type: 0, time: 0};
+    // Attacked in labyrinth
+    if (text.includes('location.href="combat.php') || text.includes('location.href = "combat.php')) {
+        window.location.href = '/cgi/combat.php';
+        return;
+    }
     // Get out from labyrinth
     if (text.includes("location.href='no_combat.php';") || text.includes('location.href="no_combat.php";')) {
         window.location.href = '/cgi/no_combat.php';
