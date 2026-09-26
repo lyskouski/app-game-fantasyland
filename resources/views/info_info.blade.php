@@ -41,6 +41,18 @@
                         </td>
                         <td align="right">
                             <small><b>{{ $item['value'] }}</b></small>
+                            @if($item['update'])
+                            <form method="POST"
+                                @if($item['title'] == 'Сила' || $item['title'] == 'Ум')
+                                action="/cgi/plus_char.php"
+                                @else
+                                action="/cgi/plus_skill.php"
+                                @endif
+                            >
+                                <input type="hidden" name="option" value="{{ $item['update'] }}" />
+                                <input  width="15" height="15" name="key" type="image" src="https://www.fantasyland.ru/images/miscellaneous/plus.gif" />
+                            </form>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

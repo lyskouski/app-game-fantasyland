@@ -67,6 +67,26 @@ final class InfoController extends Controller
         }
     }
 
+    public function plusChar() {
+        $opt = request()->post(self::OPTION);
+        $post = [
+            $opt . '.x' => rand(1, 10),
+            $opt . '.y' => rand(1, 10),
+        ];
+        $this->post('cgi/plus_char.php', [], $post);
+        return $this->indexPost([self::OPTION => self::TYPE_INFO]);
+    }
+
+    public function plusSkill() {
+        $opt = request()->post(self::OPTION);
+        $post = [
+            $opt . '.x' => rand(1, 10),
+            $opt . '.y' => rand(1, 10),
+        ];
+        $this->post('cgi/plus_skill.php', [], $post);
+        return $this->indexPost([self::OPTION => self::TYPE_INFO]);
+    }
+
     public function mailIncome() {
         $html = $this->get('cgi/msgs_read.php');
         return view('info_diary_mail', $this->parser->getMessage($html));

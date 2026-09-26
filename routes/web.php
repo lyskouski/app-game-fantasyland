@@ -92,6 +92,8 @@ Route::get('/cgi/craft_favorite_ref.php', [PreyController::class, 'favorite']);
 
 // Personal info
 Route::get('/cgi/show_info.php', [InfoController::class, 'index']);
+Route::post('/cgi/plus_char.php', [InfoController::class, 'plusChar']);
+Route::post('/cgi/plus_skill.php', [InfoController::class, 'plusSkill']);
 Route::post('/cgi/change_info.php', [InfoController::class, 'indexPost']);
 Route::post('/cgi/add_um_effect.php', [InfoController::class, 'addUmEffect']);
 // Personal info: Mail

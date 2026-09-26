@@ -300,23 +300,46 @@ class InfoParser
                 'image' => Defines::URL . 'images/miscellaneous/hp.gif',
                 'title' => 'Жизнь',
                 'value' => null,
+                'update' => null,
             ]
         ];
         $hpPattern = "/<TD id=hp1><font[^>]*>\\[<\\/font>([^<]+)<font[^>]*>\\]<\\/font><\\/TD>/u";
         if (preg_match($hpPattern, $html, $hpMatches)) {
             $info[0]['value'] = trim($hpMatches[1]);
         }
-        $pattern = "/<image[^>]*src='([^']+)'[^>]*title='([^']+)'[^>]*><\\/td><td[^>]*>([^<]+)<\\/td>/u";
-        if (preg_match_all($pattern, $html, $matches)) {
-            foreach (array_keys($matches[0]) as $key) {
-                $imagePath = $matches[1][$key];
-                $title = $matches[2][$key];
-                $value = trim($matches[3][$key]);
-                $info[] = [
-                    'image' => Defines::URL . str_replace('../', '', $imagePath),
-                    'title' => $title,
-                    'value' => $value,
+        $pattern = '/
+            <image\b[^>]*?                 # image tag
+            src=[\'"]([^\'"]+)[\'"]        # 1: image
+            [^>]*?
+            title=[\'"]([^\'"]+)[\'"]      # 2: title
+            [^>]*?>
+            \s*<\/td>\s*<td[^>]*>          # next cell
+            \s*([^<]+?)\s*                 # 3: value
+            <\/td>
+            (?:                            # optional upgrade cell
+                \s*<td[^>]*>\s*
+                <input\b[^>]*?
+                name=[\'"]([^\'"]+)[\'"]   # 4: update id
+                [^>]*?
+                type=[\'"]image[\'"]
+                [^>]*?>
+                \s*<\/td>
+            )?
+        /ux';
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $m) {
+                $row = [
+                    'image' => Defines::URL . str_replace('../', '', $m[1]),
+                    'title' => $m[2],
+                    'value' => trim($m[3]),
+                    'update' => null,
                 ];
+
+                if (!empty($m[4])) {
+                    $row['update'] = $m[4];
+                }
+
+                $info[] = $row;
             }
         }
         return ['info' => $info];
