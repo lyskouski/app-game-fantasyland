@@ -101,7 +101,11 @@
                         @foreach ($train as $unit)
                         <tr class="colored">
                             <td>
-                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['uid'] == $unit_id) checked @endif onchange="document.getElementById('captcha').focus()" />
+                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['uid'] == $unit_id) checked @endif onchange="
+                                    const c = document.getElementById('captcha');
+                                    c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    c.focus();
+                                " />
                             </td>
                             <td width=70 height=70>
                                 <img src="https://www.fantasyland.ru/images/armies/{{ $unit['img'] }}" width=70 height=70 /><br />
