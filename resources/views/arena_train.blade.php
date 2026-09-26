@@ -95,13 +95,13 @@
                 <form method="GET" action="/cgi/train_start.php">
                     <input type="hidden" name="g" value="{{ $current }}" />
                     <img src="{!! $captcha !!}" width="90" height="40" align="absmiddle" />&nbsp;
-                    <input type="text" name="code" size="6" autocomplete="off" inputmode="numeric" />&nbsp;
+                    <input id="captcha" type="text" name="code" size="6" autocomplete="off" inputmode="numeric" />&nbsp;
                     <input type="submit" value=">>" />
                     <table cellpadding="0" cellspacing="0" align="center">
                         @foreach ($train as $unit)
                         <tr class="colored">
                             <td>
-                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['uid'] == $unit_id) checked @endif />
+                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['uid'] == $unit_id) checked @endif onchange="document.getElementById('captcha').focus()" />
                             </td>
                             <td width=70 height=70>
                                 <img src="https://www.fantasyland.ru/images/armies/{{ $unit['img'] }}" width=70 height=70 /><br />
