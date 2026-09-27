@@ -335,7 +335,7 @@ class InfoParser
                     'update' => null,
                 ];
 
-                if (!empty($m[4])) {
+                if (isset($m[4]) && $m[4] !== '') {
                     $row['update'] = $m[4];
                 }
 
