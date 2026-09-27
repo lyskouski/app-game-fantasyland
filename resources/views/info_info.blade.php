@@ -49,6 +49,7 @@
                                 action="/cgi/plus_skill.php"
                                 @endif
                             >
+                                @csrf
                                 <input type="hidden" name="option" value="{{ $item['update'] }}" />
                                 <input  width="15" height="15" name="key" type="image" src="https://www.fantasyland.ru/images/miscellaneous/plus.gif" />
                             </form>
