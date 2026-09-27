@@ -338,6 +338,7 @@ function save(aParams) {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     return fetch('/labyrinth/save', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token
@@ -369,6 +370,7 @@ function saveToCitadel(aParams) {
     };
     return fetch('/labyrinth/citadel/save', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': token

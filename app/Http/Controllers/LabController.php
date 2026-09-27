@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Map;
 use App\Models\Notification;
 use App\Providers\AppProxyProvider;
 use App\Services\InfoParser;
@@ -48,13 +49,13 @@ final class LabController extends Controller
             'potions' => $info->getStuffItems($potions),
             'active_potions' => $info->getPotions($html),
             'captcha' => $this->captcha(time()),
-            'map_data' => \App\Models\Map::getByLocation($locData['loc'], $locData['place'], $stateData['lvl']),
+            'map_data' => Map::getByLocation($locData['loc'], $locData['place'], $stateData['lvl']),
         ]);
     }
 
     public function save() {
         $data = request()->post();
-        \App\Models\Map::updateOrCreate(
+        Map::updateOrCreate(
             [
                 'location_id' => $data['location_id'],
                 'place_id' => $data['place_id'] ?? 0,
@@ -134,7 +135,7 @@ final class LabController extends Controller
         $lastHour = request()->query('last_hour', false);
         $loc = $this->get('cgi/ch_who.php', []);
         $locData = (new LabParser)->getLocation($loc);
-        \App\Models\Map::clearLocation($locData['loc'], $locData['place'], $lastHour);
+        Map::clearLocation($locData['loc'], $locData['place'], $lastHour);
         return redirect('/labyrinth');
     }
 
@@ -190,7 +191,7 @@ final class LabController extends Controller
         $loc = $this->get('cgi/ch_who.php', []);
         $locData = (new LabParser)->getLocation($loc);
         $z = request()->query('z', 0);
-        $mapData = \App\Models\Map::getByLocation($locData['loc'], $locData['place'], $z);
+        $mapData = Map::getByLocation($locData['loc'], $locData['place'], $z);
         return view('empty', ['data' => $mapData]);
     }
 

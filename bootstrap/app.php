@@ -30,6 +30,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(HotfixForPostAction::class);
+        // NativePHP 4.3 webview fetch() requests don't reliably carry the session cookie,
+        // so the CSRF token can't be matched to a session; these endpoints only persist
+        // the player's own local labyrinth map data, so skip CSRF verification for them.
+        $middleware->validateCsrfTokens(except: [
+            'labyrinth/save',
+            'labyrinth/citadel/save',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
