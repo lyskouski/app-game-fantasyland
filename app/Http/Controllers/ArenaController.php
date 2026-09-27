@@ -79,6 +79,9 @@ final class ArenaController extends Controller
             $start = $parser->timer($htmlStart);
             return view('arena_train_start', [...$data, ...$start]);
         }
+        if (preg_match('/unit_id_moo\s*=\s*(\d+)/', $htmlStop, $m)) {
+            $data['unit_id'] = (int) $m[1];
+        }
         Device::vibrate();
         $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
         $arena = $parser->train($htmlArena);

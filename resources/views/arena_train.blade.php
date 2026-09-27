@@ -101,7 +101,7 @@
                         @foreach ($train as $unit)
                         <tr class="colored">
                             <td>
-                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['uid'] == $unit_id) checked @endif onchange="
+                                <input type="radio" name="unit_id" value="{{ $unit['uid'] }}" @if($unit['chck'] || $unit['uid'] == $unit_id) checked @endif onchange="
                                     const c = document.getElementById('captcha');
                                     c.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                     c.focus();
