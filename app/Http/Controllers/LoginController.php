@@ -28,14 +28,8 @@ final class LoginController extends Controller
     public function login() {
         $data = request()->only(['login', 'password']);
         $loginResult = $this->post('login.php', [], $data);
-        if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $loginResult, $matches)) {
-            $match = $matches[1];
-            return view('login', [
-                'error' => $match,
-                'timestamp' => $this->getTimestamp(),
-                'login' => '',
-                'password' => '',
-            ]);
+        if ($errorView = $this->bindOnError($loginResult)) {
+            return $errorView;
         }
         $this->get('ch/chch.php', []);
         $opt = request()->only(['save']);
@@ -49,10 +43,25 @@ final class LoginController extends Controller
 
     public function guestLogin() {
         $data = request()->only(['t']);
-        $this->get('guestlogin.php', $data);
+        $html = $this->get('guestlogin.php', $data);
+        if ($errorView = $this->bindOnError($html)) {
+            return $errorView;
+        }
         $this->get('ch/chch.php', []);
         ListenStream::dispatch();
         return redirect('/shell/home');
+    }
+
+    private function bindOnError(string $html) {
+        if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $html, $matches)) {;
+            return view('login', [
+                'error' => $matches[1],
+                'timestamp' => $this->getTimestamp(),
+                'login' => '',
+                'password' => '',
+            ]);
+        }
+        return null;
     }
 
     public function indexRegister() {
