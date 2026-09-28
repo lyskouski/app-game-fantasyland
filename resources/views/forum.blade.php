@@ -57,6 +57,7 @@
             </div>
             <div class="main_middle">
                 <form method="POST" action="/cgi/forum.php?rid={{ $rid }}&p={{ $p }}">
+                    @csrf
                     <input type="hidden" name="posted" value="1" />
                     Название темы:<br />
                     <input type="text" name="thread_name" style="width:100%" maxlength="255" />

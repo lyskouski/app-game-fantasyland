@@ -36,6 +36,7 @@
             <div class="main_middle">
             <center>
                 <form method="POST" action="/cgi/f_show_thread.php?rid={{ $rid }}">
+                    @csrf
                     <input type="hidden" name="postedd" value="1" />
                     <input name='thread_id' type='hidden' value="{{ $id }}" />
                     <textarea name="message" id="ta_message" style="width:100%;height:200px" onkeyup="storeCaret(this);" onselect="storeCaret(this);" onclick="storeCaret(this);"></textarea>

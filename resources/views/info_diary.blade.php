@@ -182,6 +182,7 @@
             </div>
             <div class="main_middle">
                 <form action="/cgi/pl_notebook.php" method="POST">
+                    @csrf
                     <textarea name="notes" maxlength="25000" style="width:100%; height: 200px;">{{ $notes }}</textarea>
                     <input type="submit" class="button" value="Сохранить" />
                 </form>
