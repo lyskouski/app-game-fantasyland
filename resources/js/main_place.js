@@ -51,6 +51,7 @@ window.submitBuyForm = function(form) {
     const formData = new FormData(form);
     fetch('/cgi/buy.php', {
         method: 'POST',
+        credentials: 'include',
         body: formData
     })
     .catch(error => console.error('Error:', error));
@@ -62,6 +63,7 @@ window.submitSellForm = function(form) {
     const formData = new FormData(form);
     fetch('/cgi/sell_good_to_shop.php', {
         method: 'POST',
+        credentials: 'include',
         body: formData
     })
     .catch(error => console.error('Error:', error));
