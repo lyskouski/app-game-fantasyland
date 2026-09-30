@@ -21,15 +21,19 @@ final class ArenaController extends Controller
 
     public function index() {
         $html = $this->get('/cgi/arena.php');
+
+        $url = null;
         if (preg_match('/DoScript\("DoExt\(\'([^\']+)\'\)/', $html, $matches)) {
-            return redirect('/cgi/' . $matches[1]);
+            $url = '/cgi/' . $matches[1];
+        } elseif (preg_match('/parent\.document\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
+            $url = $matches[1];
+        } elseif (preg_match('/window\.top\.loc\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
+            $url = '/cgi/' . $matches[1];
         }
-        if (preg_match('/parent\.document\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
-            return redirect($matches[1]);
+        if ($url !== null && $url !== '/cgi/arena.php') {
+            return redirect($url);
         }
-        if (preg_match('/window\.top\.loc\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
-            return redirect('/cgi/' . $matches[1]);
-        }
+
         $data = $this->mainPage();
         if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $html, $matches)) {
             $data['current'] = (int)$matches[1];
