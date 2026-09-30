@@ -104,8 +104,8 @@ jobs:
           CI: true
         run: |
           echo -n "$ANDROID_JKS" | base64 -d > $GITHUB_WORKSPACE/key.jks
-          php artisan native:package android --build=release \
-          --build-type=bundle \
+          php artisan native:package android \
+          --build-type=release \
           --keystore=$GITHUB_WORKSPACE/key.jks \
           --keystore-password=$ANDROID_KEY \
           --key-alias=key \
