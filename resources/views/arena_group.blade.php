@@ -81,7 +81,7 @@
                             <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
                         </td>
                         <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Хаос&nbsp;</b></small>
+                            <small><b>&nbsp;Групповые бои&nbsp;</b></small>
                         </td>
                         <td>
                             <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
@@ -92,7 +92,7 @@
             </div>
             <div class="main_middle">
                 @if($create)
-                <p>Вы можете подать заявку на хаотичный бой</p>
+                <p>Вы можете подать заявку на групповой бой</p>
                 <form action="/cgi/arena.php" method="GET">
                     <input type="hidden" name="a" value="1" />
                     <table>
@@ -117,9 +117,13 @@
                             <td>Максимальный уровень:</td>
                             <td align="right"><input type="text" size=2 maxlength=2 name="tl" /></td>
                         </tr>
-                        <tr class="light">
-                            <td>Макс. кол-во:</td>
+                        <tr>
+                            <td>Макс. кол-во (группа 1):</td>
                             <td align="right"><input type="text" size=2 maxlength=2 name="qn" value="20" /></td>
+                        </tr>
+                        <tr class="light">
+                            <td>Макс. кол-во (группа 2):</td>
+                            <td align="right"><input type="text" size=2 maxlength=2 name="qn2" value="20" /></td>
                         </tr>
                         <tr>
                             <td>Бой с артефактами:</td>
@@ -148,22 +152,32 @@
                 @foreach ($groups as $group)
                 <table border="1" width="100%">
                     <tr>
-                        <td>
-                            {{ $group['state'] }}
+                        <td rowspan="2">
+                            {{ $group['time'] }}
                             @if($group['withoutArt'])
                             <img align="absmiddle" src="https://www.fantasyland.ru/images/miscellaneous/woart.gif" border="0" width="18" height="18" alt="Бой без артефактов" title="Бой без артефактов" />
                             @endif
                         </td>
                         <td>
-                            @foreach ($group['members'] as $member)
+                            @foreach ($group['opponents'] as $member)
                             <small>
                                 {!! $member['user'] !!}
                                 <a href="/cgi/arena.php?{{ $member['cancel'] }}">[X]</a>,
                             </small>
                             @endforeach
                         </td>
-                        <td valign="middle">
+                        <td rowspan="2" valign="middle">
                             <img src="https://www.fantasyland.ru/{{ $group['even'] }}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @foreach ($group['enemies'] as $member)
+                            <small>
+                                {!! $member['user'] !!}
+                                <a href="/cgi/arena.php?{{ $member['cancel'] }}">[X]</a>,
+                            </small>
+                            @endforeach
                         </td>
                     </tr>
                 </table>

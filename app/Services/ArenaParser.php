@@ -62,12 +62,12 @@ class ArenaParser extends UserParser
 
     private function getArenaActions(string $html) {
         $accept = null;
-        $decline = null;
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>согласны/u', $html, $matches)) {
             $accept = $matches[1];
         } elseif (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>запустите/u', $html, $matches)) {
             $accept = $matches[1];
         }
+        $decline = null;
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>откажетесь/u', $html, $matches)) {
             $decline = $matches[1];
         } elseif (preg_match('/отозвать свою заявку.*?DoAct\(\\\\?[\'"]([^\'"\\\\]+)\\\\?[\'"]\)/su', $html, $matches)) {
@@ -132,6 +132,31 @@ class ArenaParser extends UserParser
         ];
     }
 
+    private function extractMembers(string $segment, string $w): array {
+        $calls = $this->extractBalancedArgs($segment, 'w(');
+        if (empty($calls)) {
+            return [];
+        }
+        $members = [];
+        for ($j = 0; $j < count($calls); $j++) {
+            $parts = str_getcsv(trim($calls[$j]['args']), ',', '"');
+            $members[] = [
+                'user' => $this->parseUser($calls[$j]['args'], $w),
+                'cancel' => 'a=5&ex=' . $parts[1],
+            ];
+        }
+        return $members;
+    }
+
+    private function extractStatus(string $segment) {
+        preg_match(
+            '/<img[^>]*src=[\'"]([^\'"]*\/images\/status\/[^\'"]+)[\'"]/i',
+            $segment,
+            $matches
+        );
+        return $matches[1] ?? '/images/status/status_red.gif';
+    }
+
     public function getChaosGroups(string $html, string $w): array {
         $groups = [];
         $parts = explode('<TR><TD width=200 valign=middle>', $html);
@@ -143,24 +168,7 @@ class ArenaParser extends UserParser
                 $matches
             );
             $state = trim($matches[1] ?? '?');
-            $calls = $this->extractBalancedArgs($segment, 'w(');
-            if (empty($calls)) {
-                continue;
-            }
-            $members = [];
-            for ($j = 0; $j < count($calls); $j++) {
-                $parts = str_getcsv(trim( $calls[$j]['args']), ',', '"');
-                $members[] = [
-                    'user' => $this->parseUser($calls[$j]['args'], $w),
-                    'cancel' => 'a=5&ex=' . $parts[1],
-                ];
-            }
-            preg_match(
-                '/<img[^>]*src=[\'"]([^\'"]*\/images\/status\/[^\'"]+)[\'"]/i',
-                $segment,
-                $matches
-            );
-            $odd = $matches[1] ?? '/images/status/status_red.gif';
+            $members = $this->extractMembers($segment, $w);
             $withoutArt = str_contains(
                 $segment,
                 '/images/miscellaneous/woart.gif'
@@ -168,8 +176,56 @@ class ArenaParser extends UserParser
             $groups[] = [
                 'state' => $state,
                 'members' => $members,
-                'odd' => $odd,
+                'even' => $this->extractStatus($segment),
                 'withoutArt' => $withoutArt,
+            ];
+        }
+        return [
+            ...$this->getArenaActions($html),
+            'groups' => $groups,
+        ];
+    }
+
+    public function getGroupGroups(string $html, string $w): array {
+        $groups = [];
+        $parts = explode('<TR><TD width=200 ROWSPAN=2 valign=middle>', $html);
+        for ($i = 1; $i < count($parts); $i++) {
+            $segment = $parts[$i];
+            $time = '?';
+            $withoutArt = false;
+            if (preg_match(
+                '~<img\b[^>]*\balt=[\'"]Таймаут[\'"][^>]*>\s*(.*?)&nbsp;~isu',
+                $segment,
+                $match
+            )) {
+                $time = strip_tags($match[1]);
+                $withoutArt = str_contains(
+                    $match[1],
+                    '/images/miscellaneous/woart.gif'
+                );
+            }
+            $players = [];
+            if (preg_match_all(
+                '~<TD\b[^>]*\bheight\s*=\s*[\'"]?20[\'"]?[^>]*>.*?</TD>~isu',
+                $segment,
+                $matches
+            )) {
+                $players = $matches[0];
+            }
+            $opponents = $this->extractMembers(
+                $players[0] ?? '',
+                $w
+            );
+            $enemies = $this->extractMembers(
+                $players[1] ?? '',
+                $w
+            );
+            $groups[] = [
+                'time' => $time,
+                'withoutArt' => $withoutArt,
+                'opponents' => $opponents,
+                'enemies' => $enemies,
+                'even' => $this->extractStatus($segment),
             ];
         }
         return [

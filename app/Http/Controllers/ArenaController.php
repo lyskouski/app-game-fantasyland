@@ -49,6 +49,9 @@ final class ArenaController extends Controller
                 case 2: // Mob
                     $data['captcha'] = $this->captcha(time());
                     return view('arena_mob', $data);
+                case 4: // Group
+                    $group = $parser->getGroupGroups($htmlArena, $w);
+                    return view('arena_group', [...$data, ...$group]);
                 case 6: // Chaos
                     $chaos = $parser->getChaosGroups($htmlArena, $w);
                     return view('arena_chaos', [...$data, ...$chaos]);
