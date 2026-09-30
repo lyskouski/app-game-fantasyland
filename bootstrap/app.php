@@ -34,10 +34,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // so the CSRF token can't be matched to a session; these endpoints only persist
         // the player's own local labyrinth map data, so skip CSRF verification for them.
         $middleware->validateCsrfTokens(except: [
-            '/labyrinth/save',
-            '/labyrinth/citadel/save',
-            '/cgi/buy.php',
-            '/cgi/sell_good_to_shop.php'
+            '*',
+            // '/labyrinth/save',
+            // '/labyrinth/citadel/save',
+            // '/cgi/buy.php',
+            // '/cgi/sell_good_to_shop.php'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
