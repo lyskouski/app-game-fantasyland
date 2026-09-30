@@ -15,6 +15,8 @@
         <button type="button" class="menu_toggle" onclick="toggleSidebar()">☰</button>
         <div id="menu_sidebar" class="menu_sidebar">
             <div id="user-list">Загрузка...</div>
+            <br />
+            <br />
         </div>
 
         <div class="main">
