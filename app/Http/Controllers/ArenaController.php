@@ -20,60 +20,59 @@ final class ArenaController extends Controller
     }
 
     public function index() {
-        $htmlArena = $this->get('/cgi/arena.php');
-        if (preg_match('/DoScript\("DoExt\(\'([^\']+)\'\)/', $htmlArena, $matches)) {
+        $html = $this->get('/cgi/arena.php');
+        if (preg_match('/DoScript\("DoExt\(\'([^\']+)\'\)/', $html, $matches)) {
             return redirect('/cgi/' . $matches[1]);
         }
-        if (preg_match('/parent\.document\.location\.href\s*=\s*\'([^\']+)\'/', $htmlArena, $matches)) {
+        if (preg_match('/parent\.document\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
             return redirect($matches[1]);
         }
-        if (preg_match('/window\.top\.loc\.location\.href\s*=\s*\'([^\']+)\'/', $htmlArena, $matches)) {
+        if (preg_match('/window\.top\.loc\.location\.href\s*=\s*\'([^\']+)\'/', $html, $matches)) {
             return redirect('/cgi/' . $matches[1]);
         }
         $data = $this->mainPage();
-        if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $htmlArena, $matches)) {
+        if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $html, $matches)) {
             $data['current'] = (int)$matches[1];
         }
         $parser = new ArenaParser();
-        if (str_contains($htmlArena, "id='hpLine'")) {
-            $health = $parser->getHealthState($htmlArena);
+        if (str_contains($html, "id='hpLine'")) {
+            $health = $parser->getHealthState($html);
             return view('arena_pause', [...$data, ...$health]);
-        } else if (str_contains($htmlArena, 'train_stop.php')) {
+        } elseif (str_contains($html, 'train_stop.php')) {
             return redirect('/cgi/train_start.php');
-        } else {
-            $w = $this->get('cgi/w.JS', []);
-            switch ($data['current']) {
-                case 1: // Ring
-                    $arena = $parser->getRingGroups($htmlArena, $w);
-                    return view('arena_ring', [...$data, ...$arena]);
-                case 2: // Mob
-                    $data['captcha'] = $this->captcha(time());
-                    return view('arena_mob', $data);
-                case 4: // Group
-                    $group = $parser->getGroupGroups($htmlArena, $w);
-                    return view('arena_group', [...$data, ...$group]);
-                case 6: // Chaos
-                    $chaos = $parser->getChaosGroups($htmlArena, $w);
-                    return view('arena_chaos', [...$data, ...$chaos]);
-                case 9: // Train
-                    $data['captcha'] = $this->captcha(time());
-                    $arena = $parser->train($htmlArena);
-                    return view('arena_train', [...$data, ...$arena]);
-                default:
-                    return view('main_arena', $data);
-            }
+        }
+        $w = $this->get('cgi/w.JS', []);
+        switch ($data['current']) {
+            case 1: // Ring
+                $arena = $parser->getRingGroups($html, $w);
+                return view('arena_ring', [...$data, ...$arena]);
+            case 2: // Mob
+                $data['captcha'] = $this->captcha(time());
+                return view('arena_mob', $data);
+            case 4: // Group
+                $group = $parser->getGroupGroups($html, $w);
+                return view('arena_group', [...$data, ...$group]);
+            case 6: // Chaos
+                $chaos = $parser->getChaosGroups($html, $w);
+                return view('arena_chaos', [...$data, ...$chaos]);
+            case 9: // Train
+                $data['captcha'] = $this->captcha(time());
+                $arena = $parser->train($html);
+                return view('arena_train', [...$data, ...$arena]);
+            default:
+                return view('main_arena', $data);
         }
     }
 
     public function trainStart() {
         $data = $this->mainPage();
-        $htmlStart = $this->get('/cgi/train_start.php');
-        if (!$htmlStart || str_contains($htmlStart, 'parent.no_combat.ReloadFrame')) {
-            $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1]);
+        $html = $this->get('/cgi/train_start.php');
+        if (!$html || str_contains($html, 'parent.no_combat.ReloadFrame')) {
+            $html = $this->get('/cgi/arena.php', ['rld' => 1]);
         }
         $parser = new ArenaParser();
-        $start = $parser->timer($htmlStart);
-        Notification::addIfExists($htmlStart);
+        $start = $parser->timer($html);
+        Notification::addIfExists($html);
         return view('arena_train_start', [...$data, ...$start]);
     }
 

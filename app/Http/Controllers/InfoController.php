@@ -176,8 +176,9 @@ final class InfoController extends Controller
 
     public function addUmEffect() {
         $data = request()->post();
-        $this->get('cgi/add_um_effect.php', $data);
-        Dialog::toast('Руна успешно куплена!', 'long');
+        $html = $this->get('cgi/add_um_effect.php', $data);
+        Notification::addIfExists($html);
+        Dialog::toast('Руна успешно куплена!');
         return $this->indexPost([self::OPTION => self::TYPE_RUNES]);
     }
 }

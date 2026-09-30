@@ -17,6 +17,18 @@ final class LoginController extends Controller
         return $matches[1] ?? null;
     }
 
+    private function bindOnError(string $html) {
+        if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $html, $matches)) {;
+            return view('login', [
+                'error' => $matches[1],
+                'timestamp' => $this->getTimestamp(),
+                'login' => '',
+                'password' => '',
+            ]);
+        }
+        return null;
+    }
+
     public function index() {
         return view('login', [
             'timestamp' => $this->getTimestamp(),
@@ -50,18 +62,6 @@ final class LoginController extends Controller
         $this->get('ch/chch.php', []);
         ListenStream::dispatch();
         return redirect('/shell/home');
-    }
-
-    private function bindOnError(string $html) {
-        if (preg_match("#<FONT COLOR='\\#FF0000'>(.*?)</FONT>#is", $html, $matches)) {;
-            return view('login', [
-                'error' => $matches[1],
-                'timestamp' => $this->getTimestamp(),
-                'login' => '',
-                'password' => '',
-            ]);
-        }
-        return null;
     }
 
     public function indexRegister() {

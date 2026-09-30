@@ -25,13 +25,11 @@ final class MainController extends Controller
     public function index() {
         $html = $this->post('cgi/no_combat.php');
         Notification::addIfExists($html);
-
         foreach ($this->getPageRoutes() as $pattern => $handler) {
             if (str_contains($html, $pattern)) {
                 return $handler($html);
             }
         }
-
         return view('generic', ['data' => $html]);
     }
 
