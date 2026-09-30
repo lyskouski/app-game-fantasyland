@@ -60,10 +60,12 @@ class ArenaParser extends UserParser
         ];
     }
 
-    public function getRingGroups(string $html, string $w) {
+    private function getArenaActions(string $html) {
         $accept = null;
         $decline = null;
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>согласны/u', $html, $matches)) {
+            $accept = $matches[1];
+        } elseif (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>запустите/u', $html, $matches)) {
             $accept = $matches[1];
         }
         if (preg_match('/DoAct\(\\\\?"([^"\\\\]+)\\\\?"\);\'>откажетесь/u', $html, $matches)) {
@@ -71,7 +73,14 @@ class ArenaParser extends UserParser
         } elseif (preg_match('/отозвать свою заявку.*?DoAct\(\\\\?[\'"]([^\'"\\\\]+)\\\\?[\'"]\)/su', $html, $matches)) {
             $decline = $matches[1];
         }
+        return [
+            'accept' => $accept,
+            'decline' => $decline,
+            'create' => str_contains($html, "class='selectControl'"),
+        ];
+    }
 
+    public function getRingGroups(string $html, string $w) {
         $groups = [];
         preg_match_all('/x\(\'([^\']*)\'\)/', $html, $timeMatches, PREG_OFFSET_CAPTURE);
         $boundary = strpos($html, "arenaContent += '</TABLE>'");
@@ -118,9 +127,53 @@ class ArenaParser extends UserParser
         }
 
         return [
-            'create' => str_contains($html, "class='selectControl'"),
-            'accept' => $accept,
-            'decline' => $decline,
+            ...$this->getArenaActions($html),
+            'groups' => $groups,
+        ];
+    }
+
+    public function getChaosGroups(string $html, string $w): array {
+        $groups = [];
+        $parts = explode('<TR><TD width=200 valign=middle>', $html);
+        for ($i = 1; $i < count($parts); $i++) {
+            $segment = $parts[$i];
+            preg_match(
+                '~<img[^>]+alt=[\'"]Таймаут[\'"][^>]*>\s*(.*?)&nbsp;~isu',
+                $segment,
+                $matches
+            );
+            $state = trim($matches[1] ?? '?');
+            $calls = $this->extractBalancedArgs($segment, 'w(');
+            if (empty($calls)) {
+                continue;
+            }
+            $members = [];
+            for ($j = 0; $j < count($calls); $j++) {
+                $parts = str_getcsv(trim( $calls[$j]['args']), ',', '"');
+                $members[] = [
+                    'user' => $this->parseUser($calls[$j]['args'], $w),
+                    'cancel' => 'a=5&ex=' . $parts[1],
+                ];
+            }
+            preg_match(
+                '/<img[^>]*src=[\'"]([^\'"]*\/images\/status\/[^\'"]+)[\'"]/i',
+                $segment,
+                $matches
+            );
+            $odd = $matches[1] ?? '/images/status/status_red.gif';
+            $withoutArt = str_contains(
+                $segment,
+                '/images/miscellaneous/woart.gif'
+            );
+            $groups[] = [
+                'state' => $state,
+                'members' => $members,
+                'odd' => $odd,
+                'withoutArt' => $withoutArt,
+            ];
+        }
+        return [
+            ...$this->getArenaActions($html),
             'groups' => $groups,
         ];
     }

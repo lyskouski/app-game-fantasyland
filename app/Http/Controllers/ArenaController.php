@@ -37,7 +37,7 @@ final class ArenaController extends Controller
         $parser = new ArenaParser();
         if (str_contains($htmlArena, "id='hpLine'")) {
             $health = $parser->getHealthState($htmlArena);
-            return view('arena_pause', [...request()->input(), ...$data, ...$health]);
+            return view('arena_pause', [...$data, ...$health]);
         } else if (str_contains($htmlArena, 'train_stop.php')) {
             return redirect('/cgi/train_start.php');
         } else {
@@ -45,10 +45,13 @@ final class ArenaController extends Controller
             switch ($data['current']) {
                 case 1: // Ring
                     $arena = $parser->getRingGroups($htmlArena, $w);
-                    return view('arena_ring', [...request()->input(), ...$data, ...$arena]);
+                    return view('arena_ring', [...$data, ...$arena]);
                 case 2: // Mob
                     $data['captcha'] = $this->captcha(time());
                     return view('arena_mob', $data);
+                case 6: // Chaos
+                    $chaos = $parser->getChaosGroups($htmlArena, $w);
+                    return view('arena_chaos', [...$data, ...$chaos]);
                 case 9: // Train
                     $data['captcha'] = $this->captcha(time());
                     $arena = $parser->train($htmlArena);
