@@ -38,6 +38,8 @@ final class ArenaController extends Controller
         if (str_contains($htmlArena, "id='hpLine'")) {
             $health = $parser->getHealthState($htmlArena);
             return view('arena_pause', [...request()->input(), ...$data, ...$health]);
+        } else if (str_contains($htmlArena, 'train_stop.php')) {
+            return redirect('/cgi/train_start.php');
         } else {
             $w = $this->get('cgi/w.JS', []);
             switch ($data['current']) {
