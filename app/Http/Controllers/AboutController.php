@@ -5,7 +5,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AboutParser;
-use App\Services\ForumParser;
+use App\Services\UserParser;
 
 final class AboutController extends Controller
 {
@@ -29,9 +29,9 @@ final class AboutController extends Controller
 
     public function person() {
         $w = $this->get('cgi/w.JS', []);
-        $parser = new ForumParser();
+        $parser = new UserParser();
         return view('empty', [
-            'data' => $parser->parseUsername([null, ...request()->input('data')], $w)
+            'data' => $parser->buildUsername([null, ...request()->input('data')], $w)
         ]);
     }
 }
