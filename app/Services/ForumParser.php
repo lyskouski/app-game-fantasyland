@@ -22,7 +22,6 @@ class ForumParser extends UserParser
                 ];
             }
         }
-
         return ['data' => $sections];
     }
 

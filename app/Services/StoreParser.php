@@ -7,7 +7,6 @@ namespace App\Services;
 class StoreParser
 {
     public function parseTitle(string $html) {
-        // Extract shop name and owner from: <B>Name</B> <B>(count)</B> — владелец owner
         if (preg_match('#<B>([\s\S]*?)</B>\s*<B>\(\d+\)</B>\s*—\s*владелец\s+(.+?)<#i', $html, $m)) {
             $name = $m[1];
             $owner = $m[2];
@@ -17,117 +16,99 @@ class StoreParser
     }
 
     public function parseBuyStore(string $html) {
+        $hasForm = preg_match_all('#<tr[^>]*>[\s\S]*?<form[^>]*id=[\'"]*i(\d+)[\'"]*[^>]*>[\s\S]*?</form>[\s\S]*?</tr>#i', $html, $matches, PREG_SET_ORDER);
+        if (!$hasForm) {
+            return [];
+        }
         $items = [];
-
-        // Find all complete rows: <tr>...form with id=i{goodId}...</tr>
-        // Using [\s\S]*? to match any character including newlines, non-greedy
-        if (preg_match_all('#<tr[^>]*>[\s\S]*?<form[^>]*id=[\'"]*i(\d+)[\'"]*[^>]*>[\s\S]*?</form>[\s\S]*?</tr>#i', $html, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $goodId = $match[1];
-                $rowContent = $match[0];
-
-                $item = [
-                    'good_id' => $goodId,
-                ];
-
-                // Extract image src - handles both single and double quotes
-                if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
-                    $img = preg_replace('#^\.\./+#', '', $m[1]);
-                    $item['img'] = $img;
-                }
-
-                // Extract count and title: (N)&nbsp;<b>Title</b> or [N]&nbsp;<b>Title</b> or with tags like <br>
-                if (preg_match('#[\(\[](\d+)[\)\]]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
-                    $item['count'] = $m[1];
-                    $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
-                }
-
-                // Extract cost from div id=d{goodId} - supports both integers and decimals (e.g., "5.1" or "5")
-                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
-                    $item['cost'] = $m[1];
-                }
-
-                // Extract form hidden inputs - flexible pattern for name and value attributes
-                if (preg_match("#name=['\"]?good_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['good_id'] = $m[1];
-                }
-                if (preg_match("#name=['\"]?shp_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['shp_id'] = $m[1];
-                }
-                if (preg_match("#name=['\"]?good_type['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['good_type'] = $m[1];
-                }
-                // price_quest can be empty
-                if (preg_match("#name=['\"]?price_quest['\"]?[^>]*value=['\"]?([^'\">\s]*)#i", $rowContent, $m)) {
-                    $item['price_quest'] = $m[1];
-                }
-                // capCode can be empty
-                if (preg_match("#name=['\"]?capCode['\"]?[^>]*value=['\"]?([^'\">\s]*)#i", $rowContent, $m)) {
-                    $item['capCode'] = $m[1];
-                }
-                if (preg_match("#name=['\"]?number['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['number'] = $m[1];
-                }
-
-                // Only add items with required data
-                if (!empty($item['good_id'])) {
-                    $items[] = $item;
-                }
+        foreach ($matches as $match) {
+            $goodId = $match[1];
+            $rowContent = $match[0];
+            $item = [
+                'good_id' => $goodId,
+            ];
+            if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
+                $img = preg_replace('#^\.\./+#', '', $m[1]);
+                $item['img'] = $img;
+            }
+            if (preg_match('#[\(\[](\d+)[\)\]]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
+                $item['count'] = $m[1];
+                $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
+            }
+            if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
+                $item['cost'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?good_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['good_id'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?shp_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['shp_id'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?good_type['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['good_type'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?price_quest['\"]?[^>]*value=['\"]?([^'\">\s]*)#i", $rowContent, $m)) {
+                $item['price_quest'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?capCode['\"]?[^>]*value=['\"]?([^'\">\s]*)#i", $rowContent, $m)) {
+                $item['capCode'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?number['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['number'] = $m[1];
+            }
+            if (!empty($item['good_id'])) {
+                $items[] = $item;
             }
         }
-
         return $items;
     }
 
     public function parseSellStore(string $html) {
+        $hasTr = preg_match_all('#<tr[^>]*>[\s\S]*?<form[^>]*id=[\'"]*i(\d+)[\'"]*[^>]*>[\s\S]*?</form>[\s\S]*?</tr>#i', $html, $matches, PREG_SET_ORDER);
+        if (!$hasTr) {
+            return [];
+        }
         $items = [];
+        foreach ($matches as $match) {
+            $goodId = $match[1];
+            $rowContent = $match[0];
+            $item = [
+                'good_id' => $goodId,
+            ];
 
-        // Find all complete rows: <tr>...form with id=i{goodId}...</tr>
-        // Using [\s\S]*? to match any character including newlines, non-greedy
-        if (preg_match_all('#<tr[^>]*>[\s\S]*?<form[^>]*id=[\'"]*i(\d+)[\'"]*[^>]*>[\s\S]*?</form>[\s\S]*?</tr>#i', $html, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $goodId = $match[1];
-                $rowContent = $match[0];
+            // Extract image src - handles both single and double quotes
+            if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
+                $img = preg_replace('#^\.\./+#', '', $m[1]);
+                $item['img'] = $img;
+            }
 
-                $item = [
-                    'good_id' => $goodId,
-                ];
+            // Extract count and title: [N]&nbsp;<b>Title</b> or with tags like <br> (square brackets for sell store)
+            if (preg_match('#\[(\d+)\]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
+                $item['count'] = $m[1];
+                $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
+            }
 
-                // Extract image src - handles both single and double quotes
-                if (preg_match("#src=['\"]([^'\"]+?\.(gif|jpg|png))['\"]#i", $rowContent, $m)) {
-                    $img = preg_replace('#^\.\./+#', '', $m[1]);
-                    $item['img'] = $img;
-                }
+            // Extract cost from div id=d{goodId} - supports both integers and decimals (e.g., "5.1" or "5")
+            if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
+                $item['cost'] = $m[1];
+            }
 
-                // Extract count and title: [N]&nbsp;<b>Title</b> or with tags like <br> (square brackets for sell store)
-                if (preg_match('#\[(\d+)\]\s*&nbsp;\s*<b>([\s\S]*?)</b>#i', $rowContent, $m)) {
-                    $item['count'] = $m[1];
-                    $item['title'] = str_replace(['&nbsp;', '<br>'], [' ', ', '], $m[2]);
-                }
+            // Extract form hidden inputs - flexible pattern for name and value attributes
+            if (preg_match("#name=['\"]?good_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['good_id'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?shp_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['shp_id'] = $m[1];
+            }
+            if (preg_match("#name=['\"]?number['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
+                $item['number'] = $m[1];
+            }
 
-                // Extract cost from div id=d{goodId} - supports both integers and decimals (e.g., "5.1" or "5")
-                if (preg_match("#<div[^>]*id=d{$goodId}[^>]*>(\d+(?:\.\d+)?)\s*(?:\([^)]*\))?</div>#i", $rowContent, $m)) {
-                    $item['cost'] = $m[1];
-                }
-
-                // Extract form hidden inputs - flexible pattern for name and value attributes
-                if (preg_match("#name=['\"]?good_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['good_id'] = $m[1];
-                }
-                if (preg_match("#name=['\"]?shp_id['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['shp_id'] = $m[1];
-                }
-                if (preg_match("#name=['\"]?number['\"]?[^>]*value=['\"]?([^'\">\s]+)#i", $rowContent, $m)) {
-                    $item['number'] = $m[1];
-                }
-
-                // Only add items with required data
-                if (!empty($item['good_id'])) {
-                    $items[] = $item;
-                }
+            // Only add items with required data
+            if (!empty($item['good_id'])) {
+                $items[] = $item;
             }
         }
-
         return $items;
     }
 
@@ -137,7 +118,6 @@ class StoreParser
             foreach ($matches as $match) {
                 $id = $match[1];
                 $name = trim($match[2]);
-
                 // Skip the default "---" option
                 if ($name !== '---') {
                     $items[] = [
@@ -147,16 +127,12 @@ class StoreParser
                 }
             }
         }
-        // sort alphabetically by name
         usort($items, fn($a, $b) => strcmp($a['name'], $b['name']));
-
         return $items;
     }
 
     public function parseTents(string $html) {
         $items = [];
-
-        // Pattern to match: <b>N.</b>&nbsp;<a href=v_trade_load_shop.php?id=XXX>Name</a>&nbsp;(count) or [count]
         if (preg_match_all('#<b>\d+\.</b>\s*&nbsp;\s*<a[^>]*href=v_trade_load_shop\.php\?id=(\d+)[^>]*>([^<]+)</a>\s*&nbsp;\s*[\(\[]<span[^>]*>(\d+)</span>[\)\]]#i', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $items[] = [
@@ -166,15 +142,11 @@ class StoreParser
                 ];
             }
         }
-
         return $items;
     }
 
     public function parseSearch(string $html) {
         $items = [];
-
-        // Match each item by finding: img with title/src → expand(id, type)
-        // This avoids nested table issues by chaining distinctive markers
         if (preg_match_all('#<img[^>]*title=[\'"]([^\'"]+)[\'"][^>]*src=[\'"]([^\'"]+)[\'"][^>]*>[\s\S]*?expand\((\d+),\s*(\d+)\)#i', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $items[] = [
@@ -185,7 +157,6 @@ class StoreParser
                 ];
             }
         }
-
         return $items;
     }
 }

@@ -50,9 +50,40 @@ class AboutParser
             $content = preg_replace("/<(meta|body|html|style|script|base)(\\s+.*?>|>)/", "", $content);
             $content = preg_replace("/<(meta|body|html|style|script|base)/", "", $content);
             $content = preg_replace("/<\\/?(meta|body|html|style|script|base)(\\s+.*?>|>)/", "", $content);
-            $content = str_ireplace(array('\\', '&', '&amp;amp;', 'style=', 'onabort=', 'onactivate=', 'onafterprint=', 'onafterupdate=', 'onbeforeactivate=', 'onbeforecopy=', 'onbeforecut=', 'onbeforedeactivate=', 'onbeforeeditfocus=', 'onbeforepaste=', 'onbeforeprint=', 'onbeforeunload=', 'onbeforeupdate=', 'onblur=', 'onbounce=', 'oncellchange=', 'onchange=', 'onclick=', 'oncontextmenu=', 'oncontrolselect=', 'oncopy=', 'oncut=', 'ondataavaible=', 'ondatasetchanged=', 'ondatasetcomplete=', 'ondblclick=', 'ondeactivate=', 'ondrag=', 'ondragdrop=', 'ondragend=', 'ondragenter=', 'ondragleave=', 'ondragover=', 'ondragstart=', 'ondrop=', 'onerror=', 'onerrorupdate=', 'onfilterupdate=', 'onfinish=', 'onfocus=', 'onfocusin=', 'onfocusout=', 'onhelp=', 'onkeydown=', 'onkeypress=', 'onkeyup=', 'onlayoutcomplete=', 'onload=', 'onlosecapture=', 'onmousedown=', 'onmouseenter=', 'onmouseleave=', 'onmousemove=', 'onmoveout=', 'onmouseover=', 'onmouseup=', 'onmousewheel=', 'onmove=', 'onmoveend=', 'onmovestart=', 'onpaste=', 'onpropertychange=', 'onreadystatechange=', 'onreset=', 'onresize=', 'onresizeend=', 'onresizestart=', 'onrowexit=', 'onrowsdelete=', 'onrowsinserted=', 'onscroll=', 'onselect=', 'onselectionchange=', 'onselectstart=', 'onstart=', 'onstop=', 'onsubmit=', 'onunload=', '<!--', '-->', 'javascript'), array('/','&amp;','&amp;'), $content);
+            $content = str_ireplace(
+                [
+                    // Replace
+                    '\\', '&', '&amp;amp;',
+                    // Drop
+                    'style=', 'onabort=', 'onactivate=',
+                    'onafterprint=', 'onafterupdate=', 'onbeforeactivate=', 'onbeforecopy=',
+                    'onbeforecut=', 'onbeforedeactivate=', 'onbeforeeditfocus=',
+                    'onbeforepaste=', 'onbeforeprint=', 'onbeforeunload=', 'onbeforeupdate=',
+                    'onblur=', 'onbounce=', 'oncellchange=', 'onchange=', 'onclick=',
+                    'oncontextmenu=', 'oncontrolselect=', 'oncopy=', 'oncut=',
+                    'ondataavaible=', 'ondatasetchanged=', 'ondatasetcomplete=', 'ondblclick=',
+                    'ondeactivate=', 'ondrag=', 'ondragdrop=', 'ondragend=', 'ondragenter=',
+                    'ondragleave=', 'ondragover=', 'ondragstart=', 'ondrop=', 'onerror=',
+                    'onerrorupdate=', 'onfilterupdate=', 'onfinish=', 'onfocus=', 'onfocusin=',
+                    'onfocusout=', 'onhelp=', 'onkeydown=', 'onkeypress=', 'onkeyup=',
+                    'onlayoutcomplete=', 'onload=', 'onlosecapture=', 'onmousedown=',
+                    'onmouseenter=', 'onmouseleave=', 'onmousemove=', 'onmoveout=',
+                    'onmouseover=', 'onmouseup=', 'onmousewheel=', 'onmove=', 'onmoveend=',
+                    'onmovestart=', 'onpaste=', 'onpropertychange=', 'onreadystatechange=',
+                    'onreset=', 'onresize=', 'onresizeend=', 'onresizestart=', 'onrowexit=',
+                    'onrowsdelete=', 'onrowsinserted=', 'onscroll=', 'onselect=',
+                    'onselectionchange=', 'onselectstart=', 'onstart=', 'onstop=', 'onsubmit=',
+                    'onunload=', '<!--', '-->', 'javascript'],
+                ['/','&amp;','&amp;'],
+                $content
+            );
         }
-        $aContent = preg_split('/(<[^>]*[^\/]>)/i', $content, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        $aContent = preg_split(
+            '/(<[^>]*[^\/]>)/i',
+            $content,
+            -1,
+            PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
+        );
         $aStack = [];
         $sResult = '';
         foreach ($aContent as $i => $sValue) {
@@ -442,47 +473,40 @@ class AboutParser
 
     private function parseProperties(string $content, array &$properties, string $propType): void {
         $oDoc = new \DOMDocument();
-        @$oDoc->loadHTML('<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /></head><body>' . $this->fixHtml($content) . '</body></html>');
-
+        @$oDoc->loadHTML(
+            '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /></head><body>' .
+            $this->fixHtml($content) .
+            '</body></html>'
+        );
         $imgs = $oDoc->getElementsByTagName('img');
+        if (!$imgs->length) {
+            return;
+        }
         $bTags = $oDoc->getElementsByTagName('b');
-
-        if ($imgs->length > 0) {
-            if ($bTags->length > 0) {
-                for ($i = 0; $i < $imgs->length; $i++) {
-                    $imgNode = $imgs->item($i);
-                    $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
-                    $property = $imgNode->getAttribute('title') ?? '';
-                    $value = '';
-
-                    if ($bTags->length > $i) {
-                        $value = trim($bTags->item($i)->textContent);
-                    }
-
-                    $properties[] = array(
-                        'type' => $propType,
-                        'image' => $image,
-                        'property' => $property,
-                        'value' => $value
-                    );
-                }
+        $hasTags = $bTags->length > 0;
+        for ($i = 0; $i < $imgs->length; $i++) {
+            $imgNode = $imgs->item($i);
+            $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
+            $property = $imgNode->getAttribute('title') ?? '';
+            if ($hasTags) {
+                $properties[] = array(
+                    'type' => $propType,
+                    'image' => $image,
+                    'property' => $property,
+                    'value' => $bTags->item($i) ? trim($bTags->item($i)->textContent) : ''
+                );
             } else {
-                for ($i = 0; $i < $imgs->length; $i++) {
-                    $imgNode = $imgs->item($i);
-                    $image = Defines::URL . trim($imgNode->getAttribute('src'), '/.');
-                    $property = $imgNode->getAttribute('title') ?? '';
-                    $property = preg_replace(['/[\r\n]+/', '/[ \t]+/'], ['.', ' '], $property);
-                    $property = trim($property);
-
-                    if (!empty($property)) {
-                        $properties[] = array(
-                            'type' => $propType,
-                            'image' => $image,
-                            'property' => $property,
-                            'value' => ''
-                        );
-                    }
+                $property = preg_replace(['/[\r\n]+/', '/[ \t]+/'], ['.', ' '], $property);
+                $property = trim($property);
+                if (empty($property)) {
+                    continue;
                 }
+                $properties[] = array(
+                    'type' => $propType,
+                    'image' => $image,
+                    'property' => $property,
+                    'value' => ''
+                );
             }
         }
     }

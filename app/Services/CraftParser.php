@@ -36,55 +36,57 @@ class CraftParser
     }
 
     protected function getRecipes($html) {
+        $hasRecipes = preg_match_all('/<TR>(.*?)<\/TR>/s', $html, $rows, PREG_SET_ORDER);
+        if (!$hasRecipes) {
+            return [];
+        }
         $recipes = [];
-        if (preg_match_all('/<TR>(.*?)<\/TR>/s', $html, $rows, PREG_SET_ORDER)) {
-            foreach ($rows as $row) {
-                $tr = $row[1];
-                if (strpos($tr, "startWork(") === false && strpos($tr, "startWorkCount(") === false) {
-                    continue;
+        foreach ($rows as $row) {
+            $tr = $row[1];
+            if (strpos($tr, "startWork(") === false && strpos($tr, "startWorkCount(") === false) {
+                continue;
+            }
+            $src = '';
+            $title = '';
+            // Always extract src and title from <img ...>
+            if (preg_match('/<img[^>]+title=["\']?([^"\'>]+)["\']?[^>]*src=["\']([^"\'>]+)["\']/i', $tr, $imgMatch)) {
+                $title = html_entity_decode($imgMatch[1]);
+                $src = str_replace('../', '/', $imgMatch[2]);
+            }
+            // Get recipe id
+            $id = null;
+            if (preg_match('/startWork\((\d+)\)/', $tr, $idMatch)) {
+                $id = (int)$idMatch[1];
+            } elseif (preg_match('/startWorkCount\((\d+),/', $tr, $idMatch)) {
+                $id = (int)$idMatch[1];
+            }
+            // Get count (prefer bracket in title, else button/input value)
+            $count = 1;
+            if (preg_match('/\[(\d+)\]/', $tr, $bracketMatch)) {
+                $count = (int)$bracketMatch[1];
+            }
+            // Get time
+            $time = '';
+            if (preg_match('/<span[^>]+id=["\']t\d+["\'][^>]*>([^<]+)<\/span>/i', $tr, $timeMatch)) {
+                $time = trim($timeMatch[1]);
+            }
+            // Get receipt (ingredients)
+            $receipt = [];
+            if (preg_match_all('/<b>([^<]+)<\/b>/i', $tr, $bMatch)) {
+                foreach ($bMatch[1] as $value) {
+                    $receipt[] = str_replace('&nbsp;', ' ', $value);
                 }
-                $src = '';
-                $title = '';
-                // Always extract src and title from <img ...>
-                if (preg_match('/<img[^>]+title=["\']?([^"\'>]+)["\']?[^>]*src=["\']([^"\'>]+)["\']/i', $tr, $imgMatch)) {
-                    $title = html_entity_decode($imgMatch[1]);
-                    $src = str_replace('../', '/', $imgMatch[2]);
-                }
-                // Get recipe id
-                $id = null;
-                if (preg_match('/startWork\((\d+)\)/', $tr, $idMatch)) {
-                    $id = (int)$idMatch[1];
-                } elseif (preg_match('/startWorkCount\((\d+),/', $tr, $idMatch)) {
-                    $id = (int)$idMatch[1];
-                }
-                // Get count (prefer bracket in title, else button/input value)
-                $count = 1;
-                if (preg_match('/\[(\d+)\]/', $tr, $bracketMatch)) {
-                    $count = (int)$bracketMatch[1];
-                }
-                // Get time
-                $time = '';
-                if (preg_match('/<span[^>]+id=["\']t\d+["\'][^>]*>([^<]+)<\/span>/i', $tr, $timeMatch)) {
-                    $time = trim($timeMatch[1]);
-                }
-                // Get receipt (ingredients)
-                $receipt = [];
-                if (preg_match_all('/<b>([^<]+)<\/b>/i', $tr, $bMatch)) {
-                    foreach ($bMatch[1] as $value) {
-                        $receipt[] = str_replace('&nbsp;', ' ', $value);
-                    }
-                }
-                $receiptStr = implode(', ', $receipt);
-                if ($id !== null && $title !== '') {
-                    $recipes[] = [
-                        'title' => $title,
-                        'count' => $count,
-                        'src' => $src,
-                        'id' => $id,
-                        'time' => $time,
-                        'receipt' => $receiptStr
-                    ];
-                }
+            }
+            $receiptStr = implode(', ', $receipt);
+            if ($id !== null && $title !== '') {
+                $recipes[] = [
+                    'title' => $title,
+                    'count' => $count,
+                    'src' => $src,
+                    'id' => $id,
+                    'time' => $time,
+                    'receipt' => $receiptStr
+                ];
             }
         }
         return $recipes;

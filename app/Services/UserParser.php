@@ -101,15 +101,12 @@ class UserParser
         if (!$clanId || !isset($clanData['idsMap'][$clanId])) {
             return '';
         }
-
         $position = $clanData['idsMap'][$clanId];
         $clanName = $clanData['cnames'][$position] ?? '';
         $imgName = $clanData['imgs'][$position] ?? '';
-
         if (!$imgName) {
             return '';
         }
-
         return "&nbsp;<img align='absmiddle' src='https://www.fantasyland.ru/images/clans/{$imgName}' alt='{$clanName}' />";
     }
 }
