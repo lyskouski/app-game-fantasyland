@@ -8,8 +8,21 @@ Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://ww
 
 | Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
-| iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Not released |
-| Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | Not released |
+| ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Not released |
+| ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Google Play](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
+
+[Privacy Policy {RU}](./docs/privacy_policy_ru.md), [Terms of User {RU}](./docs/terms_of_use_ru.md)
+
+## Functionality:
+- Personal information
+- Chat and Forum
+- Movements between locations and inside them
+- Communications with NPC
+- Tents: sell, buy, order, search
+- Labyrinth: movements, pick up, actions, attack mob/user
+- Fights: ring, chaos, group types
+- Craft and Mining
+- Arena Trainings
 
 <img alt="Login" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> . <img alt="Movements" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> . <img alt="Mining" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> . <img alt="Map" style="border-width:0;width:200px" src="./docs/design-flow/map.jpg" />
 <img alt="Craft (initial page)" style="border-width:0;width:200px" src="./docs/design-flow/craft_1.jpg" /> . <img alt="Craft (chosen recept)" style="border-width:0;width:200px" src="./docs/design-flow/craft_2.jpg" /> . <img alt="Forum Rooms" style="border-width:0;width:200px" src="./docs/design-flow/forum.jpg" /> . <img alt="Forum" style="border-width:0;width:200px" src="./docs/design-flow/forum_2.jpg" />

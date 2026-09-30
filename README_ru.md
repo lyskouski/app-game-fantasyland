@@ -9,8 +9,22 @@
 
 | Тип                      | Альфа версия          | Бетта версия                  | Релиз                         |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
-| iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Недоступно |
-| Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | Недоступно |
+| ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Недоступно |
+| ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Google Play](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
+
+[Политика конфиденциальности](./docs/privacy_policy_ru.md), [Условия использования](./docs/terms_of_use_ru.md)
+
+## Функционал:
+- Персональная информация игрока
+- Чат и Форум
+- Перемещение между локациями и внутри них
+- Взаимодействие с NPC
+- Палатки: продажа, покупка, сортировка, поиск
+- Лабиринт: передвижения, подбор вещей, взаимодействие, аката мобов / игроков
+- Бои: ринг, групповые, хаос
+- Крафт и добыча
+- Арена: треннировка последователей
+
 
 <img alt="Логин" style="border-width:0;width:200px" src="./docs/design-flow/login.jpg" /> . <img alt="Переходы" style="border-width:0;width:200px" src="./docs/design-flow/movements.jpg" /> . <img alt="Добыча" style="border-width:0;width:200px" src="./docs/design-flow/mining.jpg" /> . <img alt="Карта" style="border-width:0;width:200px" src="./docs/design-flow/map.jpg" />
 <img alt="Крафт (выбор)" style="border-width:0;width:200px" src="./docs/design-flow/craft_1.jpg" /> . <img alt="Крафт (выбор рецепта)" style="border-width:0;width:200px" src="./docs/design-flow/craft_2.jpg" /> . <img alt="Разделы форума" style="border-width:0;width:200px" src="./docs/design-flow/forum.jpg" /> . <img alt="Форум" style="border-width:0;width:200px" src="./docs/design-flow/forum_2.jpg" />
