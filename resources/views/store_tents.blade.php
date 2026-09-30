@@ -63,16 +63,28 @@
                     <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
                 </form>
                 @endforeach
-                @if ($map)
-                <br />
-                @foreach ($map as $location)
-                <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
-                    @csrf
-                    <input type="hidden" name="locat" value="{{ $location['id'] }}" />
-                    <input type="hidden" name="additional" value="0" />
-                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
-                </form>
-                @endforeach
+                    @if ($map)
+                    <br />
+                    @foreach ($map as $location)
+                    <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                        @csrf
+                        <input type="hidden" name="locat" value="{{ $location['id'] }}" />
+                        <input type="hidden" name="additional" value="0" />
+                        <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
+                    </form>
+                    @endforeach
+                @endif
+                @if(isset($quest))
+                    <br />
+                    @foreach ($quest as $npc)
+                    <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                        @csrf
+                        <input type="hidden" name="place_regime" value="{{ $npc['id'] }}" />
+                        <input type="hidden" name="addval" value="0" />
+                        <input type="hidden" name="addval1" value="0" />
+                        <input type="submit" value="NPC: {{ $npc['title'] }}" style="width: 100%;" />
+                    </form>
+                    @endforeach
                 @endif
                 <form method="GET" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
                     @csrf

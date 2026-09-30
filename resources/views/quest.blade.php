@@ -32,15 +32,19 @@
             <div class="main_middle">
                 <p>{!! $description !!}</p>
                 <br />
+                <ul style="list-style-type: none; padding: 0;">
                 @foreach($actions as $action)
-                <form method="POST" action="/cgi/mc_hid.php">
-                    @csrf
-                    <input type="hidden" name="a1" value="{{ $action['id'] }}" />
-                    <input type="hidden" name="a2" value="0" />
-                    <input type="submit" style="width:100%" value="{{ $action['text'] }}" />
-                </form>
-                <br />
+                    <li style="margin-bottom: 12px;">
+                        <form method="POST" action="/cgi/mc_hid.php">
+                            @csrf
+                            <input type="hidden" name="a1" value="{{ $action['id'] }}" />
+                            <input type="hidden" name="a2" value="0" />
+                            <input type="submit" value=">>" />
+                            {{ $action['text'] }}
+                        </form>
+                    </li>
                 @endforeach
+                </ul>
                 @if($timer)
                 <div>
                     Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/mc_hid.php';">-- : --</strong>

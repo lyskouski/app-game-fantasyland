@@ -34,6 +34,26 @@ class LocationParser
         return ['map' => $map, 'image' => $image, 'hasRoad' => strpos($html, 'map.php') !== false];
     }
 
+    private function extractNpcs(string $html): array {
+        $npcs = [];
+        preg_match_all(
+            '~<TR>\s*<TD>\s*<A\b[^>]*HREF=[\'"]javascript:regimeTo\((\d+)\)[\'"][^>]*>' .
+            '<image\b[^>]*\bsrc=[\'"]([^\'"]+)[\'"][^>]*>' .
+            '</A>\s*<TD>(.*?)</TR>~isu',
+            $html,
+            $matches,
+            PREG_SET_ORDER
+        );
+        foreach ($matches as $match) {
+            $npcs[] = [
+                'id' => (int) $match[1],
+                'img' => $match[2],
+                'title' => trim(strip_tags($match[3])),
+            ];
+        }
+        return $npcs;
+    }
+
     public function onPlace(string $html) {
         $title = '';
         if (preg_match('/show_title\(["\']([^"\']+)["\']\)/', $html, $titleMatch)) {
@@ -80,6 +100,7 @@ class LocationParser
             'description' => $description,
             'map' => $map,
             'place' => $place,
+            'quest' => $this->extractNpcs($html),
             'hasRoad' => strpos($html, 'map.php') !== false
         ];
     }
