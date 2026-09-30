@@ -9,7 +9,6 @@ window.getInitialState = function() {
             .then(response => response.text())
             .then(text => extractContent(text))
             .then(content => bindContent('fight_enemies', content));
-    // TODO: logs... fetch(`/cgi/combat_panel.php`); and from `/cgi/combat_ref.php`
 };
 
 if (document.readyState === 'loading') {

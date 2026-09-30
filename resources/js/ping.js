@@ -2,10 +2,10 @@ function checkState() {
     fetch('/cgi/ch_ref.php')
         .then(response => response.text())
         .then(data => {
-            // TBD: handle response data
+            // skip
         })
         .catch(error => {
-            console.error('Ping error:', error);
+            alert('Ping error: ' + error.toString());
         });
 }
 
