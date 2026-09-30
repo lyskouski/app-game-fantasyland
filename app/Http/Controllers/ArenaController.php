@@ -66,7 +66,7 @@ final class ArenaController extends Controller
 
     public function trainContinue() {
         $data = $this->mainPage();
-        $html = $this->get('/cgi/arena.php', ['rld' => 1]);
+        $html = $this->get('/cgi/arena.php', ['g' => 9]);
         $parser = new ArenaParser();
         $start = $parser->timer($html);
         Notification::addIfExists($html);
