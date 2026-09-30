@@ -157,11 +157,25 @@ class ArenaParser extends UserParser
         return $matches[1] ?? '/images/status/status_red.gif';
     }
 
+    private function extractAttackAction(string $html): ?string {
+        if (preg_match(
+            '~DoAct\([\'"]([^\'"]+)[\'"]\)[^<]*>\s*подать>>>\s*</A>~isu',
+            $html,
+            $match
+        )) {
+            return $match[1];
+        }
+        return null;
+    }
+
     public function getChaosGroups(string $html, string $w): array {
         $groups = [];
-        $parts = explode('<TR><TD width=200 valign=middle>', $html);
-        for ($i = 1; $i < count($parts); $i++) {
-            $segment = $parts[$i];
+        preg_match_all(
+            '~<TR>\s*<TD\b[^>]*\bwidth\s*=\s*200[^>]*>.*?</TR>~isu',
+            $html,
+            $matches
+        );
+        foreach ($matches[0] as $segment) {
             preg_match(
                 '~<img[^>]+alt=[\'"]Таймаут[\'"][^>]*>\s*(.*?)&nbsp;~isu',
                 $segment,
@@ -173,11 +187,13 @@ class ArenaParser extends UserParser
                 $segment,
                 '/images/miscellaneous/woart.gif'
             );
+
             $groups[] = [
                 'state' => $state,
                 'members' => $members,
                 'even' => $this->extractStatus($segment),
                 'withoutArt' => $withoutArt,
+                'attack' => $this->extractAttackAction($segment),
             ];
         }
         return [
@@ -226,6 +242,7 @@ class ArenaParser extends UserParser
                 'opponents' => $opponents,
                 'enemies' => $enemies,
                 'even' => $this->extractStatus($segment),
+                'attack' => $this->extractAttackAction($segment),
             ];
         }
         return [

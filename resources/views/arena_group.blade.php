@@ -178,6 +178,9 @@
                                 <a href="/cgi/arena.php?{{ $member['cancel'] }}">[X]</a>,
                             </small>
                             @endforeach
+                            @if($group['attack'])
+                            <a href="/cgi/arena.php?{{ $group['attack'] }}">подать</a>
+                            @endif
                         </td>
                     </tr>
                 </table>
