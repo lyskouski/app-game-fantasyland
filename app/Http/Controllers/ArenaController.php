@@ -39,7 +39,7 @@ final class ArenaController extends Controller
             $health = $parser->getHealthState($html);
             return view('arena_pause', [...$data, ...$health]);
         } elseif (str_contains($html, 'train_stop.php')) {
-            return redirect('/cgi/train_start.php');
+            return redirect('/cgi/train_continue');
         }
         $w = $this->get('cgi/w.JS', []);
         switch ($data['current']) {
@@ -62,6 +62,15 @@ final class ArenaController extends Controller
             default:
                 return view('main_arena', $data);
         }
+    }
+
+    public function trainContinue() {
+        $data = $this->mainPage();
+        $html = $this->get('/cgi/arena.php', ['rld' => 1]);
+        $parser = new ArenaParser();
+        $start = $parser->timer($html);
+        Notification::addIfExists($html);
+        return view('arena_train_start', [...$data, ...$start]);
     }
 
     public function trainStart() {

@@ -66,6 +66,7 @@ Route::get('/cgi/arena.php', [ArenaController::class, 'index']);
 Route::get('/cgi/train_start.php', [ArenaController::class, 'trainStart']);
 Route::get('/cgi/train_stop.php', [ArenaController::class, 'trainStop']);
 Route::get('/cgi/attack_mob.php', [ArenaController::class, 'attackMob']);
+Route::get('/cgi/train_continue', [ArenaController::class, 'trainContinue']);
 
 // Fight
 Route::get('/cgi/combat.php', [FightController::class, 'combat']);
