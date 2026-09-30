@@ -200,7 +200,7 @@ jobs:
         run: |
           # Build and package the app
           echo "Building and packaging iOS app..."
-          php artisan native:package ios --build=release \
+          php artisan native:package ios \
           --export-method=app-store \
           --api-key-path="$API_KEY_PATH" \
           --api-key-id="$API_KEY_ID" \
