@@ -19,6 +19,15 @@ final class FightController extends Controller
         ]);
     }
 
+    public function attackMob() {
+        $html = $this->get('/cgi/attack_mob.php');
+        Notification::addIfExists($html);
+        if (str_contains($html, "location.href = 'combat.php'")) {
+            return redirect('/cgi/combat.php');
+        }
+        return redirect('/cgi/arena.php');
+    }
+
     public function labAttack() {
         $result = $this->get('/cgi/maze_attack.php');
         Notification::addIfExists($result);

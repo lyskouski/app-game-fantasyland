@@ -65,11 +65,11 @@ Route::get('/about/person', [AboutController::class, 'person']);
 Route::get('/cgi/arena.php', [ArenaController::class, 'index']);
 Route::get('/cgi/train_start.php', [ArenaController::class, 'trainStart']);
 Route::get('/cgi/train_stop.php', [ArenaController::class, 'trainStop']);
-Route::get('/cgi/attack_mob.php', [ArenaController::class, 'attackMob']);
 Route::get('/cgi/train_continue', [ArenaController::class, 'trainContinue']);
 
 // Fight
 Route::get('/cgi/combat.php', [FightController::class, 'combat']);
+Route::get('/cgi/attack_mob.php', [FightController::class, 'attackMob']);
 Route::get('/cgi/maze_attack.php', [FightController::class, 'labAttack']);
 Route::get('/cgi/armylist_yours.php', [FightController::class, 'armylistYours']);
 Route::get('/cgi/armylist_enemy.php', [FightController::class, 'armylistEnemy']);
