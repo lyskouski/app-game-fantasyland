@@ -12,6 +12,7 @@ use App\Http\Controllers\LabController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PreyController;
+use App\Http\Controllers\QuestController;
 use App\Http\Controllers\StoreController;
 use App\NativeComponents\ChatShell;
 use App\NativeComponents\ForumShell;
@@ -131,13 +132,15 @@ Route::get('/labyrinth/citadel/init', [LabController::class, 'initToCitadel']);
 Route::get('/cgi/inv_wear', [MainController::class, 'wear']);
 Route::get('/cgi/maze_move.php', [LabController::class, 'move']);
 //Route::get('/cgi/maze_ref.php', [LabController::class, 'ref']);
-Route::get('/cgi/maze_qaction.php', [LabController::class, 'questAction']);
-Route::get('/cgi/mc_main.php', [LabController::class, 'questMain']);
-Route::get('/cgi/mc_hid.php', [LabController::class, 'questReply']);
-Route::post('/cgi/mc_hid.php', [LabController::class, 'questReply']);
 Route::get('/cgi/technical_lab_info.php', [LabController::class, 'technicalInfo']);
 Route::get('/cgi/maze_pickup.php', [LabController::class, 'pickUp']);
 Route::get('/cgi/mob_info.php', [LabController::class, 'mobInfo']);
+
+// Quest
+Route::get('/cgi/mc_main.php', [QuestController::class, 'index']);
+Route::get('/cgi/mc_hid.php', [QuestController::class, 'reply']);
+Route::post('/cgi/mc_hid.php', [QuestController::class, 'reply']);
+Route::get('/cgi/maze_qaction.php', [QuestController::class, 'action']);
 
 // Marketplace (tents)
 //Route::get('/cgi/v_trade_load_shop.php', [StoreController::class, 'buyList']);

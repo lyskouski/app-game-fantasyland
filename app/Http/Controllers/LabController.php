@@ -156,32 +156,6 @@ final class LabController extends Controller
         return view('empty', ['data' => $content]);
     }
 
-    public function questAction() {
-        $content = $this->get('cgi/maze_qaction.php');
-        Notification::addIfExists($content);
-        return view('empty', ['data' => $content]);
-    }
-
-    public function questMain() {
-        $content = $this->get('cgi/mc_main.php');
-        Notification::addIfExists($content);
-        $hid = $this->get('/cgi/mc_hid.php');
-        if (str_contains($content, 'mc_hid.php')) {
-           $hid .= $this->get('/cgi/mc_hid.php');
-        }
-        Notification::addIfExists($hid);
-        return view('labyrinth_quest', (new LabParser)->getQuest($content . $hid));
-    }
-
-    public function questReply() {
-        $html = $this->post('/cgi/mc_hid.php');
-        Notification::addIfExists($html);
-        if (str_contains($html, 'location.href="no_combat.php"')) {
-            return redirect('/cgi/no_combat.php');
-        }
-        return view('labyrinth_quest', (new LabParser)->getQuest($html));
-    }
-
     public function technicalInfo() {
         $html = $this->get('/cgi/technical_lab_info.php');
         return view('empty', ['data' => $html]);
