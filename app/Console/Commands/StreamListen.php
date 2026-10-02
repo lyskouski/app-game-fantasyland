@@ -5,6 +5,8 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ListenStream;
+use App\Providers\AppProxyProvider;
+use App\Settings\Defines;
 use Illuminate\Console\Command;
 
 class StreamListen extends Command {
@@ -13,7 +15,8 @@ class StreamListen extends Command {
 
     public function handle(): int
     {
-        ListenStream::dispatch();
+        $chMain = (new AppProxyProvider())->boot(Defines::URL . '/ch/chmain.php');
+        ListenStream::start(ListenStream::sessionIdFrom($chMain));
 
         return self::SUCCESS;
     }

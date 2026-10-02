@@ -29,6 +29,12 @@ final class LoginController extends Controller
         return null;
     }
 
+    private function startStream(): void
+    {
+        $chMain = $this->get('ch/chmain.php', []);
+        ListenStream::start(ListenStream::sessionIdFrom($chMain));
+    }
+
     public function index() {
         return view('login', [
             'timestamp' => $this->getTimestamp(),
@@ -49,7 +55,7 @@ final class LoginController extends Controller
             SecureStorage::set('login', $data['login']);
             SecureStorage::set('password', $data['password']);
         }
-        ListenStream::dispatch();
+        $this->startStream();
         return redirect('/shell/home');
     }
 
@@ -60,7 +66,7 @@ final class LoginController extends Controller
             return $errorView;
         }
         $this->get('ch/chch.php', []);
-        ListenStream::dispatch();
+        $this->startStream();
         return redirect('/shell/home');
     }
 

@@ -10,6 +10,7 @@ use App\Settings\Defines;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
@@ -19,18 +20,43 @@ class ListenStream implements ShouldQueue
 
     public $timeout = 60;
 
+    private const CACHE_KEY = 'listen_stream_generation';
+
+    public function __construct(public string $generation = '', public string $sessionId = '')
+    {
+    }
+
+    public static function sessionIdFrom(string $chMainHtml): string
+    {
+        return preg_match('/var\s+sesid\s*=\s*"([^"]*)"/', $chMainHtml, $m) ? $m[1] : '';
+    }
+
+    // Invalidates any running chain, then starts a new one bound to the given session id.
+    public static function start(string $sessionId): void
+    {
+        if ($sessionId === '') {
+            return;
+        }
+        $generation = bin2hex(random_bytes(8));
+        Cache::forever(self::CACHE_KEY, $generation);
+        static::dispatch($generation, $sessionId);
+    }
+
+    public static function stop(): void
+    {
+        Cache::forget(self::CACHE_KEY);
+    }
+
     public function handle(): void
     {
+        if (Cache::get(self::CACHE_KEY) !== $this->generation) {
+            return;
+        }
+
         $buffer = '';
         $proxy = new AppProxyProvider();
 
-        $sessionId = '';
-        $chMain = $proxy->boot(Defines::URL . '/ch/chmain.php');
-        if (preg_match('/var\s+sesid\s*=\s*"([^"]*)"/', $chMain, $sesidMatch)) {
-            $sessionId = $sesidMatch[1];
-        }
-
-        $ch = curl_init(Defines::URL . "gmmm?{$sessionId}");
+        $ch = curl_init(Defines::URL . "gmmm?{$this->sessionId}");
         curl_setopt_array($ch, [
             CURLOPT_TIMEOUT => 25,
             CURLOPT_USERAGENT => $proxy->userAgent(),
@@ -65,6 +91,8 @@ class ListenStream implements ShouldQueue
         curl_exec($ch);
         curl_close($ch);
 
-        static::dispatch()->delay(now()->addSeconds(5));
+        if (Cache::get(self::CACHE_KEY) === $this->generation) {
+            static::dispatch($this->generation, $this->sessionId)->delay(now()->addSeconds(5));
+        }
     }
 }
