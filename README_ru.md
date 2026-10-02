@@ -7,10 +7,11 @@
 Неофициальный клиент к игре Лига Героев (fantasyland.ru), сделанный Цитаделью (https://www.citadel-liga.info/liga) с открытым исходным кодом.
 
 
-| Тип                      | Альфа версия          | Бетта версия                  | Релиз                         |
+| Type                     | Alpha Version         | Pre-Release                   | Release                       |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
-| ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Недоступно |
-| ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Google Play](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
+| ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | В обработке |
+| ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Fantasyland](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
+| ![Android](./docs/design-flow/icons/android.png) Android (Galaxy Store)   | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Galaxy Store](https://galaxystore.samsung.com/detail/com.tercad.fantasyland) | [![Fantasyland](./docs/design-flow/badges/galaxy-store.png)](https://galaxystore.samsung.com/detail/com.tercad.fantasyland) |
 
 [Политика конфиденциальности](./docs/privacy_policy_ru.md), [Условия использования](./docs/terms_of_use_ru.md)
 
