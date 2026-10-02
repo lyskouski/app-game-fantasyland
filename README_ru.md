@@ -7,7 +7,7 @@
 Неофициальный клиент к игре Лига Героев (fantasyland.ru), сделанный Цитаделью (https://www.citadel-liga.info/liga) с открытым исходным кодом.
 
 
-| Type                     | Alpha Version         | Pre-Release                   | Release                       |
+| Тип                      | Альфа версия          | Бетта версия                  | Релиз                         |
 | ------------------------ | ----------------------| ----------------------------- | ----------------------------- |
 | ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | В обработке |
 | ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Fantasyland](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
