@@ -94,8 +94,14 @@ final class ArenaController extends Controller
     public function trainStop() {
         $htmlStop = $this->get('/cgi/train_stop.php');
         Notification::addIfExists($htmlStop);
-        $parser = new ArenaParser();
         $data = $this->mainPage();
+        $data['current'] = 9;
+        if (!$data['unit_id'] && preg_match('/unit_id_moo\s*=\s*(\d+)/', $htmlStop, $m)) {
+            $data['unit_id'] = (int) $m[1];
+        } else {
+            $data['unit_id'] = SecureStorage::get('unit_id') ?? 0;
+        }
+        $parser = new ArenaParser();
         if (preg_match("/parent\.no_combat\.ReloadFrame\('&rws=(\d+)'\);/", $htmlStop, $matches)) {
             $rws = (int) $matches[1];
             $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1, 'rws' => $rws]);
@@ -103,9 +109,6 @@ final class ArenaController extends Controller
                 $start = $parser->timer($htmlStart);
                 return view('arena_train_start', [...$data, ...$start]);
             }
-        }
-        if (!$data['unit_id'] && preg_match('/unit_id_moo\s*=\s*(\d+)/', $htmlStop, $m)) {
-            $data['unit_id'] = (int) $m[1];
         }
         Device::vibrate();
         $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
