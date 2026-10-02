@@ -11,6 +11,9 @@ final class ChatController extends Controller
 {
     public function index() {
         $html = $this->get('cgi/ch_ref.php', []);
+        if (preg_match("/window\.top\.document\.location\.href='\/\?e/", $html)) {
+            return view('empty', ['data' => 'REDIRECT_TO_MAIN']);
+        }
         $chout = $this->get('ch/chout.php', []);
         $w = $this->get('cgi/w.JS', []);
         $data = (new ChatParser)->parseUserList($html . $chout, $w);
