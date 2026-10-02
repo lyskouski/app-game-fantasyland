@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Services\ArenaParser;
 use App\Services\LocationParser;
+use App\Services\SecureStorage;
 use Native\Mobile\Facades\Device;
 
 final class ArenaController extends Controller
@@ -15,7 +16,7 @@ final class ArenaController extends Controller
         $html = $this->get('cgi/no_combat.php', []);
         $data = (new LocationParser)->onArena($html);
         $data['current'] = request()->input('g', 0);
-        $data['unit_id'] = request()->input('unit_id', 0);
+        $data['unit_id'] = request()->input('unit_id', SecureStorage::get('unit_id'));
         return $data;
     }
 
@@ -80,6 +81,7 @@ final class ArenaController extends Controller
     public function trainStart() {
         $data = $this->mainPage();
         $html = $this->get('/cgi/train_start.php');
+        SecureStorage::set('unit_id', request()->input('unit_id', '0'));
         if (!$html || str_contains($html, 'parent.no_combat.ReloadFrame')) {
             $html = $this->get('/cgi/arena.php', ['rld' => 1]);
         }
