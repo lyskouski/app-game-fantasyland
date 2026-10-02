@@ -39,6 +39,7 @@ final class MainController extends Controller
     private function getPageRoutes(): array
     {
         return [
+            "window.top.document.location.href='/?e'" => fn($html) => redirect('/'),
             'show_title("Другой&nbsp;Мир")' => fn($html) => view(
                 'main_killed',
                 $this->locationParser->getKilledState($html)
