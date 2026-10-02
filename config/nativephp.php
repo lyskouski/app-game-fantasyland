@@ -136,6 +136,7 @@ return [
         'android_sdk_path' => env('NATIVEPHP_ANDROID_SDK_LOCATION'),
         'emulator_path' => env('ANDROID_EMULATOR'),
         '7zip-location' => env('NATIVEPHP_7ZIP_LOCATION', 'C:\\Program Files\\7-Zip\\7z.exe'),
+        'min_sdk' => env('NATIVEPHP_ANDROID_MIN_SDK', 31),
 
         /*
         |--------------------------------------------------------------------------
