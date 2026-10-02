@@ -5,13 +5,17 @@
 namespace App\NativeComponents;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 use Native\Mobile\Edge\NativeComponent;
 use SRWieZ\NativePHP\Mobile\Screen\Facades\Screen;
 
 class HomeShell extends NativeComponent
 {
+    public const SHELL_PID_KEY = 'native_shell_pid';
+
     public function mount(): void
     {
+        Cache::forever(self::SHELL_PID_KEY, getmypid());
         Screen::keepAwake();
     }
 

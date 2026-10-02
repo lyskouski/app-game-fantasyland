@@ -5,8 +5,10 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ListenStream;
+use App\NativeComponents\HomeShell;
 use App\Services\SecureStorage;
 use App\Settings\Defines;
+use Illuminate\Support\Facades\Cache;
 
 final class LoginController extends Controller
 {
@@ -35,6 +37,13 @@ final class LoginController extends Controller
         ListenStream::start(ListenStream::sessionIdFrom($chMain));
     }
 
+    // Once the native shell exists, the login page lives in a tab webview, which can't open /shell/home (SIGABRT).
+    private function home()
+    {
+        $shellExists = Cache::get(HomeShell::SHELL_PID_KEY) === getmypid();
+        return redirect($shellExists ? '/cgi/no_combat.php' : '/shell/home');
+    }
+
     public function index() {
         return view('login', [
             'timestamp' => $this->getTimestamp(),
@@ -56,7 +65,7 @@ final class LoginController extends Controller
             SecureStorage::set('password', $data['password']);
         }
         $this->startStream();
-        return redirect('/shell/home');
+        return $this->home();
     }
 
     public function guestLogin() {
@@ -67,7 +76,7 @@ final class LoginController extends Controller
         }
         $this->get('ch/chch.php', []);
         $this->startStream();
-        return redirect('/shell/home');
+        return $this->home();
     }
 
     public function indexRegister() {
@@ -81,7 +90,7 @@ final class LoginController extends Controller
         if (strlen(trim($registerResult)) > 0 && trim($registerResult) !== 'ok') {
             return view('registry', ['error' => $registerResult]);
         }
-        return redirect('/shell/home');
+        return $this->home();
     }
 
     public function rules() {
