@@ -11,6 +11,7 @@ Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://ww
 | ![Apple](./docs/design-flow/icons/apple.png) iOS (Apple Store)    | [fantasyland_iOS.ipa](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [TestFlight](https://testflight.apple.com/join/xRJqAzNK) | Not released |
 | ![Android](./docs/design-flow/icons/android.png) Android (Google Play)    | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Google Play](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) | [![Fantasyland](./docs/design-flow/badges/google.png)](https://play.google.com/store/apps/details?id=com.tercad.fantasyland) |
 | ![Android](./docs/design-flow/icons/android.png) Android (Galaxy Store)   | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [Galaxy Store](https://galaxystore.samsung.com/detail/com.tercad.fantasyland) | [![Fantasyland](./docs/design-flow/badges/galaxy-store.png)](https://galaxystore.samsung.com/detail/com.tercad.fantasyland) |
+| ![Android](./docs/design-flow/icons/android.png) Android (Huawei Gallery) | [fantasyland_Android.aab](https://github.com/lyskouski/app-game-fantasyland/releases/latest) | [App Gallery](https://appgallery.huawei.com/#/app/C119179987) | [![App Gallery](./docs/design-flow/badges/huawei.png)](https://appgallery.huawei.com/#/app/C119179987) |
 
 [Privacy Policy {RU}](./docs/privacy_policy_ru.md), [Terms of User {RU}](./docs/terms_of_use_ru.md)
 
