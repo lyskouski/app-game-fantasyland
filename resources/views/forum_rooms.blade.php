@@ -11,20 +11,7 @@
         @foreach ($data as $header)
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b style="color:white">&nbsp;{{ $header['name'] }}&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $header['name'] }}</div>
             </div>
             <div class="main_middle">
                 <table border="1" background="https://www.fantasyland.ru/images/pic.new/battle_bg.jpg">

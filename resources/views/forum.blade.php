@@ -10,20 +10,7 @@
     <body>
         <div class="main main--light">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b style="color:white">&nbsp;{{ $title }}&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $title }}</div>
             </div>
             <div class="main_middle">
                 @foreach ($items as $item)
@@ -40,20 +27,7 @@
         @if ($hasForm)
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b style="color:white">&nbsp;Создать новую тему&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Создать новую тему</div>
             </div>
             <div class="main_middle">
                 <form method="POST" action="/cgi/forum.php?rid={{ $rid }}&p={{ $p }}">

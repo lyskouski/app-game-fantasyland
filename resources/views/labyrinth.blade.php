@@ -15,32 +15,19 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
+                <div class="main_top__header">
+                    <small>
+                        <b id="location">{{ $location['title'] }}:</b>
+                        &nbsp;
+                        <span id="source" data-id="{{ $location['id'] }}" onclick="getSource()">
+                            <img src="/images/lab/mob.gif" width="10" height="10" border="0" title="Мобы" />
+                            <span id="source_mob">?</span>
                             &nbsp;
-                            <small>
-                                <b id="location">{{ $location['title'] }}:</b>
-                                &nbsp;
-                                <span id="source" data-id="{{ $location['id'] }}" onclick="getSource()">
-                                    <img src="/images/lab/mob.gif" width="10" height="10" border="0" title="Мобы" />
-                                    <span id="source_mob">?</span>
-                                    &nbsp;
-                                    <img src="/images/lab/drop.gif" width="10" height="10" border="0" title="Дроп" />
-                                    <span id="source_drop">?</span>
-                                </span>
-                            </small>
-                            &nbsp;
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                            <img src="/images/lab/drop.gif" width="10" height="10" border="0" title="Дроп" />
+                            <span id="source_drop">?</span>
+                        </span>
+                    </small>
+                </div>
             </div>
             <div class="main_middle">
                 @foreach($active_potions as $item)
@@ -75,25 +62,14 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small>
-                                &nbsp;
-                                <b id="position" style="color:white">L-{{ $lvl }} ({{ $x }}, {{ $y }})</b>
-                                - бодрость: <span id="stamina">{{ $stamina }}</span>%
-                                &nbsp;
-                            </small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">
+                    <small>
+                        &nbsp;
+                        <b id="position" style="color:white">L-{{ $lvl }} ({{ $x }}, {{ $y }})</b>
+                        - бодрость: <span id="stamina">{{ $stamina }}</span>%
+                        &nbsp;
+                    </small>
+                </div>
             </div>
             <div class="main_middle">
                 <center>
@@ -123,20 +99,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Свитки&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Свитки</div>
             </div>
             <div class="main_middle">
                 @foreach($scrolls['items'] as $i => $item)
@@ -167,20 +130,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Зелья&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Зелья</div>
             </div>
             <div class="main_middle">
                 @foreach($potions['items'] as $i => $item)

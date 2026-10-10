@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Календарь&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Календарь</div>
             </div>
             <div class="main_middle">
                 @foreach($calendar as $item)
@@ -41,20 +28,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Почта&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Почта</div>
             </div>
             <div class="main_middle">
                 <script>
@@ -115,20 +89,7 @@
 
         <!-- div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;История&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">История</div>
             </div>
             <div class="main_middle">
                 <a href="/cgi/deal_info.php?myself">Сделки</a><br />
@@ -143,20 +104,7 @@
 
         <!-- div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Дневник заданий&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Дневник заданий</div>
             </div>
             <div class="main_middle">
                 ...
@@ -165,20 +113,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Блокнот&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Блокнот</div>
             </div>
             <div class="main_middle">
                 <form action="/cgi/pl_notebook.php" method="POST">

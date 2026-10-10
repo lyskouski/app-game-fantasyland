@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Карта Ледрака&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Карта Ледрака</div>
             </div>
             <div class="main_middle">
                 <img src="https://www.fantasyland.ru/images/places/map_new_3.png" width="100%" />
@@ -37,20 +24,7 @@
         @if ($timer != null)
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Время в пути&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Время в пути</div>
             </div>
             <div class="main_middle">
                 Направление: <strong>{{ $title }}</strong>, время в пути:&nbsp;
@@ -61,20 +35,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Локации для путешествий&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Локации для путешествий</div>
             </div>
             <div class="main_middle">
                 @foreach ($map as $location)

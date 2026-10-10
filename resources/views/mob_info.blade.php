@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_left.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;{{ $data['name'] }} [L{{ $data['level'] }}]&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_right.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $data['name'] }} [L{{ $data['level'] }}]</div>
             </div>
             <div class="main_middle">
                 <img src="{{ $data['image'] }}" width="100%" />
@@ -63,20 +50,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_left.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Активность&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_right.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Активность</div>
             </div>
             <div class="main_middle">
                 <b>Активность:</b> {{ $data['activity'] }}<br />
@@ -108,20 +82,7 @@
         @if(count($data['drop']))
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_left.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Дроп&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/miscellaneous/title_right.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Дроп</div>
             </div>
             <div class="main_middle">
                 <table width="100%">

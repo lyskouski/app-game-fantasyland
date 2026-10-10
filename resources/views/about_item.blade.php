@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small>&nbsp;<b>{{ $name }}</b>&nbsp;[Ур. {{ $lvl }}]&nbsp;</small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header"><b>{{ $name }}</b>&nbsp;[Ур. {{ $lvl }}]</div>
             </div>
             <div class="main_middle">
                 <img src="{{ $image }}" class="location" />
@@ -81,20 +68,9 @@
             @foreach($made as $group)
             <div class="main">
                 <div class="main_top">
-                    <table cellpadding="0" cellspacing="0" align="center">
-                        <tr>
-                            <td>
-                                <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                            </td>
-                            <td valign="top" class="cell_title">
-                                <small><b>&nbsp;{{ $group[0]['who_can'] }}&nbsp;</b></small>
-                            </td>
-                            <td>
-                                <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                            </td>
-                        </tr>
-                    </table>
-                    <br />
+                    <div class="main_top__header">
+                        <small>{{ $group[0]['who_can'] }}</small>
+                    </div>
                 </div>
                 <div class="main_middle">
                     <table width="100%">

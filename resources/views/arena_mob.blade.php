@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;{{ $title }}&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $title }}</div>
             </div>
             <div class="main_middle">
                 <img src="https://www.fantasyland.ru/{{ $image }}" class="location" />
@@ -38,20 +25,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Опции&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Опции</div>
             </div>
             <div class="main_middle">
                 @foreach ($map as $location)
@@ -88,20 +62,7 @@
         @if(isset($captcha))
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Тренировочный бой&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Тренировочный бой</div>
             </div>
             <div class="main_middle">
                 <form method="GET" action="/cgi/attack_mob.php">

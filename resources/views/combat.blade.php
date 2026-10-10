@@ -20,20 +20,7 @@
     </div>
     <div class="main">
         <div class="main_top">
-            <table cellpadding="0" cellspacing="0" align="center">
-                <tr>
-                    <td>
-                        <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                    </td>
-                    <td valign="top" class="cell_title">
-                        <small><b>&nbsp;Оппоненты в бою&nbsp;</b></small>
-                    </td>
-                    <td>
-                        <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                    </td>
-                </tr>
-            </table>
-            <br />
+            <div class="main_top__header">Оппоненты в бою</div>
         </div>
         <div class="main_middle">
             <template id="fight_template">
@@ -176,20 +163,7 @@
 
     <div class="main main--light">
         <div class="main_top">
-            <table cellpadding="0" cellspacing="0" align="center">
-                <tr>
-                    <td>
-                        <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                    </td>
-                    <td valign="top" class="cell_title">
-                        <small><b>&nbsp;Свитки и последователи&nbsp;</b></small>
-                    </td>
-                    <td>
-                        <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                    </td>
-                </tr>
-            </table>
-            <br />
+            <div class="main_top__header">Свитки и последователи</div>
         </div>
         <div class="main_middle">
             @foreach($scrolls as $i => $scroll)
@@ -225,5 +199,4 @@
     </div>
     <br />
 </body>
-
 </html>

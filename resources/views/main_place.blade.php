@@ -14,20 +14,7 @@
     <body>
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15" />
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;{{ $title }}&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $title }}</div>
             </div>
             <div class="main_middle">
                 <img src="https://www.fantasyland.ru/{{ $image }}" class="location" />
@@ -38,20 +25,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Локации для перехода&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Локации для перехода</div>
             </div>
             <div class="main_middle">
                 @foreach ($place as $location)
@@ -105,20 +79,7 @@
         @if (isset($buy))
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;{{ $title_tent ?? 'Магазин' }}&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">{{ $title_tent ?? 'Магазин' }}</div>
             </div>
             <div class="main_middle">
                 <div class="tab">
