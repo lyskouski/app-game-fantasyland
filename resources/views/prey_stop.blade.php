@@ -67,6 +67,13 @@
                 <br />
                 @if (isset($timer) && $timer > 0)
                 <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php?_={{ $timer }}';">-- : --</strong></p>
+                <br />
+                <p>
+                    <form action="/cgi/work_stop.php" method="GET">
+                        <input type="hidden" name="status" value="0" />&nbsp;
+                        <input type="submit" value="Остановить" />
+                    </form>
+                </p>
                 @else
                 <form action="/cgi/work_start.php" method="POST">
                     @csrf
