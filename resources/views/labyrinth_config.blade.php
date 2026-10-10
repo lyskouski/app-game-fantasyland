@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://www.fantasyland.ru/css/styles1.css" type="text/css" />
         @vite(['resources/css/index.css'])
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_top">
                 <div class="main_top__header">Очистка</div>
@@ -44,5 +44,5 @@
                 <br /><br />
             </div>
         </div>
-    </body>
+    </div></body>
 </html>

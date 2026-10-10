@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css', 'resources/js/timer.js'])
     </head>
-    <body>
+    <body><div class="body">
         @if($title)
         <div class="main">
             <div class="main_top">
@@ -51,5 +51,5 @@
                 </form>
             </div>
         </div>
-    </body>
+    </div></body>
 </html>

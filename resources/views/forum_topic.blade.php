@@ -7,7 +7,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css', 'resources/js/forum.js'])
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_middle">
                 <h2>{!! $title !!}</h2>
@@ -85,5 +85,5 @@
             </div>
         </div>
         @endif
-    </body>
+    </div></body>
 </html>

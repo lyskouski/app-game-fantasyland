@@ -1,16 +1,28 @@
 html, body {
     height: 100%;
-}
-
-html {
-    background: #666666 url("../images/ui/bg.jpg") repeat;
+    padding: 0;
+    margin: 0;
+    min-width: 100%;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 body {
     background: #666666 url("../images/ui/bg.jpg") repeat;
+    overflow-x: hidden;
+}
+
+.body {
     padding: 0;
     margin: 0;
-    overflow-x: hidden;
+    min-width: 100%;
+    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    box-sizing: border-box;
+    display: flow-root;
+    background: #666666 url("../images/ui/bg.jpg") repeat;
 }
 
 .header {
@@ -24,7 +36,7 @@ body {
     color: #F9D3B0;
 }
 
-input[type=submit] {
+input[type=submit], button {
     cursor: pointer;
     color:#000000;
     background: #cacac8;

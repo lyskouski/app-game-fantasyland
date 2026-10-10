@@ -13,7 +13,7 @@
     @vite(['resources/css/index.css', 'resources/js/swipe.js', 'resources/js/fight.js', 'resources/js/timer.js'])
 </head>
 
-<body>
+<body><div class="body">
     <button type="button" class="menu_toggle" onclick="toggleSidebar()">☰</button>
     <div id="menu_sidebar" class="menu_sidebar">
         <div id="combat_log_content"></div>
@@ -198,5 +198,5 @@
         </div>
     </div>
     <br />
-</body>
+</div></body>
 </html>

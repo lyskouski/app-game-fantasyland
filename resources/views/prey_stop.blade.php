@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css', 'resources/js/ping.js', 'resources/js/timer.js'])
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_top">
                 <div class="main_top__header">{{ $title }}</div>
@@ -77,5 +77,5 @@
                 @endif
             </div>
         </div>
-    </body>
+    </div></body>
 </html>

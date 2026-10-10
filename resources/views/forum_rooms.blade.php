@@ -7,7 +7,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css'])
     </head>
-    <body>
+    <body><div class="body">
         @foreach ($data as $header)
         <div class="main">
             <div class="main_top">
@@ -30,5 +30,5 @@
             </div>
         </div>
         @endforeach
-    </body>
+    </div></body>
 </html>

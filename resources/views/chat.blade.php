@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css', 'resources/js/swipe.js'])
     </head>
-    <body style="padding-bottom: 56px;">
+    <body><div class="body" style="padding-bottom: 56px;">
         <button type="button" class="menu_toggle" onclick="toggleSidebar()">☰</button>
         <div id="menu_sidebar" class="menu_sidebar">
             <div id="user-list">Загрузка...</div>
@@ -31,7 +31,7 @@
                 </center>
             </div>
         </div>
-        <br />
+
         <div class="main main--light">
             <div class="main_top">
                 <div class="main_top__header">Сообщения</div>
@@ -87,5 +87,5 @@
             window.getState();
             setInterval(window.getState, 5000);
         </script>
-    </body>
+    </div></body>
 </html>

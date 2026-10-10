@@ -9,9 +9,9 @@
         <link rel="stylesheet" href="https://www.fantasyland.ru/css/styles1.css" type="text/css" />
         <style type="text/css">TD {border-color:#555555;}</style>
     </head>
-    <body>
+    <body><div class="body">
         <br />
         <br />
         {!! $data !!}
-    </body>
+    </div></body>
 </html>

@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css'])
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_top">
                 <div class="main_top__header">Информация об армиях</div>
@@ -51,5 +51,5 @@
                 </script>
             </div>
         </div>
-    </body>
+    </div></body>
 </html>

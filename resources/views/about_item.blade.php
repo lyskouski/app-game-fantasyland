@@ -11,7 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         @vite(['resources/css/index.css'])
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_top">
                 <div class="main_top__header"><b>{{ $name }}</b>&nbsp;[Ур. {{ $lvl }}]</div>
@@ -103,5 +103,5 @@
             @endforeach
         @endif
         <a class="back" href="#back" onclick="history.back();">Вернуться назад</a>
-    </body>
+    </div></body>
 </html>

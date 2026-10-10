@@ -38,7 +38,7 @@
             }
         </script>
     </head>
-    <body>
+    <body><div class="body">
         <div class="main">
             <div class="main_top">
                 <div class="main_top__header">Деньги</div>
@@ -265,5 +265,5 @@
                 <a href="#0" onclick="wear_scrolls(0)">Снять все</a>
             </div>
         </div>
-    </body>
+    </div></body>
 </html>
