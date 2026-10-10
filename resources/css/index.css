@@ -69,6 +69,12 @@ body > .main:first-of-type {
 
 .main_middle {
     padding: 12px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.main_middle img {
+    max-width: 100%;
 }
 
 .main_middle img.location {
