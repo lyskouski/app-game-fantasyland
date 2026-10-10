@@ -18,7 +18,7 @@
                 @foreach ($header['items'] as $item)
                 <tr>
                     <td width="400" valign="top">
-                        <a href="{{ $item['link'] }}">{{ $item['name'] }}</a><br />
+                        <a href="{{ $item['link'] }}">{!! $item['name'] !!}</a><br />
                         <sub>{{ $item['description'] }}</sub>
                     </td>
                     <td width="250" valign="top">

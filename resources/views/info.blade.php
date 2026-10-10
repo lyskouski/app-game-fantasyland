@@ -16,7 +16,7 @@
             <div class="main_top">
                 <div class="main_top__header">{{ $user }}</div>
             </div>
-            <div class="main_middle" style="min-height: max(1000px, 100%, 100dvh);">
+            <div class="main_middle">
                 @foreach($data as $option)
                 <form method="POST" action="/cgi/change_info.php">
                     @csrf

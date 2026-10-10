@@ -29,9 +29,9 @@ class LocationParser
         }
         $image = '';
         if (preg_match('/<td[^>]*id="LocTd"[^>]*>.*?<img\s+src=[\'\"]([^\'\"]+)[\'\"]/s', $html, $imgMatch)) {
-            $image = $imgMatch[1];
+            $image = str_replace('/images/', '', $imgMatch[1]);
         }
-        return ['map' => $map, 'image' => $image, 'hasRoad' => strpos($html, 'map.php') !== false];
+        return ['map' => $map, 'image' => $image, 'hasRoad' => str_contains($html, 'map.php')];
     }
 
     private function extractNpcs(string $html): array {
@@ -66,19 +66,21 @@ class LocationParser
             $image = str_replace('..', '', $imgMatch[3]);
         } elseif (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {
             $image = str_replace('..', '', $imgMatch[2]);
+        } elseif (preg_match('/<img\b[^>]*\bsrc=(["\'])[^"\']*?\/(images\/places\/[^"\']+)\1/i', $html, $imgMatch)) {
+            $image = $imgMatch[2];
         }
         $map = [];
         if (preg_match_all("/<A[^>]*HREF=\s*['\"]\\s*javascript:goTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $goToMatches, PREG_SET_ORDER)) {
             foreach ($goToMatches as $m) {
                 $id = (int)$m[1];
-                $loc = trim($m[2]);
+                $loc = trim(html_entity_decode($m[2]));
                 $map[] = ['loc' => $loc, 'id' => $id];
             }
         }
         if (preg_match_all('/<button[^>]+onClick=["\']goTo\((\d+)\)["\'][^>]*>([^<]*)<\/button>/i', $html, $btnMatches, PREG_SET_ORDER)) {
             foreach ($btnMatches as $m) {
-                $loc = trim($m[2]);
                 $id = (int)$m[1];
+                $loc = trim(html_entity_decode($m[2]));
                 $map[] = ['loc' => $loc ?: 'Обновить', 'id' => $id];
             }
         }
@@ -86,7 +88,7 @@ class LocationParser
         if (preg_match_all("/<A[^>]*HREF=['\"]javascript:regimeTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $regimeToMatches, PREG_SET_ORDER)) {
             foreach ($regimeToMatches as $m) {
                 $id = (int)$m[1];
-                $loc = trim($m[2]);
+                $loc = trim(html_entity_decode($m[2]));
                 $place[] = ['loc' => $loc, 'id' => $id];
             }
         }

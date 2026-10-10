@@ -31,7 +31,7 @@
                     @csrf
                     <input type="hidden" name="locat" value="{{ $location['id'] }}" />
                     <input type="hidden" name="additional" value="0" />
-                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
+                    <button type="submit" style="width: 100%;">{!! $location['loc'] !!}</button>
                 </form>
                 @endforeach
                 @if (isset($hasRoad) && $hasRoad)

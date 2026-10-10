@@ -10,7 +10,7 @@
     <body><div class="body">
         <div class="main main--light">
             <div class="main_top">
-                <div class="main_top__header">{{ $title }}</div>
+                <div class="main_top__header">{!! $title !!}</div>
             </div>
             <div class="main_middle">
                 @foreach ($items as $item)

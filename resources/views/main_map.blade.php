@@ -45,7 +45,7 @@
                     <input type="hidden" name="place_de" value="{{ $location['id'] }}" />
                     <input type="hidden" name="posted" value="1" />
                     <input type="hidden" name="attack" value="0" />
-                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
+                    <button type="submit" style="width: 100%;">{!! $location['loc'] !!}</button>
                 </form>
                 @endforeach
                 <br />
