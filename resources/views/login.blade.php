@@ -18,20 +18,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Авторизация&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Авторизация</div>
             </div>
             <div class="main_middle">
                 <form method="POST" action="/login.php">
@@ -42,7 +29,7 @@
                                 <b>Логин:</b>
                             </td>
                             <td>
-                                <input name="login" size="16" value="{{ $login }}" />
+                                <input type="text" name="login" size="16" value="{{ $login }}" />
                             </td>
                         </tr>
                         <tr>
@@ -73,20 +60,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Регистрация&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Регистрация</div>
             </div>
             <div class="main_middle">
                 <form method="GET" action="/registration">
@@ -98,20 +72,7 @@
 
         <div class="main">
             <div class="main_top">
-                <table cellpadding="0" cellspacing="0" align="center">
-                    <tr>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_l.gif" width="30" height="15">
-                        </td>
-                        <td valign="top" class="cell_title">
-                            <small><b>&nbsp;Гостевой вход&nbsp;</b></small>
-                        </td>
-                        <td>
-                            <img src="https://www.fantasyland.ru/images/buttons/tab_r.gif" width="30" height="15">
-                        </td>
-                    </tr>
-                </table>
-                <br />
+                <div class="main_top__header">Гостевой вход</div>
             </div>
             <div class="main_middle">
                 <form method="GET" action="/guestlogin.php">

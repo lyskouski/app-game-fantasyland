@@ -38,23 +38,23 @@
                         </tr>
                         <tr>
                             <td class="cell" width="80" align="left">
-                                <b>Имя персонажа:</b>
+                                Имя персонажа:
                             </td>
                             <td>
-                                <input name=login size="16" />
+                                <input type="text" name="login" size="16" />
                             </td>
                         </tr>
                         <tr>
                             <td class="cell" width="80" align="left">
-                                <b>Пароль:</b>
+                                Пароль:
                             </td>
                             <td>
-                                <input type=password name=pwd size="16" />
+                                <input type="password" name="pwd" size="16" />
                             </td>
                         </tr>
                         <tr>
                             <td class="cell" width="80" align="left">
-                                <b>Email:</b>
+                                Email:
                             </td>
                             <td>
                                 <input type="email" name="email" size="16" />
@@ -62,7 +62,7 @@
                         </tr>
                         <tr>
                             <td class="cell" width="80" align="left">
-                                <b>Пол:</b>
+                                Пол:
                             </td>
                             <td>
                                 <input type="radio" name="sex" value="m" checked="">Мужской
@@ -72,21 +72,24 @@
                         </tr>
                         <tr>
                             <td class="cell" width="80" align="left">
-                                <b>Пригласил:</b>
+                                Пригласил:
                             </td>
                             <td>
-                                <input name="inv_login" size="16" value="Росомаха" />
+                                <input type="text" name="inv_login" size="16" value="Росомаха" />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="cell" width="80" align="left">
-                                <input name="rules" type="checkbox" />
-                                &nbsp;Обязуюсь соблюдать <a href="/rules.php">Правила</a> Лиги Героев!
+                                <input type="checkbox" name="rules" />
+                                <small>
+                                    Обязуюсь соблюдать
+                                    <a href="/rules.php">Правила</a> Лиги Героев!
+                                </small>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="cell" width="100" align="right">
-                                <input type=submit name=submit value="Регистрация" />
+                                <input type="submit" name="submit" value="Регистрация" />
                             </td>
                         </tr>
                     </table>
