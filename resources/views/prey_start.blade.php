@@ -54,7 +54,7 @@
             <div class="main_middle">
                 <p>{{ $data }}</p>
                 <br />
-                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php';">-- : --</strong></p>
+                <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php?_={{ $timer }}';">-- : --</strong></p>
                 <br />
                 <p>
                     <form action="/cgi/work_stop.php" method="GET">
