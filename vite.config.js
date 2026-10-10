@@ -24,6 +24,10 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        // The native webview can't reliably fetch separate image files, so inline the small UI images.
+        assetsInlineLimit: 16384,
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

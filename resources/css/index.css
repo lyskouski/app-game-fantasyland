@@ -2,6 +2,10 @@ html, body {
     height: 100%;
 }
 
+html {
+    background: #666666 url("../images/ui/bg.jpg") repeat;
+}
+
 body {
     background: #666666 url("../images/ui/bg.jpg") repeat;
     padding: 0;
