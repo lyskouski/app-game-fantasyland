@@ -41,11 +41,12 @@
                 <p class="item">
                     <small>
                         <span
-                        @if(str_contains($item->message, $me))
-                        style="color: maroon; font-weight: bold;"
-                        @endif
+                            onclick="claim('{{ $item->id }}')"
+                            @if(str_contains($item->message, $me))
+                            style="color: maroon; font-weight: bold;"
+                            @endif
                         >[{{ $item->created_at->format('H:i') }}]</span>&nbsp;
-                        {!! $item->message !!}
+                        <span id="mssg{{ $item->id }}">{!! $item->message !!}</span>
                     </small>
                 </p>
                 @endforeach
@@ -58,6 +59,17 @@
             <button type="submit" class="button">Отправить</button>
         </form>
         <script>
+            window.claim = function (id) {
+                const el = document.getElementById('mssg' + id);
+                const text = el.textContent;
+                if (confirm('Хотите пожаловаться? Сообщение: ' + text)) {
+                    fetch('/cgi/claim?id=' + id)
+                        .then((response) => response.text())
+                        .then((text) => alert(text));
+                    el.innerHTML = '-- жалоба отправлена --';
+                }
+            };
+
             window.getState = function () {
                 fetch('/ch/chout.php')
                     .then((response) => response.text())

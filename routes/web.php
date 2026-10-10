@@ -85,6 +85,7 @@ Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
 Route::get('/ch/chout.php', [ChatController::class, 'messages']);
 Route::get('/chat/clear', [ChatController::class, 'clear']);
 Route::get('/chinp', [ChatController::class, 'send']);
+Route::get('/cgi/claim', [ChatController::class, 'claim']);
 
 // Mining
 Route::get('/cgi/work_stop.php', [PreyController::class, 'stop']);

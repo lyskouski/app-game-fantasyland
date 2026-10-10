@@ -39,4 +39,28 @@ final class ChatController extends Controller
         $this->get('chinp');
         return redirect('/ch/chout.php');
     }
+
+    public function claim() {
+        $id = request()->query('id');
+        $notification = Notification::where('id', $id)->get();
+        if ($notification->isEmpty()) {
+            return response('Сообщение не найдено...');
+        } else {
+            // "<b>{$user}:</b> {$message}"
+            $message = strip_tags($notification->first()->message);
+            $user = '';
+            if (str_contains($message, ':')) {
+                $a = explode(':', $message, 2);
+                $user = $a[0];
+                $message = $a[1];
+            }
+            $data = [
+                'msg' => $message,
+                'who' => $user,
+            ];
+            $this->post('cgi/claim.php', [], $data);
+            Notification::where('id', $id)->delete();
+        }
+        return response('Жалоба отправлена');
+    }
 }
