@@ -35,6 +35,7 @@ Unofficial client to Liga of Heroes (fantasyland.ru) made by Citadel (https://ww
 <img alt="Tent Selection" style="border-width:0;width:200px" src="./docs/design-flow/store_4.jpg" /> . <img alt="Labyrinth with doors" style="border-width:0;width:200px" src="./docs/design-flow/lab_3.jpg" /> . <img alt="Arena Training" style="border-width:0;width:200px" src="./docs/design-flow/arena_1.jpg" /> . <img alt="Arena Training" style="border-width:0;width:200px" src="./docs/design-flow/arena_2.jpg" />
 <img alt="Detailed info: Items" style="border-width:0;width:200px" src="./docs/design-flow/info_7.jpg" /> . <img alt="Detailed info: Army" style="border-width:0;width:200px" src="./docs/design-flow/info_8.jpg" /> . <img alt="Detailed Fight Panel" style="border-width:0;width:200px" src="./docs/design-flow/fight_1.jpg" /> . <img alt="Fight Panel" style="border-width:0;width:200px" src="./docs/design-flow/fight_2.jpg" />
 <img alt="Fight Flow" style="border-width:0;width:200px" src="./docs/design-flow/fight_3.jpg" /> . <img alt="Fight Logs" style="border-width:0;width:200px" src="./docs/design-flow/fight_4.jpg" /> . <img alt="Mob Info" style="border-width:0;width:200px" src="./docs/design-flow/mob_info.jpg" /> . <img alt="User List in Chat" style="border-width:0;width:200px" src="./docs/design-flow/chat_3.jpg" />
+<img alt="Mining / craft" style="border-width:0;width:200px" src="./docs/design-flow/mining_2.jpg" /> .
 
 ## Support (Sponsorship)
 
