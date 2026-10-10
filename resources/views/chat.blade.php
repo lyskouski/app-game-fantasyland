@@ -36,7 +36,7 @@
             <div class="main_top">
                 <div class="main_top__header">Сообщения</div>
             </div>
-            <div class="main_middle" id="chat-messages">
+            <div class="main_middle" id="chat-messages" style="min-height: max(1000px, 100%, 100dvh);">
                 @foreach($data as $item)
                 <p class="item">
                     <small>
