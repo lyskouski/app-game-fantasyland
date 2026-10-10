@@ -8,19 +8,11 @@ use App\Settings\Defines;
 
 class PreyParser
 {
-    public function parse(string $html, string $captcha) {
+    public function parse(string $html) {
         $content = '';
         if (preg_match('/<HR>(.*?)<\/TD><\/TR><\/TABLE>/is', $html, $matches)) {
-            $content = $matches[1];
-            $content = str_replace('action="work_start.php"', 'action="/cgi/work_start.php"', $content);
-            $content = str_replace('../images', Defines::URL . 'images', $content);
-            $content = preg_replace_callback(
-                "/<IMG\s+SRC='png.php\?c=(\d+)'([^>]*)>/i",
-                function ($m) use ($captcha) {
-                    return "<img src='" . $captcha . "'" . $m[2] . ">&nbsp;<input type='submit' value='>>' />";
-                },
-                $content
-            );
+            $content = strip_tags($matches[1]);
+            $content = str_replace('&nbsp;', ' ', $content);
         }
         $image = '';
         if (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {

@@ -13,7 +13,12 @@ final class PreyController extends Controller
 {
     public function stop() {
         $data = request()->all();
-        $html = $this->get('cgi/work_stop.php', $data);
+        $html = '';
+        if (empty($data)) {
+            $html = $this->get('cgi/no_combat.php');
+        } else {
+            $html = $this->get('cgi/work_stop.php', $data);
+        }
         Notification::addIfExists($html);
         $loc = new LocationParser();
         if (str_contains($html, 'craft_favorite_ref.php')) {
@@ -25,25 +30,32 @@ final class PreyController extends Controller
         }
         return view('prey_stop', [
             ...$loc->onPlace($html),
-            ...(new PreyParser)->parse($html, $this->captcha(time()))
+            ...(new PreyParser)->parse($html),
+            'captcha' => $this->captcha(time())
         ]);
     }
 
     public function run() {
         $html = $this->post('cgi/work_start.php', []);
         Notification::addIfExists($html);
+        if (str_contains($html, 'png.php?c=')) {
+            return redirect('/cgi/work_stop.php');
+        }
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
-            ...(new PreyParser)->parse($html, $this->captcha(time()))
+            ...(new PreyParser)->parse($html)
         ]);
     }
 
     public function start() {
-        $html = $this->get('cgi/work_start.php', []);
+        $html = $this->get('cgi/no_combat.php', []);
         Notification::addIfExists($html);
+        if (str_contains($html, 'png.php?c=')) {
+            return redirect('/cgi/work_stop.php');
+        }
         return view('prey_start', [
             ...(new LocationParser)->onPlace($html),
-            ...(new PreyParser)->parse($html, $this->captcha(time()))
+            ...(new PreyParser)->parse($html)
         ]);
     }
 

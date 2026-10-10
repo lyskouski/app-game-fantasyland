@@ -52,9 +52,16 @@
                 <br />
             </div>
             <div class="main_middle">
-                <div>{!! $data !!}</div>
+                <p>{{ $data }}</p>
                 <br />
                 <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php';">-- : --</strong></p>
+                <br />
+                <p>
+                    <form action="/cgi/work_stop.php" method="GET">
+                        <input type="hidden" name="status" value="0" />&nbsp;
+                        <input type="submit" value="Остановить" />
+                    </form>
+                </p>
             </div>
         </div>
     </body>

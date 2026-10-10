@@ -44,19 +44,9 @@ final class MainController extends Controller
                 'main_killed',
                 $this->locationParser->getKilledState($html)
             ),
-            'work_stop.php' => fn($html) => view('prey_start', [
-                ...$this->locationParser->onPlace($html),
-                ...$this->preyParser->parse($html, $this->captcha(time()))
-            ]),
-            'craft_favorite_ref.php' => fn($html) => view('craft_stop', [
-                ...$this->locationParser->onPlace($html),
-                ...(new CraftParser)->parse($html),
-                'captcha' => $this->captcha(time())
-            ]),
-            'work_start.php' => fn($html) => view('prey_stop', [
-                ...$this->locationParser->onPlace($html),
-                ...$this->preyParser->parse($html, $this->captcha(time()))
-            ]),
+            'work_stop.php' => fn($html) => redirect('/cgi/work_start.php'),
+            'craft_favorite_ref.php' => fn($html) => redirect('/cgi/work_stop.php'),
+            'work_start.php' => fn($html) => redirect('/cgi/work_stop.php'),
             '/cgi/maze_move.php' => fn($html) => redirect('/labyrinth'),
             'src="mc_main.php"' => fn($html) => redirect('/cgi/mc_main.php'),
             "action='v_trade_search.php'" => fn($html) => $this->marketplace($html),

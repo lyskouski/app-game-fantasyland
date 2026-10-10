@@ -102,10 +102,17 @@
                 <br />
             </div>
             <div class="main_middle">
-                {!! $data !!}
-                @if (isset($timer) && $timer > 0)
+                <p>{{ $data }}</p>
                 <br />
+                @if (isset($timer) && $timer > 0)
                 <p>Время ожидания: <strong id="timer" data-seconds="{{ $timer }}" onclick="window.location = '/cgi/work_stop.php';">-- : --</strong></p>
+                @else
+                <form action="/cgi/work_start.php" method="POST">
+                    @csrf
+                    <img src="{!! $captcha !!}" width="90" height="40" align="absmiddle" />&nbsp;
+                    <input type="text" name="value" size="6" autocomplete="off" inputmode="numeric" />&nbsp;
+                    <input type="submit" value=">>" />
+                </form>
                 @endif
             </div>
         </div>
