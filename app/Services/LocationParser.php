@@ -12,7 +12,7 @@ class LocationParser
             foreach ($matches as $m) {
                 $loc = $m[3];
                 $id = (int)$m[4];
-                $map[] = ['loc' => $loc, 'id' => $id];
+                $map[] = ['loc' => $loc, 'id' => $id, 'additional' => 0];
             }
         } elseif (preg_match_all('/<area[^>]+href=["\']javascript:\s*goTo\((\d+)\);?["\'][^>]+onmousemove=["\']ToolTipShow\(([^)]*)\)/i', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
@@ -24,7 +24,7 @@ class LocationParser
                 } else {
                     $loc = '';
                 }
-                $map[] = ['loc' => $loc, 'id' => $id];
+                $map[] = ['loc' => $loc, 'id' => $id, 'additional' => 0];
             }
         }
         $image = '';
@@ -74,14 +74,22 @@ class LocationParser
             foreach ($goToMatches as $m) {
                 $id = (int)$m[1];
                 $loc = trim(html_entity_decode($m[2]));
-                $map[] = ['loc' => $loc, 'id' => $id];
+                $map[] = ['loc' => $loc, 'id' => $id, 'additional' => 0];
+            }
+        }
+        if (preg_match_all("/<A[^>]*HREF=\s*['\"]\\s*javascript:document\\.location_select\\.additional\\.value\s*=\s*(\d+)\s*;\s*goTo\((\d+)\);?\s*['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $additionalGoToMatches, PREG_SET_ORDER)) {
+            foreach ($additionalGoToMatches as $m) {
+                $additional = (int)$m[1];
+                $id = (int)$m[2];
+                $loc = trim(html_entity_decode($m[3]));
+                $map[] = ['loc' => $loc, 'id' => $id, 'additional' => $additional];
             }
         }
         if (preg_match_all('/<button[^>]+onClick=["\']goTo\((\d+)\)["\'][^>]*>([^<]*)<\/button>/i', $html, $btnMatches, PREG_SET_ORDER)) {
             foreach ($btnMatches as $m) {
                 $id = (int)$m[1];
                 $loc = trim(html_entity_decode($m[2]));
-                $map[] = ['loc' => $loc ?: 'Обновить', 'id' => $id];
+                $map[] = ['loc' => $loc ?: 'Обновить', 'id' => $id, 'additional' => 0];
             }
         }
         $place = [];
@@ -89,7 +97,7 @@ class LocationParser
             foreach ($regimeToMatches as $m) {
                 $id = (int)$m[1];
                 $loc = trim(html_entity_decode($m[2]));
-                $place[] = ['loc' => $loc, 'id' => $id];
+                $place[] = ['loc' => $loc, 'id' => $id, 'additional' => 0];
             }
         }
         $description = '';

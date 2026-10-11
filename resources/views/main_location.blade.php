@@ -30,7 +30,7 @@
                 <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
                     @csrf
                     <input type="hidden" name="locat" value="{{ $location['id'] }}" />
-                    <input type="hidden" name="additional" value="0" />
+                    <input type="hidden" name="additional" value="{{ $location['additional'] }}" />
                     <button type="submit" style="width: 100%;">{!! $location['loc'] !!}</button>
                 </form>
                 @endforeach
