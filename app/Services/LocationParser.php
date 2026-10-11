@@ -31,6 +31,7 @@ class LocationParser
         if (preg_match('/<td[^>]*id="LocTd"[^>]*>.*?<img\s+src=[\'\"]([^\'\"]+)[\'\"]/s', $html, $imgMatch)) {
             $image = str_replace('/images/', '', $imgMatch[1]);
         }
+        $image = ltrim($image, '.');
         return ['map' => $map, 'image' => $image, 'hasRoad' => str_contains($html, 'map.php')];
     }
 
@@ -63,12 +64,13 @@ class LocationParser
         }
         $image = '';
         if (preg_match('/<image[^>]*class=(["\'])?cssLocImage\1?[^>]*src=(["\'])([^"\']+)\2/i', $html, $imgMatch)) {
-            $image = str_replace('..', '', $imgMatch[3]);
+            $image = $imgMatch[3];
         } elseif (preg_match('/<image[^>]*src=(["\'])([^"\']+)\1/i', $html, $imgMatch)) {
-            $image = str_replace('..', '', $imgMatch[2]);
+            $image = $imgMatch[2];
         } elseif (preg_match('/<img\b[^>]*\bsrc=(["\'])[^"\']*?\/(images\/places\/[^"\']+)\1/i', $html, $imgMatch)) {
             $image = $imgMatch[2];
         }
+        $image = ltrim($image, '.');
         $map = [];
         if (preg_match_all("/<A[^>]*HREF=\s*['\"]\\s*javascript:goTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $goToMatches, PREG_SET_ORDER)) {
             foreach ($goToMatches as $m) {
