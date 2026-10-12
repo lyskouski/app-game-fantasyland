@@ -27,6 +27,16 @@ final class ChatController extends Controller
         }
         $me = (new ChatParser)->getOwnName($html);
         $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
+        for ($i = 0; $i < $data->count(); $i++) {
+            $mssg = $data[$i]->message;
+            $mssg = str_replace('<b>', '<b onclick="reply(this)">', $mssg);
+            $mssg = preg_replace(
+                '/priv\(([^)]+)\)/',
+                '<b style="color:maroon" onclick="reply(this)">priv($1)</b>',
+                $mssg
+            );
+            $data[$i]->message = $mssg;
+        }
         return view('chat', ['data' => $data, 'me' => $me]);
     }
 

@@ -70,6 +70,13 @@
                 }
             };
 
+            window.reply = function (el) {
+                const text = el.textContent;
+                const input = document.getElementById('chat_message');
+                input.value = text.replace(':', ',') + ' ' + input.value;
+                input.focus();
+            };
+
             window.getState = function () {
                 fetch('/ch/chout.php')
                     .then((response) => response.text())
