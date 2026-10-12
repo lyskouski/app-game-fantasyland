@@ -11,13 +11,9 @@ final class QuestController extends Controller
 {
     public function index() {
         $content = $this->get('cgi/mc_main.php');
+        $content .= $this->get('/cgi/mc_hid.php');
         Notification::addIfExists($content);
-        $hid = $this->get('/cgi/mc_hid.php');
-        if (str_contains($content, 'mc_hid.php')) {
-           $hid .= $this->get('/cgi/mc_hid.php');
-        }
-        Notification::addIfExists($hid);
-        return view('quest', (new QuestParser)->getQuest($content . $hid));
+        return view('quest', (new QuestParser)->getQuest($content));
     }
 
     public function action() {

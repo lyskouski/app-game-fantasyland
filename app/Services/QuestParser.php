@@ -33,6 +33,18 @@ class QuestParser
                 }
             }
         }
+        $pattern = '/parent\.mc\.re_c\s*\(\s*"([^"]*)"\s*,\s*(\d+)\s*,\s*"([^"]*)"\s*,\s*"([^"]*)"\s*\)/';
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $result['actions'][] = [
+                    'text' => $match[1],
+                    'id' => (int)$match[2],
+                    'extra' => $match[4],
+                    'option' => '',
+                    'confirm' => $match[3],
+                ];
+            }
+        }
         $pattern = '/parent\.mc\.re\s*\(\s*"([^"]*)"\s*,\s*(\d+)\s*,\s*"([^"]*)"\s*\)/';
         if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
