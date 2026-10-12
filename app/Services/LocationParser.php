@@ -95,7 +95,7 @@ class LocationParser
             }
         }
         $place = [];
-        if (preg_match_all("/<A[^>]*HREF=['\"]javascript:regimeTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)<\/TD>/is", $html, $regimeToMatches, PREG_SET_ORDER)) {
+        if (preg_match_all("/<A[^>]*HREF=['\"]javascript:regimeTo\((\d+)\)['\"][^>]*>.*?<\/A>.*?<TD>([^<]+)(?:<\/TD>|<\/TR>)/is", $html, $regimeToMatches, PREG_SET_ORDER)) {
             foreach ($regimeToMatches as $m) {
                 $id = (int)$m[1];
                 $loc = trim(html_entity_decode($m[2]));
