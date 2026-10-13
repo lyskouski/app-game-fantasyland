@@ -6,22 +6,22 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
-        "nativephp/mobile": "^4.3",
-        "nativephp/mobile-ui": "^0.4.0",
+        "php": "^8.4",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
+        "nativephp/mobile": "^4.6",
+        "nativephp/mobile-ui": "^0.8",
         "srwiez/nativephp-mobile-screen": "^2.0"
     },
     "require-dev": {
-        "carthage-software/mago": "^1.26.0",
+        "carthage-software/mago": "^1.56.3",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.24",
-        "laravel/sail": "^1.41",
+        "laravel/pint": "^1.32",
+        "laravel/sail": "^1.69",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^13.4"
     },
     "autoload": {
         "psr-4": {

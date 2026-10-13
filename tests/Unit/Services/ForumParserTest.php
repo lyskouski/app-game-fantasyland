@@ -7,6 +7,7 @@
 namespace Tests\Unit\Services;
 
 use App\Services\ForumParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ForumParserTest extends TestCase
@@ -49,12 +50,10 @@ class ForumParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider forumDataProvider
-     */
+    #[DataProvider('forumDataProvider')]
     public function testParsePagingBlock(string $html, array $shouldNotContain, array $shouldContain, string $description): void
     {
-        $result = $this->parser->parseTopic($html)['pages'];
+        $result = $this->parser->parseTopic($html, '')['pages'];
         $this->assertNotEmpty($result, $description);
 
         $titles = array_column($result, 'title');
@@ -68,4 +67,3 @@ class ForumParserTest extends TestCase
         }
     }
 }
-
