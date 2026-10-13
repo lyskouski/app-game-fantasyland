@@ -39,5 +39,28 @@
                 </form>
             </div>
         </div>
+
+        <div class="main">
+            <div class="main_top">
+                <div class="main_top__header">Управление</div>
+            </div>
+            <div class="main_middle">
+                <form method="GET" action="/account/password">
+                    @csrf
+                    <input type="submit" style="width:100%" value="Смена пароля" />
+                </form>
+                <br />
+                <form method="GET" action="/account/email">
+                    @csrf
+                    <input type="submit" style="width:100%" value="Смена email" />
+                </form>
+                <br />
+                <br />
+                <form method="GET" action="/account/delete">
+                    @csrf
+                    <input type="submit" style="width:100%" value="Удалить аккаунт" />
+                </form>
+            </div>
+        </div>
     </div></body>
 </html>

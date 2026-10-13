@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ArenaController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CitadelController;
@@ -121,6 +122,13 @@ Route::get('/cgi/set_wear.php', [InfoController::class, 'setWear']);
 Route::get('/cgi/set_save.php', [InfoController::class, 'setSave']);
 Route::get('/cgi/scrolls_set_save.php', [InfoController::class, 'scrollsSetSave']);
 Route::get('/cgi/scrolls_set_wear.php', [InfoController::class, 'scrollsSetWear']);
+// Account management
+Route::get('/account/password', [AccountController::class, 'changePasswordForm']);
+Route::post('/account/password', [AccountController::class, 'changePassword']);
+Route::get('/account/email', [AccountController::class, 'changeEmailForm']);
+Route::post('/account/email', [AccountController::class, 'changeEmail']);
+Route::get('/account/delete', [AccountController::class, 'deleteAccountForm']);
+Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
 
 // Labyrinth
 Route::get('/labyrinth', [LabController::class, 'index']);
