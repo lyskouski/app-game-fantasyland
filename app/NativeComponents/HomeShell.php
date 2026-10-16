@@ -13,14 +13,46 @@ class HomeShell extends NativeComponent
 {
     public const SHELL_PID_KEY = 'native_shell_pid';
 
+    public string $activeTab = 'home';
+
     public function mount(): void
     {
         Cache::forever(self::SHELL_PID_KEY, getmypid());
         Screen::keepAwake();
     }
 
+    public function showProfile(): void
+    {
+        $this->activeTab = 'profile';
+    }
+
+    public function showHome(): void
+    {
+        $this->activeTab = 'home';
+    }
+
+    public function showChat(): void
+    {
+        $this->activeTab = 'chat';
+    }
+
+    public function showForum(): void
+    {
+        $this->activeTab = 'forum';
+    }
+
+    public function source(): string
+    {
+        return match ($this->activeTab) {
+            'profile' => '/cgi/show_info.php',
+            'home' => '/cgi/no_combat.php',
+            'chat' => '/ch/chout.php',
+            'forum' => '/cgi/forum_rooms.php',
+        };
+    }
+
     public function render(): View
     {
-        return view('native.home');
+        return view('native.home', ['src' => $this->source()]);
     }
 }

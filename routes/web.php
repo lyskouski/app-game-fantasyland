@@ -15,19 +15,13 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\PreyController;
 use App\Http\Controllers\QuestController;
 use App\Http\Controllers\StoreController;
-use App\NativeComponents\ChatShell;
-use App\NativeComponents\ForumShell;
 use App\NativeComponents\HomeShell;
-use App\NativeComponents\ProfileShell;
 use App\NativeComponents\NavigationLayout;
 use Illuminate\Support\Facades\Route;
 
 
 Route::nativeGroup(NavigationLayout::class, function () {
     Route::native('/shell/home', HomeShell::class);
-    Route::native('/shell/chat', ChatShell::class);
-    Route::native('/shell/forum', ForumShell::class);
-    Route::native('/shell/profile', ProfileShell::class);
 });
 
 // Authentication routes

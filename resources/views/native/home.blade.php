@@ -1,1 +1,1 @@
-<native:webview php src="/cgi/no_combat.php" fullscreen />
+<native:webview php src="{{ $src }}" fullscreen />
