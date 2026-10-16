@@ -16,7 +16,7 @@ class NavigationLayout extends NativeLayout
     {
         $activeTab = $screen instanceof HomeShell ? $screen->activeTab : HomeShell::TAB_HOME;
 
-        return TabBar::make()
+        return (new ShellTabBar)
             ->dark()
             ->activeColor('#0891b2')
             ->labelVisibility('labeled')

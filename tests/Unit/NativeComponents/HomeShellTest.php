@@ -3,6 +3,7 @@
 namespace Tests\Unit\NativeComponents;
 
 use App\NativeComponents\HomeShell;
+use App\NativeComponents\NavigationLayout;
 use PHPUnit\Framework\TestCase;
 
 class HomeShellTest extends TestCase
@@ -26,5 +27,17 @@ class HomeShellTest extends TestCase
             $this->assertSame($activeTab, $screen->activeTab);
             $this->assertSame($source, $screen->source());
         }
+    }
+
+    public function test_active_tab_stays_highlighted_after_framework_highlight(): void
+    {
+        $screen = new HomeShell;
+        $screen->showChat();
+
+        $bar = (new NavigationLayout)->tabBar($screen)->highlight('/shell/home');
+
+        $active = array_map(fn ($item) => $item->isActive(), $bar->tabElements());
+
+        $this->assertSame([false, false, true, false], $active);
     }
 }
