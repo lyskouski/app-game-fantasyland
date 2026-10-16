@@ -13,7 +13,12 @@ class HomeShell extends NativeComponent
 {
     public const SHELL_PID_KEY = 'native_shell_pid';
 
-    public string $activeTab = 'home';
+    public const TAB_PROFILE = 'profile';
+    public const TAB_HOME = 'home';
+    public const TAB_CHAT = 'chat';
+    public const TAB_FORUM = 'forum';
+
+    public string $activeTab = self::TAB_HOME;
 
     public function mount(): void
     {
@@ -23,31 +28,31 @@ class HomeShell extends NativeComponent
 
     public function showProfile(): void
     {
-        $this->activeTab = 'profile';
+        $this->activeTab = self::TAB_PROFILE;
     }
 
     public function showHome(): void
     {
-        $this->activeTab = 'home';
+        $this->activeTab = self::TAB_HOME;
     }
 
     public function showChat(): void
     {
-        $this->activeTab = 'chat';
+        $this->activeTab = self::TAB_CHAT;
     }
 
     public function showForum(): void
     {
-        $this->activeTab = 'forum';
+        $this->activeTab = self::TAB_FORUM;
     }
 
     public function source(): string
     {
         return match ($this->activeTab) {
-            'profile' => '/cgi/show_info.php',
-            'home' => '/cgi/no_combat.php',
-            'chat' => '/ch/chout.php',
-            'forum' => '/cgi/forum_rooms.php',
+            self::TAB_PROFILE => '/cgi/show_info.php',
+            self::TAB_HOME => '/cgi/no_combat.php',
+            self::TAB_CHAT => '/ch/chout.php',
+            self::TAB_FORUM => '/cgi/forum_rooms.php',
         };
     }
 

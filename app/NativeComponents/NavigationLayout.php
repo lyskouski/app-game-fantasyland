@@ -14,15 +14,15 @@ class NavigationLayout extends NativeLayout
 {
     public function tabBar(NativeComponent $screen): ?TabBar
     {
-        $activeTab = $screen instanceof HomeShell ? $screen->activeTab : 'home';
+        $activeTab = $screen instanceof HomeShell ? $screen->activeTab : HomeShell::TAB_HOME;
 
         return TabBar::make()
             ->dark()
             ->activeColor('#0891b2')
             ->labelVisibility('labeled')
-            ->add(Tab::action('Профиль', icon: 'person')->press('showProfile')->active($activeTab === 'profile'))
-            ->add(Tab::action('Главная', icon: 'home')->press('showHome')->active($activeTab === 'home'))
-            ->add(Tab::action('Чат', icon: 'chat_bubble')->press('showChat')->active($activeTab === 'chat'))
-            ->add(Tab::action('Форум', icon: 'forum')->press('showForum')->active($activeTab === 'forum'));
+            ->add(Tab::action('Профиль', icon: 'person')->press('showProfile')->active($activeTab === HomeShell::TAB_PROFILE))
+            ->add(Tab::action('Главная', icon: 'home')->press('showHome')->active($activeTab === HomeShell::TAB_HOME))
+            ->add(Tab::action('Чат', icon: 'chat_bubble')->press('showChat')->active($activeTab === HomeShell::TAB_CHAT))
+            ->add(Tab::action('Форум', icon: 'forum')->press('showForum')->active($activeTab === HomeShell::TAB_FORUM));
     }
 }
