@@ -40,4 +40,19 @@ class HomeShellTest extends TestCase
 
         $this->assertSame([false, false, true, false], $active);
     }
+
+    public function test_pressing_the_active_tab_again_changes_the_webview_src(): void
+    {
+        $screen = new HomeShell;
+
+        $screen->showProfile();
+        $first = $screen->webviewSrc();
+
+        $screen->showProfile();
+        $second = $screen->webviewSrc();
+
+        $this->assertStringStartsWith('/cgi/show_info.php', $first);
+        $this->assertStringStartsWith('/cgi/show_info.php', $second);
+        $this->assertNotSame($first, $second);
+    }
 }
