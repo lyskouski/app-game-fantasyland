@@ -525,6 +525,7 @@ class InfoParser
                 if (str_contains($description, $toSkip) || str_contains($level, $toSkip)) {
                     continue;
                 }
+                $actions = ['wear', 'drink', 'read', 'use'];
                 $items[] = [
                     'id' => $id,
                     'image' => Defines::URL . 'images/items/' . $image,
@@ -532,7 +533,7 @@ class InfoParser
                     'lvl' => $level,
                     'effects' => str_replace('src=/', 'src=' . Defines::URL, $description),
                     'count' => $count,
-                    'wearable' => $wearArgument === 'wear',
+                    'wearable' => in_array($wearArgument, $actions, true),
                 ];
             }
         }
