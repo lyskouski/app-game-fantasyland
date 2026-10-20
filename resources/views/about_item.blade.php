@@ -31,7 +31,7 @@
                     @foreach($properties as $property)
                     <tr class="colored">
                         <td width="16" align="center" valign="middle">
-                            @if($property['image'])
+                            @if(isset($property['image']) && $property['image'])
                             <img src="{{ $property['image'] }}" width="12" height="12" />
                             @else
                             &nbsp;
@@ -49,7 +49,7 @@
                     @foreach($required as $property)
                     <tr class="colored">
                         <td width="16" align="center" valign="middle">
-                            @if($property['image'])
+                            @if(isset($property['image']) && $property['image'])
                             <img src="{{ $property['image'] }}" width="12" height="12" />
                             @else
                             &nbsp;
@@ -78,7 +78,7 @@
                         @if($item['pro_type'] === 'items')
                         <tr class="colored">
                             <td width="36" align="center" valign="middle">
-                                @if($item['image'])
+                                @if(isset($item['image']) && $item['image'])
                                 <a href="/cgi/item_desc.php?id={{ $item['id'] }}">
                                     <img src="{{ $item['image'] }}" width="32" height="32" />
                                 </a>
