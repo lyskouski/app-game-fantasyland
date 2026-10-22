@@ -48,13 +48,18 @@
                             </td>
                         </tr>
                         <tr>
+                            <td colspan="2">
+                                <a href="#" onclick="document.getElementById('form-sex').removeAttribute('class');">Дополнительные опции</a>
+                            </td>
+                        </tr>
+                        <tr class="hidden" id="form-sex">
                             <td class="cell" width="80" align="left">
                                 Пол:
                             </td>
                             <td>
-                                <input type="radio" name="sex" value="m" checked="">Мужской
+                                <input type="radio" name="sex" value="m" checked /> Мужской
                                 <br />
-                                <input type="radio" name="sex" value="f">Женский
+                                <input type="radio" name="sex" value="f" /> Женский
                             </td>
                         </tr>
                         <tr>
