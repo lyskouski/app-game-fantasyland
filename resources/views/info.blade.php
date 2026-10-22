@@ -55,6 +55,11 @@
                     <input type="submit" style="width:100%" value="Смена email" />
                 </form>
                 <br />
+                <form method="GET" action="/parental">
+                    @csrf
+                    <input type="submit" style="width:100%" value="Родительский контроль" />
+                </form>
+                <br />
                 <br />
                 <form method="GET" action="/account/delete">
                     @csrf

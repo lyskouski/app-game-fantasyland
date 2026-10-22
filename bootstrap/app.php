@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAgeAssurance;
 use App\Http\Middleware\HotfixForPostAction;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -29,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(HotfixForPostAction::class);
+        $middleware->web([HotfixForPostAction::class, EnsureAgeAssurance::class]);
         // NativePHP 4.3 webview fetch() requests don't reliably carry the session cookie,
         // so the CSRF token can't be matched to a session; these endpoints only persist
         // the player's own local labyrinth map data, so skip CSRF verification for them.

@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Notification;
 use App\Providers\AppProxyProvider;
+use App\Services\AgeAssurance;
 use App\Settings\Defines;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -54,6 +55,7 @@ class ListenStream implements ShouldQueue
         }
 
         $buffer = '';
+        $socialAllowed = AgeAssurance::isSocialAllowed();
         $proxy = new AppProxyProvider();
 
         $ch = curl_init(Defines::URL . "gmmm?{$this->sessionId}");
@@ -62,7 +64,7 @@ class ListenStream implements ShouldQueue
             CURLOPT_USERAGENT => $proxy->userAgent(),
             CURLOPT_COOKIEFILE => $proxy->cookieFile(),
             CURLOPT_COOKIEJAR => $proxy->cookieFile(),
-            CURLOPT_WRITEFUNCTION => function ($ch, $chunk) use (&$buffer, $proxy) {
+            CURLOPT_WRITEFUNCTION => function ($ch, $chunk) use (&$buffer, $proxy, $socialAllowed) {
                 $buffer .= $chunk;
                 while (preg_match(
                     '/<script\b[^>]*>(.*?)<\/script>/is',
@@ -74,9 +76,12 @@ class ListenStream implements ShouldQueue
                     $end = $m[0][1] + strlen($m[0][0]);
 
                     if (preg_match('/(?<![A-Za-z0-9_])[ab]\(\s*"((?:[^"\\\\]|\\\\.)*)"\s*,\s*"((?:[^"\\\\]|\\\\.)*)"/s', $script, $call)) {
-                        $message = $call[1];
-                        $user = $call[2];
-                        Notification::addMessage("<b>{$user}:</b> {$message}");
+                        // Chat messages from other players are a social feature
+                        if ($socialAllowed) {
+                            $message = $call[1];
+                            $user = $call[2];
+                            Notification::addMessage("<b>{$user}:</b> {$message}");
+                        }
                     } elseif (preg_match('/(?<![A-Za-z0-9_])c\(\s*\'((?:[^\'\\\\]|\\\\.)*)\'\s*\)/s', $script, $call)) {
                         $message = str_replace('parent.ch_ref.location.href', 'window.location.href', $call[1]);
                         Notification::addMessage($message);

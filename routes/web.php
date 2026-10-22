@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AgeController;
 use App\Http\Controllers\ArenaController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CitadelController;
@@ -23,6 +24,12 @@ use Illuminate\Support\Facades\Route;
 Route::nativeGroup(NavigationLayout::class, function () {
     Route::native('/shell/home', HomeShell::class);
 });
+
+// Age assurance & parental controls
+Route::get('/age', [AgeController::class, 'index']);
+Route::post('/age', [AgeController::class, 'declare']);
+Route::get('/parental', [AgeController::class, 'parental']);
+Route::post('/parental', [AgeController::class, 'parentalSave']);
 
 // Authentication routes
 Route::get('/', [LoginController::class, 'index']);
