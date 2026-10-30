@@ -214,6 +214,52 @@
                             @endif
                         </td>
                     </tr>
+                    @if(array_key_exists(38, $stuff))
+                    <tr>
+                        <td colspan="3">
+                            @if (isset($stuff[38]))
+                            <img hspace=2 src="{{ $stuff[38]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[38]['title'] }}" onclick='unwear(38)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[39]))
+                            <img hspace=2 src="{{ $stuff[39]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[39]['title'] }}" onclick='unwear(39)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[40]))
+                            <img hspace=2 src="{{ $stuff[40]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[40]['title'] }}" onclick='unwear(40)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[41]))
+                            <img hspace=2 src="{{ $stuff[41]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[41]['title'] }}" onclick='unwear(41)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[42]))
+                            <img hspace=2 src="{{ $stuff[42]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[42]['title'] }}" onclick='unwear(42)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[43]))
+                            <img hspace=2 src="{{ $stuff[43]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[43]['title'] }}" onclick='unwear(43)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[44]))
+                            <img hspace=2 src="{{ $stuff[44]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[44]['title'] }}" onclick='unwear(44)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                            @if (isset($stuff[45]))
+                            <img hspace=2 src="{{ $stuff[45]['image'] }}" width='25' height='25' border='0' title="{{ $stuff[45]['title'] }}" onclick='unwear(45)'>
+                            @else
+                            <img hspace=2 src="https://www.fantasyland.ru/images/items/scroll_none.gif" width='25' height='25' border='0' title='Место для свитка' onclick="wear('13', 'd113')">
+                            @endif
+                        </td>
+                    </tr>
+                    @endif
                     <tr>
                         <td>
                             <a href="#" onclick="wear('25', 'd125')">Зелья</a>
