@@ -31,28 +31,27 @@
                             <label for="pin">Текущий PIN</label><br />
                             <input type="password" id="pin" name="pin" inputmode="numeric" maxlength="4" required />
                         </p>
-                    @endif
-                    <p>
-                        <label>
-                            <input type="checkbox" name="social_lock" value="1" @checked($locked) />
-                            Отключить чат, почту и форум
-                        </label>
-                    </p>
-                    <p>
-                        <label for="new_pin">{{ $hasPin ? 'Новый PIN (необязательно)' : 'Задать PIN (4 цифры)' }}</label><br />
-                        <input type="password" id="new_pin" name="new_pin" inputmode="numeric" maxlength="4" />
-                    </p>
-                    <p>
-                        <label for="new_pin_confirmation">Повторите PIN</label><br />
-                        <input type="password" id="new_pin_confirmation" name="new_pin_confirmation" inputmode="numeric" maxlength="4" />
-                    </p>
-                    @if($hasPin)
                         <p>
                             <label>
                                 <input type="checkbox" name="remove_pin" value="1" />
                                 Удалить PIN и снять ограничения
                             </label>
                         </p>
+                    @else
+                    <p>
+                        <label for="new_pin">Задать PIN (4 цифры)</label><br />
+                        <input type="password" id="new_pin" name="new_pin" inputmode="numeric" maxlength="4" />
+                    </p>
+                    <p>
+                        <label for="new_pin_confirmation">Повторите PIN</label><br />
+                        <input type="password" id="new_pin_confirmation" name="new_pin_confirmation" inputmode="numeric" maxlength="4" />
+                    </p>
+                    <p>
+                        <label>
+                            <input type="checkbox" name="social_lock" value="1" @checked($locked) />
+                            Отключить чат, почту и форум
+                        </label>
+                    </p>
                     @endif
                     <p>
                         <input type="submit" value="Сохранить" />
