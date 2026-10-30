@@ -19,6 +19,7 @@ final class InfoController extends Controller
     public const TYPE_DIARY = '4';
     public const TYPE_EFFECTS = '5';
     public const TYPE_RUNES = '6';
+    public const TYPE_EFFECTS13 = '8';
     public const TYPE_RATINGS = '10';
 
     public function __construct()
@@ -30,6 +31,19 @@ final class InfoController extends Controller
     public function index() {
         $html = $this->get('cgi/show_info.php', []);
         return view('info', $this->parser->options($html));
+    }
+
+    public function effects13() {
+        $get = request()->input();
+        $data = [
+            [$get['type']] => $get['id'] ?? null,
+        ];
+        if ($get['login'] ?? false) {
+            $data['login'] = $get['login'];
+        }
+        $html = $this->get('cgi/show_info.php', $data);
+        Notification::addIfExists($html);
+        return $this->indexPost(['option' => self::TYPE_EFFECTS13]);
     }
 
     public function indexPost(?array $post = null) {
@@ -62,6 +76,8 @@ final class InfoController extends Controller
                 return view('info_runes', ['money' => $money]);
             case self::TYPE_RATINGS:
                 return view('info_ratings', $this->parser->getRatings($html));
+            case self::TYPE_EFFECTS13:
+                return view('info_effects13', $this->parser->getEffects13($html));
             default:
                 return $this->generic('cgi/change_info.php', [], $post);
         }

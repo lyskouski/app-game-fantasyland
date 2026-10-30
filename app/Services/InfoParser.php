@@ -259,6 +259,24 @@ class InfoParser
         return $result;
     }
 
+    public function getEffects13(string $html): array
+    {
+        $effects = [];
+        $pattern = "/EffectAbilShow\(\s*'([^']*)',\s*'((?:[^'\\\\]|\\\\.)*)',\s*(\d+),\s*(\d+)\s*(?:,\s*'(\w+)\()?/u";
+        if (preg_match_all($pattern, $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $effects[] = [
+                    'id' => (int)$match[4],
+                    'count' => (int)$match[3],
+                    'image' => $match[1],
+                    'type' => $match[5] ?? '',
+                    'description' => stripslashes($match[2]),
+                ];
+            }
+        }
+        return ['effects' => $effects];
+    }
+
     public function getRatings(string $html): array
     {
         $ratings = [];
