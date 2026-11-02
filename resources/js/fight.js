@@ -17,13 +17,20 @@ if (document.readyState === 'loading') {
     window.getInitialState();
 }
 
+window.checkStateTimer = null;
+
 window.checkState = function() {
+    clearTimeout(window.checkStateTimer);
     fetch(`/cgi/combat_ref.php?lid=${combatId}`)
-            .then(response => response.text())
-            .then(text => applyCombatContext(text))
+        .then(response => response.text())
+        .then(text => applyCombatContext(text))
+        .then(_ => window.setStateTimer())
+        .catch(_ => window.setStateTimer());
 };
 
-setInterval(window.checkState, 5000);
+window.setStateTimer = function() {
+    window.checkStateTimer = setTimeout(window.checkState, 5000);
+}
 
 window.useScroll = function(scrollId) {
     fetch(`/cgi/combat_scroll_ins.php?id=${scrollId}&show=1`)
@@ -289,6 +296,7 @@ function applyCombatContext(text) {
     // Parse turn log entries, deduplicated by the addTurn turn id (2nd argument)
     const turnMatches = [...text.matchAll(/parent\.combat_panel\.addTurn\(\s*"([\s\S]*?)"\s*,\s*(\d+)\s*\)/g)];
     turnMatches.forEach(match => prependTurnLog(match[2], match[1]));
+    return true;
 }
 
 function updateOpponentState(opponent) {
