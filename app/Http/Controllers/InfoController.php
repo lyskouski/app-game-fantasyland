@@ -36,7 +36,7 @@ final class InfoController extends Controller
     public function effects13() {
         $get = request()->input();
         $data = [
-            [$get['type']] => $get['id'] ?? null,
+            $get['type'] => $get['id'] ?? null,
         ];
         if ($get['login'] ?? false) {
             $data['login'] = $get['login'];
