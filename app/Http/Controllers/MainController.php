@@ -52,7 +52,7 @@ final class MainController extends Controller
             "action='v_trade_search.php'" => fn($html) => $this->marketplace($html),
             "id='ArenaText'" => fn($html) => redirect('/cgi/arena.php'),
             'id="LocTable"' => fn($html) => view('main_location', $this->locationParser->onLocation($html)),
-            'travel_start.php' => fn($html) => $this->map(),
+            'travel_start.php' => fn($html) => $this->map($html),
             'cssLocImage' => fn($html) => $this->place($html),
             '<image height=150 width=150' => fn($html) => $this->place($html),
             "window.open('loc_desc.php" => fn($html) => $this->place($html)
@@ -93,12 +93,12 @@ final class MainController extends Controller
         return view('main_place', $data);
     }
 
-    public function map() {
+    public function map($html = '') {
         $post = request()->post();
         if (!empty($post)) {
             $html = $this->post('cgi/travel_start.php', [], $post);
         } else {
-            $html = $this->get('cgi/map.php', []);
+            $html .= $this->get('cgi/map.php', []);
         }
         Notification::addIfExists($html);
         return view('main_map', $this->locationParser->onMap($html));
