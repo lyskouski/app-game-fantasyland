@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Лига Героев</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        @vite(['resources/css/index.css', 'resources/js/ping.js'])
+    </head>
+    <body><div class="body">
+        <div class="main">
+            <div class="main_top">
+                <div class="main_top__header">{{ $title }}</div>
+            </div>
+            <div class="main_middle">
+                <img src="https://www.fantasyland.ru/{{ $image }}" class="location" />
+                <small>{{ $description }}</small>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="main_top">
+                <div class="main_top__header">Опции</div>
+            </div>
+            <div class="main_middle">
+                @foreach ($map as $location)
+                <form method="GET" action="/cgi/arena.php" style="margin-bottom: 8px;">
+                    @csrf
+                    <input type="hidden" name="g" value="{{ $location['id'] }}" />
+                    <input type="submit" @if($location['id'] == $current) disabled @endif value="{{ $location['loc'] }}" style="width: 100%;" />
+                </form>
+                @endforeach
+                <br />
+                @foreach ($place as $location)
+                <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                    @csrf
+                    <input type="hidden" name="locat" value="{{ $location['id'] }}" />
+                    <input type="hidden" name="additional" value=0 />
+                    <input type="submit" value="{{ $location['loc'] }}" style="width: 100%;" />
+                </form>
+                @endforeach
+                @if(isset($quest))
+                    <br />
+                    @foreach ($quest as $npc)
+                    <form method="POST" action="/cgi/no_combat.php" style="margin-bottom: 8px;">
+                        @csrf
+                        <input type="hidden" name="place_regime" value="{{ $npc['id'] }}" />
+                        <input type="hidden" name="addval" value="0" />
+                        <input type="hidden" name="addval1" value="0" />
+                        <input type="submit" value="NPC: {{ $npc['title'] }}" style="width: 100%;" />
+                    </form>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+
+        <script>
+            window.calcExpRange = function(value) {
+                let t = parseInt(value, 10);
+                let expMod = {!! $formula !!};
+                document.getElementById('lodge_exp').innerHTML =
+                    Math.round(1.2*expMod) + ' - ' + Math.round(expMod*1.8);
+            }
+        </script>
+        <div class="main">
+            <div class="main_top">
+                <div class="main_top__header">Ложа</div>
+            </div>
+            <div class="main_middle">
+                <p><i>Укажите время в часах (максимум 8 часов)</i></p>
+                <form method="GET" action="/cgi/tribune_work.php">
+                    <input type="hidden" name="type" value="start" />
+                    <input type="text" name="time" size="6" autocomplete="off" inputmode="numeric" onkeyup="window.calcExpRange(this.value)" />&nbsp;
+                    <input type="submit" value="Отдыхать" />
+                </form>
+                <p>{!! $stat !!}</p>
+                <p>Ожидаемый опыт: <span id="lodge_exp">?</span></p>
+            </div>
+        </div>
+    </div></body>
+</html>

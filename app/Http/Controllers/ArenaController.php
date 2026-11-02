@@ -45,6 +45,8 @@ final class ArenaController extends Controller
             return view('arena_pause', [...$data, ...$health]);
         } elseif (str_contains($html, 'train_stop.php')) {
             return redirect('/cgi/train_continue');
+        } elseif (str_contains($html, 'tribune_work.php?type=stop')) {
+            return redirect('/cgi/lodge_continue');
         }
         $w = $this->get('cgi/w.JS', []);
         switch ($data['current']) {
@@ -57,6 +59,9 @@ final class ArenaController extends Controller
             case 4: // Group
                 $group = $parser->getGroupGroups($html, $w);
                 return view('arena_group', [...$data, ...$group]);
+            case 5: // Lodge
+                $arena = $parser->lodge($html);
+                return view('arena_lodge', [...$data, ...$arena]);
             case 6: // Chaos
                 $chaos = $parser->getChaosGroups($html, $w);
                 return view('arena_chaos', [...$data, ...$chaos]);
@@ -117,5 +122,24 @@ final class ArenaController extends Controller
             $data['captcha'] = $this->captcha(time());
         }
         return view('arena_train', [...$data, ...$arena]);
+    }
+
+    public function lodgeContinue() {
+        $data = $this->mainPage();
+        $html = $this->get('/cgi/arena.php', ['g' => 5]);
+        $parser = new ArenaParser();
+        $start = $parser->timer($html);
+        Notification::addIfExists($html);
+        return view('arena_lodge_start', [...$data, ...$start]);
+    }
+
+    public function lodgeStart() {
+        $html = $this->get('/cgi/tribune_work.php');
+        Notification::addIfExists($html);
+        $type = request()->input('type', 'break');
+        if ($type === 'start') {
+            return redirect('/cgi/lodge_continue');
+        }
+        return redirect('/cgi/arena.php');
     }
 }

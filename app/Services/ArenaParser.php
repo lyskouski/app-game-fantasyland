@@ -44,6 +44,14 @@ class ArenaParser extends UserParser
         return ['timer' => $timer, 'restarts' => $restarts];
     }
 
+    public function lodge(string $html) {
+        preg_match("/<br\/>(За последние.+?)<div/u", $html, $matches);
+        $stat = isset($matches[1]) ? trim($matches[1]) : '';
+        preg_match("/var expMod\s*=\s*([^;]+);/", $html, $matches);
+        $formula = isset($matches[1]) ? trim($matches[1]) : '';
+        return ['stat' => $stat, 'formula' => $formula];
+    }
+
     public function getHealthState(string $html) {
         preg_match("/nm\s*=\s*(\d+)\s*,\s*hm\s*=\s*(\d+)/", $html, $matches);
         if (!isset($matches[1], $matches[2])) {
