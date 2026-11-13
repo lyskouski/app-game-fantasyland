@@ -9,8 +9,7 @@ use App\Services\ChatParser;
 
 final class ChatController extends Controller
 {
-    public function index() {
-        $html = $this->get('cgi/ch_ref.php', []);
+    private function userList(string $html) {
         if (preg_match("/window\.top\.document\.location\.href='\/\?e/", $html)) {
             return view('empty', ['data' => 'REDIRECT_TO_MAIN']);
         }
@@ -20,13 +19,27 @@ final class ChatController extends Controller
         return view('chat_user_list', $data);
     }
 
+    public function index() {
+        $html = $this->get('cgi/ch_ref.php', []);
+        return $this->userList($html);
+    }
+
+    public function indexClan() {
+        $html = $this->get('cgi/ch_ref_clan.php');
+        return $this->userList($html);
+    }
+
     public function messages() {
+        $channel = request()->input('channel', '0');
         $html = $this->get('ch/chout.php', []);
         if (preg_match("/window\.top\.document\.location\.href='\/\?e/", $html)) {
             return redirect('/');
         }
         $me = (new ChatParser)->getOwnName($html);
-        $data = Notification::orderBy('created_at', 'desc')->limit(250)->get();
+        $data = Notification::where('channel', $channel)
+            ->orderBy('created_at', 'desc')
+            ->limit(250)
+            ->get();
         for ($i = 0; $i < $data->count(); $i++) {
             $mssg = $data[$i]->message;
             $mssg = str_replace('<b>', '<b onclick="reply(this)">', $mssg);
@@ -37,7 +50,11 @@ final class ChatController extends Controller
             );
             $data[$i]->message = $mssg;
         }
-        return view('chat', ['data' => $data, 'me' => $me]);
+        return view('chat', [
+            'data' => $data,
+            'me' => $me,
+            'channel' => $channel,
+        ]);
     }
 
     public function clear() {

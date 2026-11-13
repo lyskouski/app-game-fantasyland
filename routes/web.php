@@ -86,6 +86,7 @@ Route::get('/cgi/combat_set.php', [FightController::class, 'combatSet']);
 
 // Chat
 Route::get('/cgi/ch_ref.php', [ChatController::class, 'index']);
+Route::get('/cgi/ch_ref_clan.php', [ChatController::class, 'indexClan']);
 Route::get('/ch/chout.php', [ChatController::class, 'messages']);
 Route::get('/chat/clear', [ChatController::class, 'clear']);
 Route::get('/chinp', [ChatController::class, 'send']);

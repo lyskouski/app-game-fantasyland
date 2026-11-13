@@ -54,7 +54,7 @@
         </div>
         <br />
         <form method="GET" action="/chinp" class="chat-input">
-            <input type="hidden" name="chn" value="0">
+            <input type="hidden" name="chn" value="{{ $channel }}">
             <input type="text" id="chat_message" name="a" autocomplete="off" placeholder="Сообщение...">
             <button type="submit" class="button">Отправить</button>
         </form>
@@ -78,7 +78,7 @@
             };
 
             window.getState = function () {
-                fetch('/ch/chout.php')
+                fetch('/ch/chout.php?channel={{ $channel }}')
                     .then((response) => response.text())
                     .then((html) => {
                         const next = new DOMParser().parseFromString(html, 'text/html').getElementById('chat-messages');
@@ -87,7 +87,8 @@
                             current.innerHTML = next.innerHTML;
                         }
                     });
-                fetch('/cgi/ch_ref.php')
+                const userList = {{ $channel }} > 0 ? '/cgi/ch_ref_clan.php?cid={{ $channel }}' : '/cgi/ch_ref.php';
+                fetch(userList)
                     .then((response) => response.text())
                     .then((html) => document.getElementById('user-list').innerHTML = html);
             };
