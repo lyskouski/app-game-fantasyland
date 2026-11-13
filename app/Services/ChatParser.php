@@ -28,4 +28,22 @@ class ChatParser extends UserParser
         }
         return $me;
     }
+
+    public function getMenu(string $html, string $w): array {
+        $clanData = $this->parseClansData($w);
+        $menu = [];
+        preg_match_all('/\bchannels\s*\.\s*push\s*\(\s*(\d+)\s*\)/', $html, $matches);
+        foreach ($matches[1] as $channel) {
+            $id = (int) $channel;
+            $name = 'Общий';
+            $img = null;
+            $position = $clanData['idsMap'][$id] ?? null;
+            if ($id > 0 && $position) {
+                $name = $clanData['cnames'][$position] ?? '';
+                $img = $clanData['imgs'][$position] ?? null;
+            }
+            $menu[] = ['id' => $id, 'name' => $name, 'img' => $img];
+        }
+        return $menu;
+    }
 }

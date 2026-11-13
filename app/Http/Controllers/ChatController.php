@@ -35,7 +35,6 @@ final class ChatController extends Controller
         if (preg_match("/window\.top\.document\.location\.href='\/\?e/", $html)) {
             return redirect('/');
         }
-        $me = (new ChatParser)->getOwnName($html);
         $data = Notification::where('channel', $channel)
             ->orderBy('created_at', 'desc')
             ->limit(250)
@@ -50,10 +49,12 @@ final class ChatController extends Controller
             );
             $data[$i]->message = $mssg;
         }
+        $parser = new ChatParser();
         return view('chat', [
             'data' => $data,
-            'me' => $me,
+            'me' => $parser->getOwnName($html),
             'channel' => $channel,
+            'menu' => $parser->getMenu($html, $this->get('cgi/w.JS', [])),
         ]);
     }
 

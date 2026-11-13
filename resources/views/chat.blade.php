@@ -36,6 +36,19 @@
             <div class="main_top">
                 <div class="main_top__header">Сообщения</div>
             </div>
+            <div class="main_middle">
+                <div class="tab">
+                    @foreach($menu as $item)
+                    <a href="/ch/chout.php?channel={{ $item['id'] }}" class="tablinks @if($channel == $item['id']) active @endif">
+                        @if($item['img'])
+                        <img src="https://www.fantasyland.ru/images/clans/{{ $item['img'] }}" alt="{{ $item['name'] }}" width="16" height="16" />&nbsp;
+                        @endif
+                        {{ $item['name'] }}
+                    </a>
+                    @endforeach
+                </div>
+                <div class="clear"></div>
+            </div>
             <div class="main_middle" id="chat-messages" style="min-height: max(1000px, 100%, 100dvh);">
                 @foreach($data as $item)
                 <p class="item">
