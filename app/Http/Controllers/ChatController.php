@@ -64,8 +64,9 @@ final class ChatController extends Controller
     }
 
     public function send() {
+        $channel = request()->input('chn', '0');
         $this->get('chinp');
-        return redirect('/ch/chout.php');
+        return redirect('/ch/chout.php?channel=' . $channel);
     }
 
     public function claim() {

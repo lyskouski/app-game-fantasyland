@@ -82,6 +82,10 @@ a:visited {
     color: white;
 }
 
+.left_indent {
+    margin-left: 15px;
+}
+
 .main {
     display: block;
     clear: both;
@@ -213,6 +217,11 @@ a:active {
 
 .tab {
     overflow: hidden;
+}
+
+.tab + .main {
+    margin-top: -4px;
+    padding-top: 0;
 }
 
 .tablinks {
