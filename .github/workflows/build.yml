@@ -76,6 +76,14 @@ jobs:
           npm run build
 
 # Android
+      # ubuntu-latest defaults to JDK 25, which Gradle 8.x (NativePHP wrapper) cannot run on
+      - name: Set up JDK 17
+        if: matrix.target == 'Android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Install Android SDK
         if: matrix.target == 'Android'
         run: |
@@ -110,7 +118,8 @@ jobs:
           --keystore-password=$ANDROID_KEY \
           --key-alias=key \
           --key-password=$ANDROID_KEY \
-          --no-tty
+          --no-tty \
+          || { echo "::group::Gradle output"; (cd nativephp/android && ./gradlew bundleRelease --console=plain --stacktrace); echo "::endgroup::"; exit 1; }
 
       - name: Copy AAB file to workspace
         if: matrix.target == 'Android'
