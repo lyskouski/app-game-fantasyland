@@ -82,7 +82,7 @@ function updateStamina() {
     ge('stamina').innerHTML = stamina++;
     if (stamina > maxStamina) {
         stamina = maxStamina;
-        void Device.vibrate().catch(() => {});
+        // void Device.vibrate().catch(() => {});
         return;
     }
     tm = setTimeout(updateStamina, 1000);
