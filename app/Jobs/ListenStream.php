@@ -48,6 +48,21 @@ class ListenStream implements ShouldQueue
         Cache::forget(self::CACHE_KEY);
     }
 
+    public static function processScript(string $script, bool $socialAllowed): void
+    {
+        if (preg_match('/(?<![A-Za-z0-9_])[ab]\(\s*"((?:[^"\\\\]|\\\\.)*)"\s*,\s*"((?:[^"\\\\]|\\\\.)*)"(?:\s*(?:,\s*-?\d+\s*){4},\s*(-?\d+)\s*\))?/s', $script, $call)) {
+            if ($socialAllowed) {
+                $message = $call[1];
+                $user = $call[2];
+                $channel = isset($call[3]) ? (int) $call[3] : 0;
+                Notification::addMessage("<b>{$user}:</b> {$message}", $channel);
+            }
+        } elseif (preg_match('/(?<![A-Za-z0-9_])c\(\s*\'((?:[^\'\\\\]|\\\\.)*)\'\s*\)/s', $script, $call)) {
+            $message = str_replace('parent.ch_ref.location.href', 'window.location.href', $call[1]);
+            Notification::addMessage($message);
+        }
+    }
+
     public function handle(): void
     {
         if (Cache::get(self::CACHE_KEY) !== $this->generation) {
@@ -75,17 +90,7 @@ class ListenStream implements ShouldQueue
                     $script = $proxy->decode($m[1][0]);
                     $end = $m[0][1] + strlen($m[0][0]);
 
-                    if (preg_match('/(?<![A-Za-z0-9_])[ab]\(\s*"((?:[^"\\\\]|\\\\.)*)"\s*,\s*"((?:[^"\\\\]|\\\\.)*)"/s', $script, $call)) {
-                        // Chat messages from other players are a social feature
-                        if ($socialAllowed) {
-                            $message = $call[1];
-                            $user = $call[2];
-                            Notification::addMessage("<b>{$user}:</b> {$message}");
-                        }
-                    } elseif (preg_match('/(?<![A-Za-z0-9_])c\(\s*\'((?:[^\'\\\\]|\\\\.)*)\'\s*\)/s', $script, $call)) {
-                        $message = str_replace('parent.ch_ref.location.href', 'window.location.href', $call[1]);
-                        Notification::addMessage($message);
-                    }
+                    self::processScript($script, $socialAllowed);
 
                     $buffer = substr($buffer, $end);
                 }
