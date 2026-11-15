@@ -1,0 +1,422 @@
+% Copyright 2026 The terCAD team. All rights reserved.
+% Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+\subsection{PHP}
+\markboth{Bootcamping}{PHP} \label{php}
+
+A set of tools for personal web pages initiated the development of PHP in 1994. Over time, it
+evolved into a general-purpose language with C-style syntax that supports dynamic and gradual
+typing. PHP supports procedural, object-oriented (including inheritance, polymorphism, and
+encapsulation), and functional programming styles.
+
+\paragraph{Zend Engine} compiles PHP code into an intermediate representation (opcodes) that is
+executed by a virtual machine. OPcache stores the compiled opcodes in shared memory, which
+allows it to skip parsing on subsequent runs. The just-in-time (JIT) compiler, introduced in
+version 8.0, translates hot paths into native machine code. Memory is managed by reference
+counting with a cycle-collecting garbage collector. Traditionally, PHP follows a shared-nothing
+model: each request starts in a clean state and releases everything at the end.
+
+\paragraph{Composer} is a dependency manager that controls libraries and their versions via
+\q{composer.json}-file (and locks them in \q{composer.lock}) by using public
+(\href{https://packagist.org}{https://packagist.org}) and private
+(\q{"repositories": [\{"type": "vcs", "url": "https://..."\}]}) sources. It also generates an
+autoloader that maps namespaces to directories (PSR-4 standard), so classes are loaded on the
+first usage without any manual \q{require}-statement.
+
+\paragraph{Entire End-to-End Stack} PHP is well-equipped for full-stack development. Laravel and
+Symfony provide a robust foundation for web applications and APIs. Livewire brings reactive
+interfaces without leaving PHP. Swoole, RoadRunner, and FrankenPHP keep the application in
+memory as a long-running process. The database layer is covered by PDO (MySQL, PostgreSQL,
+SQLite, etc.) and ORMs (Eloquent, Doctrine).
+
+
+\subsubsection{Checking Primitives} \label{php-prim}
+
+Scalar types are \q{int}, \q{float}, \q{bool}, and \q{string}; compound -- \q{array},
+\q{object}, \q{callable}, and \q{iterable}; special -- \q{null} and \q{resource}.
+Variables are prefixed by \q{\$}-sign:
+
+\begin{lstlisting}
+$pi = 3.141592; // round($pi, 2) => 3.14
+$text = 'Some content'; // strlen($text) => 12
+$tmp = 1; $tmp = 'test'; // Changeable type
+// Double quotes and heredoc interpolate variables
+$sample = "{$pi} items";
+$long = <<<TXT
+    Hello, {$text}!
+    TXT;
+// Concatenation by '.'
+$line = 'some text...' . '... another content' . PHP_EOL;
+\end{lstlisting}
+
+\noindent The \q{array} is a universal ordered map that plays roles of a list, a dictionary, a
+stack, and a queue at once. For specific cases, the Standard PHP Library (SPL) offers
+\q{SplStack}, \q{SplQueue}, \q{SplObjectStorage}, \q{SplFixedArray}, and \q{SplPriorityQueue}:
+
+\newpage
+\begin{lstlisting}
+$data = [1, 2, 3];
+// end($data) returns 3
+$map = ['test' => 123];
+// array_values($map) returns [123]
+$scope = array_unique(['a', 'b', 'a']);
+// count($scope) returns 2
+// Spread and destructuring
+$merged = [...$data, 4];    // [1, 2, 3, 4]
+[$first, , $third] = $data; // 1, 3
+['test' => $value] = $map;  // 123
+// Since 8.4
+array_find($data, fn($v) => $v > 1); // 2
+\end{lstlisting}
+
+
+\subsubsection{Observing Types}
+
+By default, PHP converts types implicitly (\emph{"weak" mode}). Declaring
+\q{declare(strict\_types=1);} at the top of a file turns it into a strict mode, where passing
+a wrong scalar type throws \q{TypeError}. Types can be declared for arguments, returns,
+properties, and (\emph{since 8.3}) class constants:
+
+\begin{lstlisting}
+declare(strict_types=1);
+
+function p(float $a, ?string $c = null): string
+{
+    return sprintf('%.2f %s', $a, $c ?? 'EUR');
+}
+\end{lstlisting}
+
+\noindent Static analyzers (\q{PHPStan}, \q{Psalm}, \q{Mago}) extend native types by
+annotations, such as generics:
+
+\begin{lstlisting}
+/** @return list<array{name: string, age: int}> */
+function users(): array { /* ... */ }
+\end{lstlisting}
+
+
+\subsubsection{Matching Conditions}
+
+The \q{match}-expression (\emph{since 8.0}) is a strict (\q{===}) alternative to \q{switch} that
+returns a value and throws \q{UnhandledMatchError} if no condition fits:
+
+\begin{lstlisting}
+$view = match ($this->activeTab) {
+    'chat', 'forum' => new Communication(),
+    'map' => new Map(),
+    default => new Home(),
+};
+// 'match(true)' to evaluate conditions
+$label = match (true) {
+    $hp <= 0 => 'dead',
+    $hp < 30 => 'wounded',
+    default => 'healthy',
+};
+\end{lstlisting}
+
+\noindent Null-handling operators keep checks short:
+
+\begin{lstlisting}
+// null if any part is null
+$name = $user?->profile?->name;
+// default 'Guest' if missing
+$nick = $input['nick'] ?? 'Guest';
+// assign only if $cache is null
+$cache ??= loadCache();
+\end{lstlisting}
+
+
+\subsubsection{Operating with Dates}
+
+\q{DateTimeImmutable} returns a new object on every change (preferred over the mutable
+\q{DateTime}), while \q{DateInterval} and \q{DatePeriod} describe durations and ranges. Time
+zones are handled natively:
+
+\begin{lstlisting}
+$start = new DateTimeImmutable('2026-01-01', new DateTimeZone('Europe/Warsaw'));
+$end = $start->modify('+1 month');
+$days = $start->diff($end)->days; // 31
+echo $end->format('D, M j, Y'); // Sun, Feb 1, 2026
+// Parsing without exceptions on failure
+$value = DateTimeImmutable::createFromFormat('Y-m-d', 'not-a-date'); // false
+// Next, instead of failing, will calculate overflow
+// for out-of-range values: 2027-02-14
+$overflow = DateTimeImmutable::createFromFormat('Y-m-d', '2026-13-45');
+\end{lstlisting}
+
+\noindent Localized formatting is provided by \q{IntlDateFormatter} (\q{intl}-extension), and
+\q{Carbon}-library (bundled with Laravel) adds a fluent interface with an ability to freeze the
+current time in tests (\q{Carbon::setTestNow()}).
+
+
+\subsubsection{Declaring Input Arguments}
+
+Arguments can be positional, optional (with defaults), named (\emph{since 8.0}), and variadic:
+
+\begin{lstlisting}
+function add(string $value, ?int $id = null, string ...$tags): void {}
+
+add('test');                    // Optional 'id'
+add('test', 123, 'a', 'b');     // Variadic 'tags'
+add(value: 'test', id: 1);      // Named arguments
+add(...['value' => 'test']);    // Unpacking
+\end{lstlisting}
+
+
+\subsubsection{Initializing Classes}
+
+Each class has a single parent (\q{extends}), may implement multiple interfaces
+(\q{implements}), and reuse code horizontally via \q{trait}s. Constructor promotion,
+\q{readonly} properties, property hooks, and asymmetric visibility (\emph{since 8.4})
+reduce boilerplate:
+
+\newpage
+\begin{lstlisting}
+final class Hero
+    extends Character
+    implements JsonSerializable
+{
+    use HasInventory; // trait
+
+    public function __construct(
+        // immutable
+        public readonly string $name,
+        // read publicly, write privately
+        public private(set) int $level = 1,
+    ) {}
+
+    public string $title {
+        get => "{$this->name} [{$this->level}]";
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'name' => $this->name,
+            'level' => $this->level
+        ];
+    }
+}
+
+// No extra parentheses since 8.4
+echo new Hero('Tom')->title; // Tom [1]
+\end{lstlisting}
+
+\noindent Class modifiers: \q{abstract} (prevents instantiation), \q{final} (prohibits
+inheritance), and \q{readonly} (all properties are immutable). Visibility is controlled by
+\q{public}, \q{protected}, and \q{private}; \q{static} grants access without instantiation.
+
+
+\subsubsection{Enumerating Classifications}
+
+Enums (\emph{since 8.1}) are classes with a predefined set of cases. Backed enums keep a scalar
+value, and both can contain methods and implement interfaces:
+
+\begin{lstlisting}
+enum Status: string
+{
+    case Active = 'active';
+    case Pending = 'pending';
+
+    public function label(): string
+    {
+        return ucfirst($this->value);
+    }
+}
+
+Status::from('active'); // Status::Active
+Status::tryFrom('unknown'); // null (no exception)
+Status::cases(); // [Status::Active, Status::Pending]
+\end{lstlisting}
+
+
+\subsubsection{Observing Functional Programming}
+
+Functions are first-class citizens: they can be stored in variables, passed as arguments, and
+returned. Closures capture outer variables via \q{use}, while arrow functions (\q{fn}) capture
+them automatically:
+
+\begin{lstlisting}
+$prefix = 'INFO';
+$logger = function (string $msg) use ($prefix) { echo "$prefix: $msg"; };
+$double = fn(int $x) => $x * 2;
+
+// First-class callable syntax (since 8.1)
+$upper = strtoupper(...);
+array_map($double, [1, 2, 3]); // [2, 4, 6]
+
+// Pipe operator (since 8.5)
+$result = '  hello ' |> trim(...) |> $upper; // HELLO
+\end{lstlisting}
+
+\noindent Generators (\q{yield}) produce values lazily, which is handy to iterate over large
+files or responses:
+
+\begin{lstlisting}
+function lines(string $path): Generator
+{
+    $file = fopen($path, 'r');
+    while (($line = fgets($file)) !== false) {
+        yield $line;
+    }
+    fclose($file);
+}
+\end{lstlisting}
+
+
+\subsubsection{Operating Asynchronously}
+
+PHP executes code synchronously, but \q{Fiber}s (\emph{since 8.1}) allow to pause and resume a
+function, which is the foundation of the \q{Revolt} event loop, \q{Amp} (v3), and the
+\q{react/async}-package of \q{ReactPHP}. Parallel HTTP requests are also available
+through \q{curl\_multi} (or \q{Http::pool} in Laravel), and heavy tasks are commonly moved into
+queues:
+
+\begin{lstlisting}
+$fiber = new Fiber(function (string $x): string {
+    $y = Fiber::suspend($x . ' paused');
+    return $y . ' resumed';
+});
+echo $fiber->start('Task'); // Task paused
+$fiber->resume('Task');
+echo $fiber->getReturn(); // Task resumed
+\end{lstlisting}
+
+
+\subsubsection{Overloading Behavior}
+
+"Magic methods" declare a custom behavior for built-in operations:
+
+\begin{itemize}
+  \item \q{\_\_toString} -- string representation of an object;
+  \item \q{\_\_invoke} -- allows an object to be called as a function;
+  \item \q{\_\_get}, \q{\_\_set}, \q{\_\_isset}, \q{\_\_unset} -- access to inaccessible
+  properties;
+  \item \q{\_\_call}, \q{\_\_callStatic} -- calls of undefined methods
+  (widely used by Laravel Facades);
+  \item \q{\_\_serialize}, \q{\_\_unserialize}, \q{\_\_clone} -- control serialization and
+  cloning.
+\end{itemize}
+
+\begin{lstlisting}
+class Model
+{
+    public function __call(string $v, array $a): mixed
+    {
+        if (str_starts_with($v, 'save')) {
+            return "Saving with: " . implode(',',$a);
+        }
+        throw new BadMethodCallException($v);
+    }
+}
+(new Model)->saveIssue('#1'); // Saving with: #1
+\end{lstlisting}
+
+\noindent Operators themselves cannot be overloaded in userland code (only by extensions, as
+\q{GMP} or \q{BCMath}).
+
+
+\subsubsection{Using Attributes}
+
+Attributes (\emph{since 8.0}) attach structured metadata to classes, methods, properties, and
+arguments; they are read via the Reflection API and power routing, validation, and testing in
+frameworks:
+
+\begin{lstlisting}
+#[Attribute(Attribute::TARGET_METHOD)]
+final class Route
+{
+    public function __construct(public string $path) {}
+}
+
+abstract class Controller
+{
+    public function index(): void {}
+}
+
+class ChatController extends Controller
+{
+    #[Route('/chat')]
+    #[\Override] // since 8.3: fatal error if the parent has no such method
+    public function index(): void {}
+}
+
+$attrs = (new ReflectionMethod(ChatController::class, 'index'))->getAttributes(Route::class);
+echo $attrs[0]->newInstance()->path; // /chat
+\end{lstlisting}
+
+
+\subsubsection{Managing Components}
+
+Namespaces isolate names, and the \q{use}-statement imports them with aliases to resolve
+collisions. Composer's autoloader resolves a class to its file based on the namespace:
+
+\begin{lstlisting}
+namespace App\Services;
+
+use App\Models\Notification;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon as Date;   // alias
+use function Laravel\Prompts\text;
+\end{lstlisting}
+
+\noindent The mapping is configured in \q{composer.json}:
+
+\begin{lstlisting}[language=java]
+"autoload": {
+    "psr-4": {
+       "App\\":"app/",
+       "Database\\Factories\\":"database/factories/",
+       "Database\\Seeders\\":"database/seeders/"
+    }
+}
+\end{lstlisting}
+
+
+\subsubsection{Asserting in Tests}
+
+\q{PHPUnit} and \q{Pest} (built on top of PHPUnit) are the most common testing frameworks:
+
+\begin{lstlisting}
+// strict comparison (===)
+$this->assertSame(0, $result);
+// loose comparison (==)
+$this->assertEquals([1, 2], $result);
+
+$this->assertStringContainsString('text', $result);
+$this->assertMatchesRegularExpression('/^\w+$/', $result);
+$this->assertContains('a', $list);
+$this->assertArrayHasKey('id', $map);
+$this->assertCount(3, $list);
+$this->assertGreaterThan(0, $result);
+$this->assertNull($result);
+// assertTrue, assertEmpty, ...
+$this->assertInstanceOf(Hero::class, $result);
+$this->expectException(TypeError::class);
+// Pest-style
+expect($result)->toBe(0)->not->toBeNull();
+\end{lstlisting}
+
+\noindent In addition, PHPUnit mocks (\q{createMock}) and \q{Mockery} declare expectations to
+ensure that some other methods were called (or not) during the test execution:
+
+\begin{lstlisting}
+// PHPUnit: replace a dependency and verify its usage
+$proxy = $this->createMock(AppProxyProvider::class);
+$proxy->expects($this->once())
+    ->method('boot')
+    ->with($this->stringContains('/ch/chmain.php'))
+    ->willReturn('var sesid = "abc";');
+$proxy->expects($this->never())->method('decode');
+
+$html = $proxy->boot('https://example.com/ch/chmain.php');
+$this->assertSame('abc', ListenStream::sessionIdFrom($html));
+
+// Mockery: the same expectations in a fluent way
+$proxy = Mockery::mock(AppProxyProvider::class);
+$proxy->shouldReceive('boot')
+    ->once()
+    ->with('/ch/chmain.php')
+    ->andReturn('<html></html>');
+$proxy->shouldNotReceive('decode');
+\end{lstlisting}

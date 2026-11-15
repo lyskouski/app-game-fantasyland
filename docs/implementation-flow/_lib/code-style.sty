@@ -59,13 +59,29 @@
 }
 
 \makeatletter
-\newcommand\language@dart{dart}
+% Modern PHP (8.x); the built-in 'PHP' of listings covers PHP 4 only
+\newcommand\language@php{php8}
 \expandafter\expandafter\expandafter\lstdefinelanguage
-\expandafter{\language@dart}
+\expandafter{\language@php}
 {
-  language=java,
-  morekeywords=[2]{String,bool,@override,required,dynamic,extension,on,with,var,late,as,is,in,factory,set,get,typedef,%
-mixin,async,await,enum,sealed,deferred,num},
+  sensitive=true,
+  alsoletter={\$},
+  % Control flow, declarations, and modifiers
+  morekeywords={abstract,and,as,break,case,catch,class,clone,const,continue,declare,default,do,echo,else,elseif,%
+empty,enum,extends,final,finally,fn,for,foreach,function,global,goto,if,implements,include,include_once,%
+instanceof,insteadof,interface,isset,list,match,namespace,new,or,print,private,protected,public,readonly,require,%
+require_once,return,static,switch,throw,trait,try,unset,use,var,while,xor,yield,from},
+  % Types, literals, and special names
+  morekeywords=[2]{int,float,bool,string,array,object,iterable,callable,mixed,void,never,null,true,false,self,parent,%
+\$this,__construct,__destruct,__toString,__invoke,__get,__set,__isset,__unset,__call,__callStatic,__serialize,%
+__unserialize,__clone,__CLASS__,__DIR__,__FILE__,__FUNCTION__,__LINE__,__METHOD__,__NAMESPACE__,PHP_EOL},
+  keywordstyle=[2]{\color{blue}},
+  % '#' is not a comment marker here to keep attributes '#[...]' intact
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  moredelim=[s][\color{orange}]{\#[}{]},
 }
 
 \newcommand\language@yaml{yaml}
@@ -86,8 +102,8 @@ mixin,async,await,enum,sealed,deferred,num},
   morestring=[b]',
   morestring=[b]",
   literate =    {---}{{\ProcessThreeDashes}}3
-                {>}{{\textcolor{codegreen}\textgreater}}1     
-                {|}{{\textcolor{codegreen}\textbar}}1 
+                {>}{{\textcolor{codegreen}\textgreater}}1
+                {|}{{\textcolor{codegreen}\textbar}}1
                 {\ -\ }{{\mdseries\ -\ }}3,
 }
 
@@ -163,7 +179,7 @@ mixin,async,await,enum,sealed,deferred,num},
   showstringspaces=false,
   showtabs=false,
   tabsize=2,
-  language=dart,
+  language=php8,
   escapeinside={(*@}{@*)},
   literate={\ \ }{{\textcolor{backline}{\textbar}}\ }2,
 }
