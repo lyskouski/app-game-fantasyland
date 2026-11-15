@@ -43,8 +43,8 @@ $tmp = 1; $tmp = 'test'; // Changeable type
 // Double quotes and heredoc interpolate variables
 $sample = "{$pi} items";
 $long = <<<TXT
-    Hello, {$text}!
-    TXT;
+  Hello, {$text}!
+  TXT;
 // Concatenation by '.'
 $line = 'some text...' . '... another content' . PHP_EOL;
 \end{lstlisting}
@@ -82,7 +82,7 @@ declare(strict_types=1);
 
 function p(float $a, ?string $c = null): string
 {
-    return sprintf('%.2f %s', $a, $c ?? 'EUR');
+  return sprintf('%.2f %s', $a, $c ?? 'EUR');
 }
 \end{lstlisting}
 
@@ -102,15 +102,15 @@ returns a value and throws \q{UnhandledMatchError} if no condition fits:
 
 \begin{lstlisting}
 $view = match ($this->activeTab) {
-    'chat', 'forum' => new Communication(),
-    'map' => new Map(),
-    default => new Home(),
+  'chat', 'forum' => new Communication(),
+  'map' => new Map(),
+  default => new Home(),
 };
 // 'match(true)' to evaluate conditions
 $label = match (true) {
-    $hp <= 0 => 'dead',
-    $hp < 30 => 'wounded',
-    default => 'healthy',
+  $hp <= 0 => 'dead',
+  $hp < 30 => 'wounded',
+  default => 'healthy',
 };
 \end{lstlisting}
 
@@ -138,10 +138,12 @@ $end = $start->modify('+1 month');
 $days = $start->diff($end)->days; // 31
 echo $end->format('D, M j, Y'); // Sun, Feb 1, 2026
 // Parsing without exceptions on failure
-$value = DateTimeImmutable::createFromFormat('Y-m-d', 'not-a-date'); // false
+$value = DateTimeImmutable::createFromFormat(
+    'Y-m-d', 'not-a-date'); // false
 // Next, instead of failing, will calculate overflow
-// for out-of-range values: 2027-02-14
-$overflow = DateTimeImmutable::createFromFormat('Y-m-d', '2026-13-45');
+// for out-of-range values:
+$overflow = DateTimeImmutable::createFromFormat(
+    'Y-m-d', '2026-13-45'); // 2027-02-14
 \end{lstlisting}
 
 \noindent Localized formatting is provided by \q{IntlDateFormatter} (\q{intl}-extension), and
@@ -173,29 +175,29 @@ reduce boilerplate:
 \newpage
 \begin{lstlisting}
 final class Hero
-    extends Character
-    implements JsonSerializable
+  extends Character
+  implements JsonSerializable
 {
-    use HasInventory; // trait
+  use HasInventory; // trait
 
-    public function __construct(
-        // immutable
-        public readonly string $name,
-        // read publicly, write privately
-        public private(set) int $level = 1,
-    ) {}
+  public function __construct(
+    // immutable
+    public readonly string $name,
+    // read publicly, write privately
+    public private(set) int $level = 1,
+  ) {}
 
-    public string $title {
-        get => "{$this->name} [{$this->level}]";
-    }
+  public string $title {
+    get => "{$this->name} [{$this->level}]";
+  }
 
-    public function jsonSerialize(): array
-    {
-        return [
-            'name' => $this->name,
-            'level' => $this->level
-        ];
-    }
+  public function jsonSerialize(): array
+  {
+    return [
+      'name' => $this->name,
+      'level' => $this->level
+    ];
+  }
 }
 
 // No extra parentheses since 8.4
@@ -215,13 +217,13 @@ value, and both can contain methods and implement interfaces:
 \begin{lstlisting}
 enum Status: string
 {
-    case Active = 'active';
-    case Pending = 'pending';
+  case Active = 'active';
+  case Pending = 'pending';
 
-    public function label(): string
-    {
-        return ucfirst($this->value);
-    }
+  public function label(): string
+  {
+    return ucfirst($this->value);
+  }
 }
 
 Status::from('active'); // Status::Active
@@ -255,11 +257,11 @@ files or responses:
 \begin{lstlisting}
 function lines(string $path): Generator
 {
-    $file = fopen($path, 'r');
-    while (($line = fgets($file)) !== false) {
-        yield $line;
-    }
-    fclose($file);
+  $file = fopen($path, 'r');
+  while (($line = fgets($file)) !== false) {
+    yield $line;
+  }
+  fclose($file);
 }
 \end{lstlisting}
 
@@ -274,8 +276,8 @@ queues:
 
 \begin{lstlisting}
 $fiber = new Fiber(function (string $x): string {
-    $y = Fiber::suspend($x . ' paused');
-    return $y . ' resumed';
+  $y = Fiber::suspend($x . ' paused');
+  return $y . ' resumed';
 });
 echo $fiber->start('Task'); // Task paused
 $fiber->resume('Task');
@@ -301,13 +303,13 @@ echo $fiber->getReturn(); // Task resumed
 \begin{lstlisting}
 class Model
 {
-    public function __call(string $v, array $a): mixed
-    {
-        if (str_starts_with($v, 'save')) {
-            return "Saving with: " . implode(',',$a);
-        }
-        throw new BadMethodCallException($v);
+  public function __call(string $v, array $a): mixed
+  {
+    if (str_starts_with($v, 'save')) {
+      return "Saving with: " . implode(',',$a);
     }
+    throw new BadMethodCallException($v);
+  }
 }
 (new Model)->saveIssue('#1'); // Saving with: #1
 \end{lstlisting}
@@ -326,19 +328,19 @@ frameworks:
 #[Attribute(Attribute::TARGET_METHOD)]
 final class Route
 {
-    public function __construct(public string $path) {}
+  public function __construct(public string $path) {}
 }
 
 abstract class Controller
 {
-    public function index(): void {}
+  public function index(): void {}
 }
 
 class ChatController extends Controller
 {
-    #[Route('/chat')]
-    #[\Override] // since 8.3: fatal error if the parent has no such method
-    public function index(): void {}
+  #[Route('/chat')]
+  #[\Override] // since 8.3: fatal error if the parent has no such method
+  public function index(): void {}
 }
 
 $attrs = (new ReflectionMethod(ChatController::class, 'index'))->getAttributes(Route::class);
@@ -346,6 +348,7 @@ echo $attrs[0]->newInstance()->path; // /chat
 \end{lstlisting}
 
 
+\newpage
 \subsubsection{Managing Components}
 
 Namespaces isolate names, and the \q{use}-statement imports them with aliases to resolve
@@ -364,11 +367,11 @@ use function Laravel\Prompts\text;
 
 \begin{lstlisting}[language=java]
 "autoload": {
-    "psr-4": {
-       "App\\":"app/",
-       "Database\\Factories\\":"database/factories/",
-       "Database\\Seeders\\":"database/seeders/"
-    }
+  "psr-4": {
+    "App\\":"app/",
+    "Database\\Factories\\":"database/factories/",
+    "Database\\Seeders\\":"database/seeders/"
+  }
 }
 \end{lstlisting}
 
@@ -404,9 +407,9 @@ ensure that some other methods were called (or not) during the test execution:
 // PHPUnit: replace a dependency and verify its usage
 $proxy = $this->createMock(AppProxyProvider::class);
 $proxy->expects($this->once())
-    ->method('boot')
-    ->with($this->stringContains('/ch/chmain.php'))
-    ->willReturn('var sesid = "abc";');
+  ->method('boot')
+  ->with($this->stringContains('/ch/chmain.php'))
+  ->willReturn('var sesid = "abc";');
 $proxy->expects($this->never())->method('decode');
 
 $html = $proxy->boot('https://example.com/ch/chmain.php');
@@ -415,8 +418,8 @@ $this->assertSame('abc', ListenStream::sessionIdFrom($html));
 // Mockery: the same expectations in a fluent way
 $proxy = Mockery::mock(AppProxyProvider::class);
 $proxy->shouldReceive('boot')
-    ->once()
-    ->with('/ch/chmain.php')
-    ->andReturn('<html></html>');
+  ->once()
+  ->with('/ch/chmain.php')
+  ->andReturn('<html></html>');
 $proxy->shouldNotReceive('decode');
 \end{lstlisting}

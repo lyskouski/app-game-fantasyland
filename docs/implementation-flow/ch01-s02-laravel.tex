@@ -1,0 +1,386 @@
+% Copyright 2026 The terCAD team. All rights reserved.
+% Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+\subsection{Laravel}
+\markboth{Bootcamping}{Laravel} \label{laravel}
+
+Laravel is an open-source PHP framework created by Taylor Otwell in 2011 for building web
+applications with expressive and elegant syntax. Following the Model-View-Controller (MVC)
+pattern, it ships with everything required for a typical application: routing, templating,
+database access, authentication, caching, queues, scheduling, and testing. The framework favors
+convention over configuration, so most features work without any setup, while every part can be
+replaced or extended when needed.
+
+\paragraph{Request Lifecycle} Every request enters through \q{public/index.php}, which boots the
+application from \q{bootstrap/app.php}. The HTTP kernel passes the request through a pipeline of
+middleware. The router matches the request to a controller (or closure), and the returned value
+is converted into a response. This cycle repeats for each request on a server.
+
+\paragraph{Service Container} is the core of the framework that manages class dependencies and
+performs dependency injection. Classes declared as arguments of constructors and methods are
+resolved automatically. Service providers register bindings in the container and bootstrap
+components (routes, events, and plugins) when the application starts up.
+
+\paragraph{Artisan} is a command-line interface that provides helpers for development:
+generating classes (\q{php artisan make:controller}), running migrations
+(\q{php artisan migrate}), clearing caches (\q{php artisan optimize:clear}),
+starting aREPL (\q{php artisan tinker}), and executing tests (\q{php artisan test}).
+
+\paragraph{Ecosystem} Laravel is surrounded by a rich set of first-party packages: \q{Sanctum}
+and \q{Passport} (API authentication), \q{Horizon} (queue monitoring), \q{Reverb} (WebSockets),
+\q{Pint} (code style), \q{Sail} (Docker environment), and \q{Pail} (log tailing). Front-end
+layers are covered by \q{Livewire} (reactive components without writing JavaScript) and
+\q{Inertia} (single-page applications with Vue / React), both used by the official starter
+kits.
+
+
+\subsubsection{Structuring Application}
+
+Laravel defines a conventional directory layout, where each component has its own place:
+
+\dirtree{%
+.1 /.
+.2 app/\DTcomment{application code}.
+.3 Console/Commands/\DTcomment{Artisan commands}.
+.3 Http/Controllers/\DTcomment{request handlers}.
+.3 Http/Middleware/\DTcomment{request filters}.
+.3 Jobs/\DTcomment{queued tasks}.
+.3 Models/\DTcomment{Eloquent models}.
+.3 Providers/\DTcomment{service providers}.
+.2 bootstrap/app.php\DTcomment{application configuration}.
+.2 config/\DTcomment{configuration files}.
+.2 database/migrations/\DTcomment{schema changes}.
+.2 resources/views/\DTcomment{Blade templates}.
+.2 routes/web.php\DTcomment{routes declaration}.
+.2 storage/\DTcomment{logs, cache, files}.
+.2 tests/\DTcomment{Unit and Feature tests}.
+}
+
+\noindent Environment-specific values (credentials, application id, debug mode) are kept in
+\q{.env}-file and read via \q{env()}-helper inside \q{config/*}-files, while the code accesses
+them through \q{config('app.name')}.
+
+
+\subsubsection{Routing Requests}
+
+Routes map URLs and HTTP methods to controllers. They can be grouped, named, and wrapped by
+middleware:
+
+\begin{lstlisting}
+use App\Http\Controllers\ForumController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/cgi/forum_rooms.php',
+    [ForumController::class, 'index']);
+
+Route::post('/cgi/forum.php',
+    [ForumController::class, 'room']);
+
+// Parameters, names, and groups
+Route::get('/hero/{id}',
+    [HeroController::class, 'show'])
+    ->name('hero');
+
+Route::middleware('auth')->prefix('admin')->group(
+  function () {
+    Route::get('/stats', fn() => view('stats'));
+  });
+\end{lstlisting}
+
+\noindent Middleware filters requests before (and after) they reach a controller. Since Laravel
+11, they are registered in \q{bootstrap/app.php}:
+
+\begin{lstlisting}
+->withMiddleware(function (Middleware $middleware): void {
+  $middleware->web([HotfixForPostAction::class, EnsureAgeAssurance::class]);
+})
+\end{lstlisting}
+
+\begin{lstlisting}
+class EnsureAgeAssurance
+{
+  private const EXEMPT = ['age', 'shell/*', 'up'];
+
+  public function handle(Request $request, Closure $next): Response
+  {
+    if ($request->is(...self::EXEMPT)) {
+      return $next($request);
+    }
+    if (!AgeAssurance::isDeclared()) {
+      return redirect('/age');
+    }
+    if (!AgeAssurance::isAdult()) {
+      return response()->view('restricted', [
+        'isAdult' => false,
+        'adultAge' => AgeAssurance::ADULT_AGE,
+      ], 403);
+    }
+    return $next($request);
+  }
+}
+\end{lstlisting}
+
+
+\subsubsection{Handling Controllers}
+
+Controllers group related request-handling logic. Input data is taken from the
+\q{Request}-object (or \q{request()}-helper), and validated by rules before usage:
+
+\begin{lstlisting}
+final class ForumController extends Controller
+{
+  protected ForumParser $parser;
+
+  public function __construct() {
+    parent::__construct();
+    $this->parser = new ForumParser();
+  }
+
+  public function topic(Request $request): View
+  {
+    $a = $request->validate([
+      'id' => 'required|integer',
+      'page' => 'nullable|integer|min:1',
+    ]);
+    $html = $this->get('cgi/f_show_thread.php', $a);
+    $w = $this->get('cgi/w.JS', []);
+    return view('forum_topic',
+        $this->parser->parseTopic($html, $w));
+  }
+}
+\end{lstlisting}
+
+\noindent The returned value might be a view (\q{view('forum\_topic', \$arr)}),
+a redirect (\q{redirect('/login')}), or JSON (\q{response()->json(\$data)}).
+
+\subsubsection{Templating with Blade}
+
+Blade is a templating engine compiled into plain PHP and cached. It supports layouts,
+components, and directives:
+
+\begin{lstlisting}[language=HTML]
+{{-- resources/views/forum.blade.php --}}
+@extends('layouts.app')
+
+@section('content')
+  <h1>{{ $title }}</h1>  {{-- escaped output --}}
+  {!! $html !!}           {{-- raw output --}}
+  @forelse ($topics as $topic)
+    <x-topic-item :topic="$topic" />
+  @empty
+    <p>No topics yet</p>
+  @endforelse
+  @if ($isGuest) @include('partials.login') @endif
+@endsection
+\end{lstlisting}
+
+\noindent Anonymous components are placed into \q{resources/views/components} and called by
+\q{<x-name>}-tag, while \q{@csrf}, \q{@auth}, \q{@env}, and \q{@vite} cover common needs
+(security token, authorization, environment checks, and assets bundled by Vite).
+
+
+\subsubsection{Persisting Data}
+
+The Eloquent ORM represents each table as a model class. The plan is described by migrations,
+which makes database changes tracked and can be repeated:
+
+\begin{lstlisting}
+// database/migrations/2026_..._table.php
+Schema::create('notifications', function (Blueprint $table) {
+  $table->id();
+  $table->timestamps();
+  $table->longText('message');(*@ \stopnumber @*)
+});
+
+// database/migrations/2026_...._table.php
+Schema::table('notifications', function (Blueprint $table) {
+  $table->integer('channel')->default(0);(*@ \stopnumber @*)
+});
+
+// Usage of the Notification model
+Notification::create([
+    'message' => 'Hello',
+    'channel' => 1
+]);
+$latest = Notification::where('channel', 1)
+  ->latest()->take(20)->get();
+Notification::query()->delete();
+\end{lstlisting}
+
+
+\subsubsection{Collecting Data}
+
+The \q{Collection}-class wraps arrays with a fluent interface, and it's returned by Eloquent
+queries:
+
+\begin{lstlisting}
+collect([1, 2, 3, 4])
+  ->filter(fn($v) => $v % 2 === 0)  // [2, 4]
+  ->map(fn($v) => $v * 10)          // [20, 40]
+  ->sum();                          // 60
+
+$heroes->groupBy('clan')->map->count();
+$heroes->sortByDesc('level')->pluck('name')->first();
+\end{lstlisting}
+
+\noindent Similarly, \q{Str} and \q{Arr} helpers (\q{Str::of(\$text)->trim()->slug()},
+\q{Arr::get(\$data, 'user.name')}) simplify operations with strings and nested arrays.
+
+
+\subsubsection{Communicating with Services}
+
+The \q{Http}-client (a wrapper around Guzzle) sends requests with retries, timeouts, and
+parallel execution:
+
+\begin{lstlisting}
+$response = Http::withHeaders(
+    ['Accept-Language' => 'en-US'])
+  ->timeout(10)
+  ->retry(3, 200)
+  ->asForm()
+  ->post('https://example.com/login.php',
+    ['login' => $name]);
+$response->successful(); // status 2xx
+$response->body();       // raw content
+$response->json('data'); // decoded value
+// Parallel requests
+[$chat, $forum] = Http::pool(fn(Pool $pool) => [
+  $pool->get('https://example.com/chat'),
+  $pool->get('https://example.com/forum'),
+]);
+\end{lstlisting}
+
+
+\subsubsection{Processing in Background}
+
+Jobs move long or repeating operations out of the request lifecycle. They are dispatched into a
+queue (database, Redis, SQS, or \q{sync}) and processed by a worker (\q{php artisan queue:work}):
+
+\begin{lstlisting}
+class ListenStream implements ShouldQueue
+{
+  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+  public $timeout = 60;
+
+  public function __construct(
+    public string $generation = '',
+    public string $sessionId = '',
+  ) {}
+
+  public function handle(): void
+  {
+    // ... fetch and process new chat messages
+    static::dispatch($this->generation, $this->sessionId)
+      ->delay(now()->addSeconds(5));
+  }
+}
+
+ListenStream::dispatch($generation, $sessionId);
+\end{lstlisting}
+
+\noindent Events and listeners decouple parts of the application
+(\q{event(new MessageReceived(\$msg))}), while the scheduler
+(\q{Schedule::job(...)->everyMinute()} in \q{routes/console.php}) replaces a set of cron entries.
+
+
+\subsubsection{Commanding via Artisan}
+
+Custom commands automate maintenance and debugging tasks. Arguments and options are declared in
+the signature: \q{\{name\}} (required argument), \q{\{name?\}} (optional), \q{\{name=default\}}
+(with a default value), \q{\{--flag\}} (boolean option), and \q{\{--key=\}} (option with a
+value); and a description of each can be added after a colon. Values are read by
+\q{\$this->argument()} and \q{\$this->option()}:
+
+\begin{lstlisting}
+class StreamListen extends Command
+{
+  protected $signature = 'app:stream-listen
+    {session? : Chat session id (taken from the chat page if omitted)}
+    {--url= : Base URL of the game server}
+    {--stop : Stop the running listener instead of starting it}';
+
+  protected $description = 'Listen to the stream and process incoming data';
+
+  public function handle(): int
+  {
+    if ($this->option('stop')) {
+      ListenStream::stop();
+      $this->info('Listener stopped');
+      return self::SUCCESS;
+    }
+
+    $sessionId = $this->argument('session');
+    if ($sessionId === null) {
+      $url = $this->option('url') ?? Defines::URL;
+      $htm = (new AppProxyProvider)->boot($url);
+      $sessionId = ListenStream::sessionIdFrom($htm);
+    }
+
+    if ($sessionId === '') {
+      $this->error('Session id is not found');
+      return self::FAILURE;
+    }
+
+    ListenStream::start($sessionId);
+    $this->info("Listening to session {$sessionId}");
+    return self::SUCCESS;
+  }
+}
+\end{lstlisting}
+
+\noindent The signature also provides a generated help page (\q{--help}), and missing required
+arguments are reported before \q{handle()} is called:
+
+\begin{lstlisting}[language=terminal]
+# take session from the page
+$ php artisan app:stream-listen
+# explicit session id
+$ php artisan app:stream-listen a1b2c3
+$ php artisan app:stream-listen --url=https://x.com
+$ php artisan app:stream-listen --stop
+$ php artisan app:stream-listen --help
+\end{lstlisting}
+
+
+\subsubsection{Securing Application}
+
+Laravel covers common security concerns by default: CSRF tokens for forms (\q{@csrf}), escaped
+output in Blade, parameter binding in queries (protection from SQL injections), password hashing
+(\q{Hash::make()}), and encryption by the application key (\q{APP\_KEY}). Authorization is
+controlled by gates and policies (\q{Gate::allows('update', \$post)}), and rate limiting
+by \q{RateLimiter}-facade or \q{throttle}-middleware.
+
+
+\subsubsection{Asserting in Tests}
+
+Laravel extends PHPUnit (and Pest) with HTTP, database, and fake assertions. Feature tests send requests to the application without using a real server:
+
+\begin{lstlisting}
+class NotificationChannelTest extends TestCase
+{
+  // reset the database state for each test
+  use RefreshDatabase;
+
+  public function test_social_restrictions_are_preserved(): void
+  {
+    // Facades can be mocked
+    Dialog::shouldReceive('toast')->twice();
+
+    ListenStream::processScript('a("blocked","player",15,15,2,1,54);', false);
+    ListenStream::processScript('a("legacy, message","player");', true);
+    ListenStream::processScript("c('system message');", false);
+
+    $this->assertDatabaseCount('notifications', 2);
+    $this->assertDatabaseHas('notifications', [
+      'message' => '<b>player:</b> legacy, message',
+      'channel' => 0,
+    ]);
+  }
+}
+\end{lstlisting}
+
+\noindent Fakes replace infrastructure in tests (\q{Http::fake()}, \q{Queue::fake()},
+\q{Storage::fake()}), and model factories (\q{User::factory()->count(3)->create()}) generate
+test data. The \q{php artisan test --parallel} option speeds up the execution (requires
+\q{brianium/paratest}-package).
