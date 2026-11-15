@@ -1,0 +1,335 @@
+% Copyright 2026 The terCAD team. All rights reserved.
+% Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+\subsection{NativePHP}
+\markboth{Bootcamping}{NativePHP} \label{nativephp}
+
+NativePHP is an open-source project that converts Laravel applications into native ones. Created
+by Marcel Pociot and Simon Hamp, it was presented at Laracon US 2023 for desktop applications
+(on top of Electron). Later, the nativephp/mobile package (maintained by Simon Hamp and Shane
+Rosenthal) brought the same concept to iOS and Android. Rather than rewriting an application in
+Swift or Kotlin, NativePHP packs the PHP interpreter, Laravel code, and dependencies into a
+native shell. It also provides access to device capabilities, such as the camera, biometrics,
+notifications, and secure storage, through familiar Laravel facades.
+
+\paragraph{Embedded Runtime} PHP is compiled as a shared library (Embed SAPI, thread-safe mode)
+and loaded by a native host. On Android, it is Kotlin with Jetpack Compose, and on iOS, it is
+Swift with SwiftUI. During startup, the Laravel bundle (shipped as an archive within the
+application) is extracted into the application storage. Meanwhile, sessions, the cache, logs,
+and the SQLite database are kept in a separate persistent directory that survives application
+updates. No network server is involved; requests are passed directly to PHP in the same process.
+
+\paragraph{Rendering Modes} NativePHP offers two ways to draw an interface:
+
+\begin{itemize}
+  \item WebView mode (\emph{request / response}) -- every tap or form submission boots PHP,
+  renders an HTML page, and returns it to an embedded browser. It's stateless, and an existing
+  Laravel application (Blade, Livewire) works almost unchanged.
+
+  \item Native UI mode (\emph{long-lived event loop}) -- PHP starts once and keeps a component
+  alive, while its Blade view describes a tree of native elements (real Material and SwiftUI
+  buttons, lists, inputs). User actions are sent back to PHP as events, the component updates
+  its state, and the screen is re-rendered.
+\end{itemize}
+
+\paragraph{Bridge} connects PHP with the native layer in both directions. PHP calls native
+functions, such as showing a toast, reading a secure value, or taking a photo, and the native
+side reports the results as Laravel events, such as \q{PhotoTaken}, \q{ButtonPressed}, or
+\q{Completed}. Plugins deliver platform-specific features and are regular Composer packages with
+Kotlin and Swift sources.
+
+
+\subsubsection{Installing Framework}
+
+NativePHP requires PHP 8.3+ (our project uses 8.4), Composer, Node.js, and native toolchains:
+Android Studio (SDK and emulator) for Android, and Xcode (macOS only) for iOS. It's installed
+into an existing Laravel application:
+
+\begin{lstlisting}[language=terminal]
+$ composer require nativephp/mobile
+$ php artisan native:install
+$ npm run build # compile artifacts
+$ php artisan native:run android
+\end{lstlisting}
+
+\noindent The application identity is defined in \q{.env}-file and mapped by
+\q{config/nativephp.php}:
+
+\begin{lstlisting}[language=terminal]
+NATIVEPHP_APP_ID=com.tercad.fantasyland
+NATIVEPHP_APP_VERSION=1.0.0
+NATIVEPHP_APP_VERSION_CODE=1
+NATIVEPHP_START_URL=/
+NATIVEPHP_DEVELOPMENT_TEAM=XXXXXXXXXX # Apple Team ID
+\end{lstlisting}
+
+\noindent Since the whole project is shipped to a device, the configuration also declares which
+\q{.env}-keys and files should be removed from the bundle (\q{cleanup\_env\_keys},
+\q{cleanup\_exclude\_files}), and Android build options (minimal SDK, minification, obfuscation).
+
+
+\subsubsection{Running and Debugging}
+
+The \q{native:*}-commands cover the daily development cycle:
+
+\begin{lstlisting}[language=terminal]
+# build, install, hot reload
+$ php artisan native:run ios --watch
+# start an emulator
+$ php artisan native:emulator android
+# stream logs (Android app)
+$ php artisan native:tail
+# open Android Studio / Xcode
+$ php artisan native:open android
+# collect environment details
+$ php artisan native:debug
+\end{lstlisting}
+
+\noindent NativePHP enables WebView debugging in the native shells
+(\q{setWebContentsDebuggingEnabled} on Android, \q{isInspectable} on iOS), so the WebView
+content can be inspected by Chrome DevTools (\q{chrome://inspect}) for Android and Safari Web
+Inspector for iOS.
+
+
+\subsubsection{Rendering in WebView}
+
+In the simplest case, our routes and controllers stay the same as for a web application, and a
+native screen just embeds them by \q{<native:webview>}-element:
+
+\begin{lstlisting}[language=HTML]
+{{-- resources/views/native/home.blade.php --}}
+<native:webview php src="{{ $src }}" fullscreen />
+\end{lstlisting}
+
+\noindent The \q{php}-attribute indicates that the source is served by the embedded runtime, not
+a remote site.
+
+
+\subsubsection{Building Native Screens}
+
+A native screen is a \q{NativeComponent}, which is a PHP class with public properties
+representing state and methods representing actions. A Blade view describes the elements. The
+command \q{php artisan native:make Counter} generates both. Components are bound to URIs by
+\q{Route::native}, and a layout (\q{NativeLayout}) adds shared navigation, such as a tab bar:
+
+\begin{lstlisting}
+// routes/web.php
+Route::nativeGroup(NavigationLayout::class, function () {
+  Route::native('/shell/home', HomeShell::class); (*@ \stopnumber @*)
+});
+
+// app/NativeComponents/HomeShell.php
+class HomeShell extends NativeComponent
+{
+  public string $activeTab = 'home';
+
+  public function mount(): void
+  {
+    // plugin: srwiez/nativephp-mobile-screen
+    Screen::keepAwake();
+  }
+
+  public function showChat(): void
+  {
+    // re-render on state change
+    $this->activeTab = 'chat';
+  }
+
+  public function render(): View
+  {
+    return view('native.home',
+        ['src' => $this->source()]);
+  } (*@ \stopnumber @*)
+}
+
+// app/NativeComponents/NavigationLayout.php
+class NavigationLayout extends NativeLayout
+{
+  public function tabBar(NativeComponent $screen): ?TabBar
+  {
+    return (new TabBar)
+      ->dark()
+      ->add(Tab::action('Home', icon: 'home')->press('showHome'))
+      ->add(Tab::action('Chat', icon: 'chat_bubble')->press('showChat'));
+  }
+}
+\end{lstlisting}
+
+\noindent Elements are rendered by platform primitives: the core package provides layout and
+basic controls (\q{column}, \q{row}, \q{text}, \q{button}, \q{toggle}, \q{bottom-sheet}, etc.),
+and the \q{nativephp/mobile-ui}-package adds richer ones (\q{select}, \q{pager},
+\q{outlined-text-input}, \q{modal}, etc.). Layouts accept utility classes
+(\q{class="gap-2 p-4"}), controls are styled by a theme, and events are bound by \q{@press} and
+\q{native:model}:
+
+\newpage
+\begin{lstlisting}[language=HTML]
+<native:column class="gap-2 p-4">
+  <native:text :fontSize="24">
+    Count: {{ $count }}
+  </native:text>
+  <native:outlined-text-input label="Name" native:model.live="name" />
+  <native:button variant="primary" @press="increment">
+    Increment
+  </native:button>
+</native:column>
+\end{lstlisting}
+
+
+\subsubsection{Managing Component State}
+
+Attributes fine-tune the behavior of components and their methods:
+
+\begin{itemize}
+  \item \q{\#[Computed]} -- memoizes a method result per render frame (\q{\$this->revenue});
+  \item \q{\#[Locked]} -- prevents a property from being changed by two-way bindings (\q{native:model});
+  \item \q{\#[Lazy]} -- shows a placeholder while a slow \q{mount()} is executed;
+  \item \q{\#[Poll]} -- re-runs a method periodically;
+  \item \q{\#[On]} and \q{\#[OnNative]} -- listen for application and device events.
+\end{itemize}
+
+\begin{lstlisting}
+#[Lazy]
+class Profile extends NativeComponent
+{
+
+  #[Locked]
+  public int $heroId;
+
+  #[Computed(persist: true)]
+  public function stats(): array
+  {
+    return Hero::find($this->heroId)->stats();
+  }
+}
+\end{lstlisting}
+
+
+\subsubsection{Accessing Device Capabilities}
+
+Device APIs are exposed as facades in the \q{Native\textbackslash Mobile\textbackslash Facades}
+-namespace:
+
+\begin{lstlisting}
+use Native\Mobile\Facades\{Camera, Device, Dialog, Haptics, SecureStorage};
+
+Dialog::toast('New message received');
+Dialog::alert('Exit', 'Leave the fight?', ['Yes', 'No']);
+Dialog::share('Fantasyland', 'Join me!', 'https://fantasyland.ru');
+Haptics::vibrate();
+Device::getBatteryInfo();
+
+// Keychain (iOS) / Keystore (Android)
+SecureStorage::set('token', $token);
+$token = SecureStorage::get('token');
+
+// Asynchronous call, completed by an event
+Camera::getPhoto();
+\end{lstlisting}
+
+\noindent Results of asynchronous calls arrive as events, which components handle by \q{\#[OnNative]}:
+
+\begin{lstlisting}
+use Native\Mobile\Attributes\OnNative;
+use Native\Mobile\Events\Camera\PhotoTaken;
+#[OnNative(PhotoTaken::class)]
+public function photoTaken(string $path): void
+{
+  $this->avatar = $path;
+}
+\end{lstlisting}
+
+\noindent Helpers \q{isIos()}, \q{isAndroid()}, \q{isMobile()}, and \q{isDark()} allow to adapt
+the behavior per platform and theme.
+
+
+\subsubsection{Running in Background}
+
+Laravel queues and the scheduler also work on the device, so jobs, such as our chat listener,
+are dispatched in the usual way. For heavy computations within a native screen, \q{AsyncTask}
+executes a static closure on a separate PHP thread and returns the result to the component:
+
+\begin{lstlisting}
+public function generateReport(): void
+{
+  $this->loading = true;
+
+  AsyncTask::dispatch(static fn() => Report::build()->toArray())
+    ->finished(function (array $result) {
+      $this->report = $result;
+      $this->loading = false;
+    })
+    ->failed(fn(Throwable $e) => $this->error = $e->getMessage());
+}
+\end{lstlisting}
+
+
+\subsubsection{Extending by Plugins}
+
+Plugins are Composer packages with PHP facades and native (Kotlin/Swift) implementations. For
+security reasons, only the plugins listed in \q{NativeServiceProvider::plugins()} are compiled
+into a build. This prevents transitive dependencies from registering themselves silently:
+
+\begin{lstlisting}[language=terminal]
+$ composer require srwiez/nativephp-mobile-screen
+$ php artisan vendor:publish --tag=nativephp-plugins-provider
+$ php artisan native:plugin:register srwiez/nativephp-mobile-screen
+$ php artisan native:plugin:list
+\end{lstlisting}
+
+\begin{lstlisting}
+public function plugins(): array
+{
+  return [
+    \Native\Mobile\UI\NativeUIServiceProvider::class,
+    \SRWieZ\NativePHP\Mobile\Screen\ScreenServiceProvider::class,
+  ];
+}
+\end{lstlisting}
+
+\noindent Own plugins are scaffolded by \q{native:plugin:create} and checked by
+\q{native:plugin:validate}.
+
+
+\subsubsection{Packaging for Stores}
+
+Release builds are signed and packaged into an Android App Bundle (\q{.aab}) or an iOS archive (\q{.ipa}):
+
+\begin{lstlisting}[language=terminal]
+# bump version: 1.0.0 -> 1.0.1
+$ php artisan native:release patch
+# generate a keystore
+$ php artisan native:credentials android
+$ php artisan native:package android --build-type=bundle --keystore=release.jks --key-alias=fantasyland
+$ php artisan native:package ios --export-method=app-store
+$ php artisan native:check-build-number
+\end{lstlisting}
+
+\noindent The result is uploaded to Google Play Console, App Store Connect (TestFlight), or
+alternative stores, as we'll discover in the distribution chapters.
+
+
+\subsubsection{Asserting in Tests}
+
+Native components are tested without a device: \q{Native::test()} mounts a component, simulates
+user actions, and checks the rendered tree, while \q{Native::fakeBridge()} replaces responses of
+native calls:
+
+\begin{lstlisting}
+use Native\Mobile\Testing\Native;
+
+Native::test(HomeShell::class)
+  ->call('showChat')
+  ->assertSet('activeTab', 'chat')
+  ->assertElement('webview');
+
+Native::fakeBridge()->respondTo('Geolocation.GetCurrentPosition', [
+  'latitude' => 55.75, 'longitude' => 37.61,
+]);
+
+Native::visit('/shell/home')->assertScreen(HomeShell::class);
+\end{lstlisting}
+
+\noindent Pest tests for screens are generated by \q{php artisan native:make-test}, and
+\q{AsyncTask::fake()} verifies dispatched background tasks (\q{assertDispatched},
+\q{assertDispatchedTimes}).
