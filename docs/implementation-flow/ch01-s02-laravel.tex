@@ -24,7 +24,7 @@ components (routes, events, and plugins) when the application starts up.
 \paragraph{Artisan} is a command-line interface that provides helpers for development:
 generating classes (\q{php artisan make:controller}), running migrations
 (\q{php artisan migrate}), clearing caches (\q{php artisan optimize:clear}),
-starting aREPL (\q{php artisan tinker}), and executing tests (\q{php artisan test}).
+starting a REPL (\q{php artisan tinker}), and executing tests (\q{php artisan test}).
 
 \paragraph{Ecosystem} Laravel is surrounded by a rich set of first-party packages: \q{Sanctum}
 and \q{Passport} (API authentication), \q{Horizon} (queue monitoring), \q{Reverb} (WebSockets),
@@ -124,7 +124,8 @@ class EnsureAgeAssurance
 \subsubsection{Handling Controllers}
 
 Controllers group related request-handling logic. Input data is taken from the
-\q{Request}-object (or \q{request()}-helper), and validated by rules before usage:
+\q{Request}-object (or \q{request()}-helper), and validated by rules before usage (our
+\q{ForumController} extended by validation):
 
 \begin{lstlisting}
 final class ForumController extends Controller
@@ -140,7 +141,7 @@ final class ForumController extends Controller
   {
     $a = $request->validate([
       'id' => 'required|integer',
-      'page' => 'nullable|integer|min:1',
+      'p' => 'nullable|integer|min:1', // page
     ]);
     $html = $this->get('cgi/f_show_thread.php', $a);
     $w = $this->get('cgi/w.JS', []);
@@ -159,7 +160,7 @@ Blade is a templating engine compiled into plain PHP and cached. It supports lay
 components, and directives:
 
 \begin{lstlisting}[language=HTML]
-{{-- resources/views/forum.blade.php --}}
+{{-- resources/views/topics.blade.php (example) --}}
 @extends('layouts.app')
 
 @section('content')
@@ -181,8 +182,8 @@ components, and directives:
 
 \subsubsection{Persisting Data}
 
-The Eloquent ORM represents each table as a model class. The plan is described by migrations,
-which makes database changes tracked and can be repeated:
+The Eloquent ORM represents each table as a model class. The schema is described by migrations,
+which makes database changes tracked and repeatable:
 
 \begin{lstlisting}
 // database/migrations/2026_..._table.php
@@ -313,7 +314,8 @@ class StreamListen extends Command
     $sessionId = $this->argument('session');
     if ($sessionId === null) {
       $url = $this->option('url') ?? Defines::URL;
-      $htm = (new AppProxyProvider)->boot($url);
+      $htm = (new AppProxyProvider)
+        ->boot(rtrim($url, '/') . '/ch/chmain.php');
       $sessionId = ListenStream::sessionIdFrom($htm);
     }
 
@@ -354,7 +356,9 @@ by \q{RateLimiter}-facade or \q{throttle}-middleware.
 
 \subsubsection{Asserting in Tests}
 
-Laravel extends PHPUnit (and Pest) with HTTP, database, and fake assertions. Feature tests send requests to the application without using a real server:
+Laravel extends PHPUnit (and Pest) with HTTP, database, and fake assertions. Feature tests boot
+the whole application and can send requests to it without a real server
+(\q{\$this->get('/age')->assertOk()}):
 
 \begin{lstlisting}
 class NotificationChannelTest extends TestCase

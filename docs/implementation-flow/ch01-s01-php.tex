@@ -351,8 +351,8 @@ echo $attrs[0]->newInstance()->path; // /chat
 \newpage
 \subsubsection{Managing Components}
 
-Namespaces isolate names, and the \q{use}-statement imports them with aliases to resolve
-collisions. Composer's autoloader resolves a class to its file based on the namespace:
+Namespaces isolate names, and the \q{use}-statement imports them (optionally with aliases to
+resolve collisions). Composer's autoloader resolves a class to its file based on the namespace:
 
 \begin{lstlisting}
 namespace App\Services;
