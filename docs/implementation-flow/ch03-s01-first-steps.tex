@@ -1,0 +1,245 @@
+% Copyright 2026 The terCAD team. All rights reserved.
+% Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+\subsection{Configuring Environment} \label{first-step}
+\markboth{Prototyping}{Configuring Environment}
+
+Let's assume that we are starting from scratch with an empty folder and a new operating system.
+The good news is that NativePHP doesn't require any exotic tools. The bad news is that it needs
+all of them at once: a PHP toolchain to run Laravel, a Node.js toolchain to build front-end
+assets, and native toolchains to compile Android and iOS shells. The following are the
+requirements for NativePHP v4: (\href{https://nativephp.com/docs/mobile/4/getting-started/environment-setup}{https://nativephp.com/docs/mobile/4/getting-started/environment-setup}):
+
+\begin{itemize}
+  \item PHP 8.3+ and Laravel 10+, Composer, and Node.js with npm (for Vite).
+
+  \item Android -- Android Studio 2024.2.1+, Android SDK with API 29+ (Build-Tools and
+  Platform-Tools), and JDK (the documentation uses JDK 17 in examples). On Windows, 7-Zip is also
+  required, and NativePHP doesn't run under WSL.
+
+  \item iOS -- an Apple silicon Mac (M1+) with macOS 15.6+, Xcode 26+ with Command Line Tools,
+  and CocoaPods. An Apple Developer account isn't needed for the simulator, but it's required
+  for real devices and the App Store.
+\end{itemize}
+
+\noindent On Linux (Ubuntu-based distributions), PHP and its extensions are installed by the
+package manager:
+
+\begin{lstlisting}[language=terminal]
+$ sudo apt install php8.4 php8.4-cli php8.4-mbstring php8.4-xml php8.4-zip php8.4-curl
+$ sudo apt install zip unzip
+# switch the default interpreter, if several versions are installed
+$ sudo update-alternatives --set php /usr/bin/php8.4
+\end{lstlisting}
+
+\noindent Android Studio is downloaded from
+\href{https://developer.android.com/studio}{https://developer.android.com/studio}. After the
+initial wizard, the SDK Manager (Tools $\rightarrow$ SDK Manager) installs an SDK Platform and
+SDK Tools. Then the terminal has to know where the SDK and JDK are located. It's the most
+frequent reason for the first failed build:
+
+\begin{lstlisting}[language=terminal]
+$ echo 'export ANDROID_HOME=$HOME/Android/Sdk' >> ~/.bashrc
+$ echo 'export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools' >> ~/.bashrc
+$ source ~/.bashrc
+# both commands should work without errors
+$ java -version
+$ adb devices
+\end{lstlisting}
+
+\noindent For macOS, the default SDK location is \q{\$HOME/Library/Android/sdk}, and
+\q{JAVA\_HOME} can be set by \q{\$(/usr/libexec/java\_home -v 17)}.
+
+
+\subsection{Installing Packages}
+\markboth{Prototyping}{Installing Packages}
+
+There are two ways to start with NativePHP. One option is to generate a new application from the
+starter kit, which already contains NativePHP and its UI components.
+
+\begin{lstlisting}[language=terminal]
+$ laravel new fantasyland --using=nativephp/mobile-starter --no-node
+\end{lstlisting}
+
+\noindent Let's start our project as a regular Laravel application and add NativePHP on top of
+it:
+
+\begin{lstlisting}[language=terminal]
+$ composer create-project laravel/laravel .
+$ cp .env.example .env
+$ php artisan key:generate
+$ composer require nativephp/mobile nativephp/mobile-ui
+# publish NativeServiceProvider (first time only)
+$ php artisan vendor:publish --tag=nativephp-plugins-provider
+# add the UI plugin into the allow-list
+$ php artisan native:plugin:register nativephp/mobile-ui
+$ php artisan native:plugin:list
+\end{lstlisting}
+
+\noindent Plugins that are missing in \q{NativeServiceProvider::plugins()} won't be included in
+a build, which will result in blank screens for native screens of \q{nativephp/mobile-ui}.
+Before running the installer, the application identity must be declared in the \q{.env}-file.
+The \q{NATIVEPHP\_APP\_ID} is mandatory and follows the reverse domain notation. It becomes the
+package name on Google Play and the bundle identifier on the App Store. Therefore, it is
+difficult to change after the first release:
+
+\begin{lstlisting}[language=terminal]
+NATIVEPHP_APP_ID=com.tercad.fantasyland
+NATIVEPHP_APP_VERSION=DEBUG
+NATIVEPHP_APP_VERSION_CODE=1
+\end{lstlisting}
+
+\noindent The DEBUG version causes the device to refresh the Laravel bundle with each launch.
+With a fixed version (such as 1.0.0), the \q{NATIVEPHP\_APP\_VERSION\_CODE} must be increased
+before each build, otherwise the installed application may display old screens. Now, the native
+part can be installed (\cref{img:fs-install}):
+
+\begin{lstlisting}[language=terminal]
+$ php artisan native:install
+$ npm install
+$ npm run build
+\end{lstlisting}
+
+\noindent The installer creates \q{config/nativephp.php}, the \q{native}-helper (so
+\q{php native run} is the same as \q{php artisan native:run}), and the \q{nativephp}-directory
+with Android and iOS projects and downloaded PHP binaries. It also asks whether to use PHP
+binaries with the ICU library (\q{--with-icu}), which is needed only for the \q{intl}-extension
+(Filament, for example) and adds about 30 MB to the Android build.
+
+\img{img/native-install}{Installation of NativePHP for Android}{img:fs-install}
+
+\noindent The \q{nativephp}-directory is ignored by Git and treated as ephemeral; it's
+regenerated by \q{native:install}. Therefore, any manual fixes inside it will be lost after the
+next reinstallation. That's why our repository stores such fixes in a separate
+\q{\_patches}-folder.
+
+
+\subsection{Starting Application}
+\markboth{Prototyping}{Starting Application}
+
+Before moving on to the device, it's worth checking that the Laravel part works at all. The same
+application can be opened in a desktop browser:
+
+\begin{lstlisting}[language=terminal]
+$ php artisan serve
+   INFO  Server running on [http://127.0.0.1:8000].
+\end{lstlisting}
+
+\noindent It's a quick way to iterate on routes, controllers, and Blade templates. However, the
+browser doesn't have the native layer. The tab bar, toasts, and other features are only executed
+inside the mobile shell.
+
+
+\subsection{Running on Emulator}
+\markboth{Prototyping}{Running on Emulator}
+
+A virtual device is created in Android Studio (Device Manager $\rightarrow$ Create Virtual
+Device). After that, NativePHP can list and start emulators, build the application, and install
+it:
+
+\begin{lstlisting}[language=terminal]
+$ php artisan native:emulator android
+$ php artisan native:run android
+# rebuild, install, and push further changes
+$ php artisan native:run android --watch
+# stream Laravel logs from the Android application
+$ php artisan native:tail
+\end{lstlisting}
+
+\noindent The \q{--watch}-option (as well as a separate \q{native:watch}-command) pushes changed
+files from the folders listed in \q{config/nativephp.php} (\q{hot\_reload.watch\_paths}) and
+reloads the current screen. For iOS, the same commands are executed with the \q{ios}-argument on
+macOS, and the build is launched in the simulator.
+
+\paragraph{Remarks} A first run rarely goes smoothly. Here are the problems that appeared on our
+way, with their solutions:
+
+\begin{itemize}
+  \item \textbf{SDK location is not found}. Gradle failed with "\emph{sdk.dir property in
+  local.properties file. Problem: Set with empty value}". The \q{ANDROID\_HOME}-variable was not
+  exported in the current shell. Exporting it (see above) and, if needed, setting
+  \q{sdk.dir=/home/<user>/Android/Sdk} in \q{nativephp/android/local.properties} solves it.
+
+  \item \textbf{No matching ABIs}. The installation into the emulator failed with
+  \q{INSTALL\_FAILED\_NO\_MATCHING\_ABIS}. NativePHP ships PHP binaries only for \q{arm64-v8a},
+  while the default Android emulator on a PC is \q{x86\_64}. An ARM64 system image doesn't help
+  either: the emulator stops with "\emph{Avd's CPU Architecture 'arm64' is not supported by the
+  QEMU2 emulator on x86\_64 host}". So, on x86\_64 machines, the application has to be checked
+  on a real device (with enabled USB debugging, \q{adb devices} lists it), while an Apple
+  silicon Mac runs ARM64 emulators natively.
+
+  \item \textbf{Laravel bundle is not extracted}. The application started with "\emph{Failed
+  opening required '.../android/native.php'}". The Android shell didn't extract the archive into
+  the storage. We had to patch \q{LaravelEnvironment.kt} with three fixes:
+  (1) Changed from \q{context.getDir("storage", Context.MODE\_PRIVATE)} to \q{File(context.
+  dataDir, "app\_storage")} to correctly use the app's data directory, (2) refactored the unzip
+  function to stream directly from ZIP to disk instead of loading entire files into memory
+  (which could fail with large bundles), and (3) modified the extraction
+  to continue even when the version can't be read, as long as Laravel hasn't been extracted yet.
+  Since the \q{nativephp}-directory is regenerated, such a fix is lost on reinstallation, so
+  it's worth reporting it upstream.
+
+  \item \textbf{Request is null}. Laravel failed during the boot with
+  "\emph{UrlGenerator::\_\_construct(): Argument \#2 (\$request) must be of type
+  Illuminate\textbackslash Http\textbackslash Request, null given}". The trace pointed to
+  \q{URL::forceHttps()} in \q{AppServiceProvider::boot()}, which was added by the starter
+  template.  On a device, requests don't come through a web server, and the URL generator can't
+  be created at that stage. The first attempt was to call it only in production
+  (\q{if (\$this->app->isProduction())}), but, in the end, the call was removed: the embedded
+  runtime doesn't need HTTPS redirects at all.
+
+  \item \textbf{Storage directory is missing on iOS}. Our cookie jar was created in
+  \q{storage\_path('app/cookie.txt')}, which worked on Android but failed on iOS: the file
+  couldn't be created there, since its folder wasn't guaranteed to exist. Don't rely on the
+  folder structure of the Laravel skeleton on a device; create the directory before writing:
+
+\begin{lstlisting}
+$this->fcurl = storage_path('cookie.txt');
+$dir = dirname($this->fcurl);
+if (!is_dir($dir)) {
+  mkdir($dir, 0777, true);
+}
+\end{lstlisting}
+
+  \item \textbf{Mysterious NUL-file}. The very first commit contained a file named \q{NUL} with
+  200 lines of "\emph{error: no devices/emulators found}". Most likely, it was a Windows habit to
+  suppress output by \q{> NUL}, which on Linux creates a regular file. The real message was
+  useful, though: \q{adb} didn't see any device. The file was deleted and added into
+  \q{.gitignore}.
+\end{itemize}
+
+\noindent Finally, \q{php artisan native:debug} collects the environment details (PHP, NativePHP,
+Java, Gradle, and Xcode on macOS) into one report. It's the first thing to attach to an issue
+when something goes wrong.
+
+
+\subsection{Keeping Framework Up to Date}
+\markboth{Prototyping}{Keeping Framework Up to Date}
+
+NativePHP for Mobile evolves quickly. During the first eight months of the project, it was
+upgraded three times. Each upgrade was treated as a separate task since almost all of them
+changed the project structure.
+
+As a tip: the lock file is created by \q{native:install} and should be committed. It ensures
+that every developer and the CI pipeline download the same PHP binaries:
+
+\begin{lstlisting}[language=java]
+{
+  "php": {
+    "version": "8.4.26",
+    "icu": false
+  }
+}
+\end{lstlisting}
+
+\noindent The upgrade itself is short, while the follow-up is not:
+
+\begin{lstlisting}[language=terminal]
+$ composer update
+# re-create native projects and download new PHP binaries
+$ php artisan native:install --force
+$ php artisan native:plugin:list
+$ php artisan test
+\end{lstlisting}
+
+\noindent And, finally, the first screen is on the device... let's continue with the prototype!
