@@ -243,3 +243,180 @@ $ php artisan test
 \end{lstlisting}
 
 \noindent And, finally, the first screen is on the device... let's continue with the prototype!
+
+
+\subsection{Native Components and Navigation} \label{native-components}
+\markboth{Prototyping}{Native Components and Navigation}
+
+NativePHP applications use \q{NativeComponent}s to build a bridge between Laravel and the mobile
+shell. Unlike web routes that render plain HTML, native components are interactive Blade
+components that maintain state and respond to native UI events (tab presses, screen touches,
+etc.). This makes them ideal for building the shell structure that wraps the entire application.
+
+The native shell consists of three layers, each extending or implementing NativePHP's base classes:
+
+\begin{enumerate}
+  \item \q{HomeShell} -- the main container component that manages tab state and content URLs
+  \item \q{NavigationLayout} -- the layout that defines the tab bar and navigation structure
+  \item \q{ShellTabBar} -- a custom tab bar that handles active tab highlighting
+\end{enumerate}
+
+\noindent Routes are registered using \q{Route::nativeGroup()} (instead of \q{Route::get()}) to
+associate them with a layout:
+
+\begin{lstlisting}[language=php]
+// routes/web.php
+Route::nativeGroup(NavigationLayout::class,
+  function () {
+    Route::native('/shell/home', HomeShell::class);
+  }
+);
+\end{lstlisting}
+
+\subsubsection{HomeShell: The Main Container}
+
+The \q{HomeShell} component is the entry point and stores the state of the entire application.
+In our case, it defines four tabs and determines which tab is currently active:
+
+\begin{lstlisting}[language=php]
+// app/NativeComponents/HomeShell.php
+class HomeShell extends NativeComponent
+{
+  public const TAB_PROFILE = 'profile';
+  public const TAB_HOME = 'home';
+  public const TAB_CHAT = 'chat';
+  public const TAB_FORUM = 'forum';
+
+  public string $activeTab = self::TAB_HOME;
+
+  // Bumped on every tab press: the native webview
+  // reloads only when `src` changes, so re-pressing
+  // the active tab would otherwise keep the page
+  // navigated inside it instead of reopening the
+  // tab's initial one.
+  public int $reload = 0;
+
+  public function mount(): void { ... }
+
+  public function showProfile(): void
+  {
+    $this->open(self::TAB_PROFILE);
+  }
+
+  public function showHome(): void
+  {
+    $this->open(self::TAB_HOME);
+  }
+
+  public function showChat(): void
+  {
+    $this->open(self::TAB_CHAT);
+  }
+
+  public function showForum(): void
+  {
+    $this->open(self::TAB_FORUM);
+  }
+
+  private function open(string $tab): void
+  {
+    $this->activeTab = $tab;
+    $this->reload++;
+  }
+
+  // Each tab corresponds to a URL in the app
+  public function source(): string
+  {
+    return match ($this->activeTab) {
+      self::TAB_PROFILE => '/cgi/show_info.php',
+      self::TAB_HOME => '/cgi/no_combat.php',
+      self::TAB_CHAT => '/ch/chout.php',
+      self::TAB_FORUM => '/cgi/forum_rooms.php',
+    };
+  }
+
+  // returns a Blade view that embeds a webview
+  public function render(): View
+  {
+    return view('native.home', [
+      'src' => $this->source()
+          . '?_r=' . $this->reload
+    ]);
+  }
+\end{lstlisting}
+
+\noindent When a tab is pressed, the \q{reload} counter is incremented. This is crucial because
+the native webview only refreshes when its \q{src} attribute changes, so a query parameter
+(\q{?\_r=1}, \q{?\_r=2}, etc.) forces a reload even when navigating back to the same tab.
+
+The view (\q{resources/views/native/home.blade.php}) is minimal:
+
+\begin{lstlisting}[language=html]
+<native:webview php src="{{ $src }}" fullscreen />
+\end{lstlisting}
+
+\noindent This single-line view creates a full-screen webview that dynamically loads the URL
+returned by \q{source()}. When a tab is pressed, the component's \q{reload} counter is
+incremented, the URL changes, and the webview refreshes to display the new content.
+
+\subsubsection{NavigationLayout: Tab Bar Definition}
+
+The layout class extends \q{NativeLayout} and defines the visual structure of the tab bar. It is
+responsible for creating tabs and determining which one should be highlighted:
+
+\begin{lstlisting}[language=php]
+// app/NativeComponents/NavigationLayout.php
+class NavigationLayout extends NativeLayout
+{
+  public function tabBar(NativeComponent $screen): ?TabBar
+  {
+    $activeTab = $screen instanceof HomeShell
+        ? $screen->activeTab
+        : HomeShell::TAB_HOME;
+
+    return (new ShellTabBar)
+      ->dark()
+      ->activeColor('#0891b2')
+      ->labelVisibility('labeled')
+      ->add(Tab::action('Profile', icon: 'person')
+        ->press('showProfile')
+        ->active($activeTab === HomeShell::TAB_PROFILE))
+      ->add(Tab::action('Home', icon: 'home')
+        ->press('showHome')
+        ->active($activeTab === HomeShell::TAB_HOME))
+      ->add(Tab::action('Chat', icon: 'chat_bubble')
+        ->press('showChat')
+        ->active($activeTab === HomeShell::TAB_CHAT))
+      ->add(Tab::action('Forum', icon: 'forum')
+        ->press('showForum')
+        ->active($activeTab === HomeShell::TAB_FORUM));
+    }
+}
+\end{lstlisting}
+
+\noindent Each tab is linked to a method on \q{HomeShell} via the \q{->press()} method. When a
+user taps a tab, the corresponding method is invoked (e.g., \q{showProfile()}, \q{showChat()},
+etc.). The \q{->active()} method determines if that tab is currently highlighted.
+
+\subsubsection{ShellTabBar: Custom Tab Bar Behavior}
+
+The \q{ShellTabBar} class overrides the default tab highlighting logic. The standard NativePHP
+implementation uses the current URL to highlight tabs. However, since all tabs on this screen
+are actions, not URLs, the highlight would reset to inactive with every interaction. Returning
+an empty \q{highlight()} controls the active state entirely by the layout logic:
+
+\begin{lstlisting}[language=php]
+// app/NativeComponents/ShellTabBar.php
+class ShellTabBar extends TabBar
+{
+  public function highlight(string $currentUrl): self
+  {
+    return $this;
+  }
+}
+\end{lstlisting}
+
+\noindent This architecture keeps the native shell lightweight. It handles navigation logic, tab
+state, and UI structure. Meanwhile, the actual content is served by standard Laravel controllers
+and Blade views. The boundary between the native and web components is clear: the shell is
+native and everything inside the web view is web-based.
