@@ -76,6 +76,18 @@ jobs:
           npm run build
 
 # Android
+      # screenOrientation="portrait" implies a required android.hardware.screen.portrait,
+      # which Google Play flags as restricting availability (tablets, desktop, XR)
+      - name: Mark screen orientation features as optional
+        if: matrix.target == 'Android'
+        run: |
+          MANIFEST=nativephp/android/app/src/main/AndroidManifest.xml
+          for FEATURE in android.hardware.screen.portrait android.hardware.screen.landscape; do
+            grep -q "android:name=\"$FEATURE\"" "$MANIFEST" || \
+              sed -i "0,/<application/s##<uses-feature android:name=\"$FEATURE\" android:required=\"false\" />\n    <application#" "$MANIFEST"
+          done
+          grep -n "uses-feature" "$MANIFEST"
+
       # ubuntu-latest defaults to JDK 25, which Gradle 8.x (NativePHP wrapper) cannot run on
       - name: Set up JDK 17
         if: matrix.target == 'Android'
