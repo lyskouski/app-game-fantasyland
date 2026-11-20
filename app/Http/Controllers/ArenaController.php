@@ -36,6 +36,7 @@ class ArenaController extends Controller
         }
 
         $data = $this->mainPage();
+        $data['quest'] = (new LocationParser)->extractNpcs($html);
         if (!$data['current'] && preg_match('/arenaSelBtn\s*=\s*(\d+)/', $html, $matches)) {
             $data['current'] = (int)$matches[1];
         }
