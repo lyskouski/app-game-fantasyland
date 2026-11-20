@@ -50,6 +50,7 @@ final class MainController extends Controller
             '/cgi/maze_move.php' => fn($html) => redirect('/labyrinth'),
             'src="mc_main.php"' => fn($html) => redirect('/cgi/mc_main.php'),
             "action='v_trade_search.php'" => fn($html) => $this->marketplace($html),
+            'cgi/arena_marathon.php' => fn($html) => redirect('/cgi/arena_marathon.php'),
             "id='ArenaText'" => fn($html) => redirect('/cgi/arena.php'),
             'id="LocTable"' => fn($html) => view('main_location', $this->locationParser->onLocation($html)),
             'travel_start.php' => fn($html) => $this->map($html),

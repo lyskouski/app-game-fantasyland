@@ -35,7 +35,7 @@ class LocationParser
         return ['map' => $map, 'image' => $image, 'hasRoad' => str_contains($html, 'map.php')];
     }
 
-    private function extractNpcs(string $html): array {
+    public function extractNpcs(string $html): array {
         $npcs = [];
         preg_match_all(
             '~<TR>\s*<TD>\s*<A\b[^>]*HREF=[\'"]javascript:regimeTo\((\d+)\)[\'"][^>]*>' .

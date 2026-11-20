@@ -10,7 +10,7 @@ use App\Services\LocationParser;
 use App\Services\SecureStorage;
 use Native\Mobile\Facades\Device;
 
-final class ArenaController extends Controller
+class ArenaController extends Controller
 {
     protected function mainPage() {
         $html = $this->get('cgi/no_combat.php', []);

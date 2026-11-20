@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AgeController;
 use App\Http\Controllers\ArenaController;
+use App\Http\Controllers\ArenaMarathonController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CitadelController;
 use App\Http\Controllers\FightController;
@@ -70,6 +71,7 @@ Route::get('/cgi/train_stop.php', [ArenaController::class, 'trainStop']);
 Route::get('/cgi/train_continue', [ArenaController::class, 'trainContinue']);
 Route::get('/cgi/tribune_work.php', [ArenaController::class, 'lodgeStart']);
 Route::get('/cgi/lodge_continue', [ArenaController::class, 'lodgeContinue']);
+Route::get('/cgi/arena_marathon.php', [ArenaMarathonController::class, 'index']);
 
 // Fight
 Route::get('/cgi/combat.php', [FightController::class, 'combat']);
