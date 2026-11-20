@@ -4,7 +4,7 @@ namespace Tests\Unit\NativeComponents;
 
 use App\NativeComponents\HomeShell;
 use App\NativeComponents\NavigationLayout;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class HomeShellTest extends TestCase
 {

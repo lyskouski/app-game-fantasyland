@@ -23,6 +23,15 @@ class ChatParserTest extends TestCase
         ], (new ChatParser())->getMenu($html, $w));
     }
 
+    public function test_menu_resolves_clan_at_first_position(): void
+    {
+        $w = "var ids = new Array(54, 12); var cnames = new Array('Clan', 'Other'); var imgs = new Array('clan.gif', 'other.gif');";
+
+        $this->assertSame([
+            ['id' => 54, 'name' => 'Clan', 'img' => 'clan.gif'],
+        ], (new ChatParser())->getMenu('channels.push(54);', $w));
+    }
+
     public function test_menu_handles_missing_metadata_and_no_channels(): void
     {
         $parser = new ChatParser();

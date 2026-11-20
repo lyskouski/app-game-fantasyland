@@ -9,7 +9,7 @@
         "php": "^8.4",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
-        "nativephp/mobile": "^4.6",
+        "nativephp/mobile": "^4.8",
         "nativephp/mobile-ui": "^0.8",
         "srwiez/nativephp-mobile-screen": "^2.0"
     },

@@ -12,6 +12,14 @@ use Native\Mobile\Edge\NativeComponent;
 
 class NavigationLayout extends NativeLayout
 {
+    /**
+     * NativePHP 4.8 flipped the default to `true`; keep the custom-drawn chrome.
+     */
+    public function usesNativeChrome(): bool
+    {
+        return false;
+    }
+
     public function tabBar(NativeComponent $screen): ?TabBar
     {
         $activeTab = $screen instanceof HomeShell ? $screen->activeTab : HomeShell::TAB_HOME;
