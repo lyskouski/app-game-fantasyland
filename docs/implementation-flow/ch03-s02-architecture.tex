@@ -1,0 +1,279 @@
+% Copyright 2026 The terCAD team. All rights reserved.
+% Use of this content is governed by a CC BY-NC-ND 4.0 license that can be found in the LICENSE file.
+
+\subsection{Architecting Project} \label{architecture}
+\markboth{Prototyping}{Architecting Project}
+
+When a mobile project begins under uncertainty, it is tempting to stay in an "architecture-free"
+mode for as long as possible: wire up a first route, get a screen rendering inside the emulator,
+and iterate from there. That works for a single proof of concept. Once the native shell is
+running (\cref{native-components}), however, a NativePHP codebase quickly reveals a hidden
+tension: two execution worlds---a \textbf{native mobile shell} and an \textbf{embedded Laravel
+web runtime}---share the same repository and the same PHP process. Without clear boundaries,
+platform workarounds, storage details, and UI logic rapidly tangle into code that is painful to
+debug and impossible to test without a phone.
+
+
+\subsubsection{Separating Layers and Responsibilities}
+
+Just as in any cross-platform application, we want a clean boundary between what renders the
+interface, what handles requests, and what manages state. Rather than inventing a rigid folder
+hierarchy that fights Laravel's conventions, we separate \emph{logical layers} conceptually and
+keep files organized around their framework roles and feature targets:
+
+\hspace{0.5cm}
+\dirtree{%
+  .1 Application.
+  .2 Native Shell Layer.
+  .3 Shell Container \emph{(top-level navigation state, lifecycle hooks)}.
+  .3 Platform Bridge \emph{(explicit plugin allow-list, native facades)}.
+  .2 Presentation Layer.
+  .3 WebView Host \emph{(full-screen embedded browser bridge)}.
+  .3 Blade Templates \& Assets \emph{(mobile layouts, Vite CSS/JS modules)}.
+  .2 HTTP Boundary Layer.
+  .3 Runtime Normalization \emph{(bootstrap fixes, body recovery, CSRF policy)}.
+  .3 Policy Gate \emph{(cross-cutting access and compliance middleware)}.
+  .3 Routing \emph{(explicit endpoints and catch-all fallback)}.
+  .2 Application \& Service Layer.
+  .3 Thin Controllers \emph{(request/response orchestration)}.
+  .3 Stateless Services \emph{(transformations, helpers, static settings)}.
+  .2 Data Access \& Background Layer.
+  .3 Relational Store \emph{(Eloquent models, sessions, queue tables)}.
+  .3 Encrypted Storage \emph{(portable key-value secrets)}.
+  .3 Background Workers \emph{(generation-guarded queued jobs)}.
+}
+\hspace{1cm}
+
+\noindent Translating these logical layers onto Laravel's skeleton gives every artifact an
+unambiguous home. Native UI state lives in \q{app/NativeComponents/},
+cross-cutting HTTP rules in \q{bootstrap/app.php} and \q{app/Http/Middleware/}, orchestration in
+\q{app/Http/Controllers/}, stateless logic in \q{app/Services/} and \q{app/Helpers/}, static
+configuration in \q{app/Settings/}, persistence in \q{app/Models/} and
+\q{database/migrations/}, and asynchronous work in \q{app/Jobs/} and \q{app/Console/Commands/}.
+
+
+\subsubsection{Building Generic Foundations}
+
+Before implementing individual features, it pays to extract a small set of generic primitives
+that every screen can rely on. Just as encapsulating UI inputs behind custom widgets prevents
+"UX Hell" when libraries change\footnote{This mirrors how Object-Relational Mapping (ORM)
+layers standardize database access: callers depend on one stable interface while the underlying
+engine or storage mechanism can evolve independently.}, encapsulating HTTP helpers, fallback
+routing, local secrets, and background loops keeps the rest of the codebase concise.
+
+\paragraph{Base Controller and Catch-All Fallback}
+When migrating or adapting a large multi-screen workflow, building every route before the first
+release is rarely practical. Instead, we can define shared request primitives on an abstract
+base \q{Controller} and terminate \q{routes/web.php} with a catch-all \q{GenericController}:
+
+\begin{lstlisting}[language=php8]
+// app/Http/Controllers/GenericController.php
+final class GenericController extends Controller
+{
+  public function index(string $url)
+  {
+    $html = $this->fetch($url, request()->all());
+    // ... Normalize relative assets and
+    // strip pop-up targets for mobile WebView
+    return view('generic', ['data' => $html]);
+  }
+}
+\end{lstlisting}
+
+\noindent In \q{routes/web.php}, specialized feature routes are declared first, followed by the
+wildcard fallback:
+
+\begin{lstlisting}[language=php8]
+// Explicit mobile-adapted routes go first...
+Route::get('/settings',
+  [SettingsController::class, 'index']);
+
+// ...followed by the catch-all fallback
+Route::get('/{any}',
+  [GenericController::class, 'index'])
+    ->where('any', '.*');
+Route::post('/{any}',
+  [GenericController::class, 'indexPost'])
+    ->where('any', '.*');
+\end{lstlisting}
+
+\noindent This simple pattern lets the application grow incrementally: high-traffic screens get
+tailored controllers, stateless services, and mobile Blade templates, while secondary routes
+continue functioning through the fallback pipeline without hitting dead-end 404 pages.
+
+\paragraph{Stateless Services and Encapsulated Storage}
+Controllers should orchestrate HTTP flow---validating input, calling a service, and picking a
+view or redirect---while leaving data transformations and persistence rules to dedicated
+classes. Keeping service classes under \q{app/Services/} stateless (accepting inputs, returning
+plain arrays or DTOs, and never issuing redirects) makes them trivial to reuse across
+controllers and queued jobs.
+
+Similarly, sensitive local values such as credentials, tokens, or parental PINs should pass
+through a single storage wrapper rather than calling filesystem functions or platform bridges
+throughout the app:
+
+\begin{lstlisting}[language=php8]
+// app/Services/SecureStorage.php
+class SecureStorage
+{
+  public static string $storagePath =
+    'secure_storage_';
+
+  public static function set(string $key, string $value): void
+  {
+    file_put_contents(
+      storage_path(self::$storagePath . $key),
+      encrypt($value)
+    );
+  }
+
+  public static function get(string $key): ?string
+  {
+    $path = storage_path(self::$storagePath . $key);
+    if (!file_exists($path)) {
+      return null;
+    }
+    $encrypted = file_get_contents($path);
+    return $encrypted ? decrypt($encrypted) : null;
+  }
+
+  public static function delete(string $key): void
+  {
+    $path = storage_path(self::$storagePath . $key);
+    if (file_exists($path)) {
+      unlink($path);
+    }
+  }
+}
+\end{lstlisting}
+
+\noindent Two subtle design choices make \q{SecureStorage} especially effective here. First,
+relying on Laravel's \q{encrypt()}/\q{decrypt()} (keyed by \q{APP\_KEY}) provides identical
+behavior on Android, iOS, desktop \q{php artisan serve}, and automated tests. Second, exposing
+\q{\$storagePath} as a configurable static prefix allows tests to redirect writes to an isolated
+prefix during \q{setUp()} and clean them up in \q{tearDown()}.
+
+\paragraph{Generation-Guarded Background Jobs}
+Mobile apps frequently need long-lived or repeating background tasks (polling updates, syncing
+local state, or listening to streams). Running them inside an HTTP request blocks the WebView,
+whereas dispatching raw overlapping jobs risks duplicate workers after re-authentication. A
+clean generic pattern guards a self-rescheduling \q{ShouldQueue} job with a random generation
+token in cache:
+
+\begin{lstlisting}[language=php8]
+// app/Jobs/SyncWorker.php
+class SyncWorker implements ShouldQueue
+{
+  private const CACHE_KEY = 'sync_worker_generation';
+
+  public function __construct(public string $generation = '') {}
+
+  public static function start(): void
+  {
+    $generation = bin2hex(random_bytes(8));
+    Cache::forever(self::CACHE_KEY, $generation);
+    static::dispatch($generation);
+  }
+
+  public function handle(): void
+  {
+    if (Cache::get(self::CACHE_KEY) !== $this->generation) {
+      return; // Superseded by a newer chain or stopped
+    }
+    // ... perform incremental background work ...
+    if (Cache::get(self::CACHE_KEY) === $this->generation) {
+      static::dispatch($this->generation)->delay(now()->addSeconds(5));
+    }
+  }
+}
+\end{lstlisting}
+
+\noindent Whenever \q{start()} is called again (or \q{Cache::forget(self::CACHE\_KEY)} stops
+the worker), any previously queued instance exits cleanly on its next wake-up without needing
+platform-specific job-cancellation APIs.
+
+
+\subsubsection{Conceptualizing}
+
+Because NativePHP embeds PHP directly inside a mobile host rather than behind Nginx and
+PHP-FPM, several runtime boundaries require deliberate architectural decisions.
+
+\paragraph{Single-Process Shell Guard}
+In our hybrid shell setup (\cref{native-components}), \q{HomeShell} renders a full-screen
+\q{<native:webview php>}. Both the native shell component and the pages loaded inside its
+WebView execute inside the same PHP process. If a route inside the WebView redirects back to the
+root entry screen and re-mounts \q{/shell/home}, the nested shell load can abort the runtime
+(\q{SIGABRT}). To prevent this, \q{HomeShell::mount()} caches \q{getmypid()} under
+\q{HomeShell::SHELL\_PID\_KEY}, and entry controllers check that process ID before deciding
+whether to launch the shell or stay inside the active WebView:
+
+\begin{lstlisting}[language=php8]
+$shellExists = Cache::get(HomeShell::SHELL_PID_KEY) === getmypid();
+return redirect($shellExists ? '/home' : '/shell/home');
+\end{lstlisting}
+
+\paragraph{Centralized HTTP Boundary Hotfixes and Policy Gates}
+Mobile WebView bridges occasionally diverge from standard browser HTTP semantics. For instance,
+NativePHP's iOS scheme handler can forward a \q{POST} body without setting a \q{Content-Length}
+header, leaving \q{\$\_POST} empty, and WebView \q{fetch()} calls in NativePHP 4.3 do not
+reliably attach session cookies. Rather than littering controllers with \q{php://input} parsing,
+these quirks are isolated at the entry boundary: an early guard in \q{bootstrap/app.php}
+populates \q{\$\_POST} from raw input, \q{HotfixForPostAction} middleware merges URL-encoded or
+JSON bodies into Laravel's \q{Request}, and \q{validateCsrfTokens(except: ['*'])} is documented
+in one place.
+
+Cross-cutting access policies follow the same rule. Store-mandated checks such as neutral age
+assurance or parental locks live in dedicated middleware (\q{EnsureAgeAssurance}) configured with
+explicit \q{EXEMPT} and restricted route lists, ensuring no controller can accidentally bypass
+compliance.
+
+Putting these decisions into day-to-day practice comes down to six concrete guidelines:
+
+\begin{enumerate}
+  \item \textbf{Keep the native surface minimal.} Reach for \q{NativeComponent}s and device
+  facades only when OS integration matters (tab bar, \q{Screen::keepAwake()},
+  \q{Dialog::toast()}, \q{Device::vibrate()}). Keep forms, lists, and styling in Blade and Vite
+  so they run under \q{php artisan serve} as well as on a phone.
+
+  \item \textbf{Absorb platform quirks at the boundary.} Put scheme-handler fixes, encoding
+  normalizers, and access gates in \q{bootstrap/app.php} and middleware. Never copy-paste
+  \q{php://input} workarounds or permission checks into individual controllers.
+
+  \item \textbf{Keep services stateless and controllers thin.} Services should accept primitive
+  data or arrays and return structured results without touching \q{request()}, \q{session()}, or
+  \q{redirect()}. Centralize static lookup tables and external URLs in \q{app/Settings/}.
+
+  \item \textbf{Partition local state by lifecycle and sensitivity.} Use SQLite migrations for
+  relational records, sessions (\q{SESSION\_DRIVER=database}), and queued jobs
+  (\q{QUEUE\_CONNECTION=database}); use \q{SecureStorage} for secrets and compliance flags; and
+  reserve \q{Cache} for transient process or worker coordination tokens.
+
+  \item \textbf{Treat \q{nativephp/} as disposable.} Never rely on unrecorded edits inside the
+  generated Android or iOS folders. Capture required host fixes in \q{\_patches/}, commit the
+  PHP binary lock file, and register plugins explicitly in \q{NativeServiceProvider::plugins()}.
+
+  \item \textbf{Verify behavior without a device first.} Because services are stateless, native
+  facades can be mocked, and \q{SecureStorage::\$storagePath} is overridable, most regressions
+  can be caught in seconds via PHPUnit before compiling an APK or IPA:
+\end{enumerate}
+
+\begin{lstlisting}[language=php8]
+// tests/Unit/NativeComponents/HomeShellTest.php
+public function test_pressing_the_active_tab(): void
+{
+  $screen = new HomeShell;
+  $screen->showProfile();
+  $first = $screen->webviewSrc();
+
+  $screen->showProfile();
+  $this->assertNotSame($first, $screen->webviewSrc());
+}
+
+// Feature test with mocked native facade
+Dialog::shouldReceive('toast')->once();
+Notification::addMessage('Saved successfully');
+$this->assertDatabaseHas('notifications',
+  ['message' => 'Saved successfully']);
+\end{lstlisting}
+
+
