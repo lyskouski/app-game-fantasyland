@@ -227,6 +227,96 @@ assurance or parental locks live in dedicated middleware (\q{EnsureAgeAssurance}
 explicit \q{EXEMPT} and restricted route lists, ensuring no controller can accidentally bypass
 compliance.
 
+To separate intentional architecture, let's compare the implementation
+with other applications listed under the
+\href{https://github.com/topics/nativephp-mobile}{https://github.com/topics/nativephp-mobile}.
+The official mobile starter
+(\href{https://github.com/NativePHP/mobile-starter}{https://github.com/NativePHP/mobile-starter})
+is a deliberately small Laravel baseline and is useful as a compatibility reference: it keeps
+NativePHP and standard Laravel tooling preconfigured, automates dependency updates, and
+publishes a ready iOS simulator build. The SuperStack starter
+(\href{https://github.com/NativePHP/superstack}{https://github.com/NativePHP/superstack})
+makes a more opinionated choice: Filament provides administration, \q{Route::native}
+identifies SuperNative screens, and \q{nativephp/mobile-ui} supplies native UI on mobile while
+the web UI renders the same Blade interface in a browser. The password manager example
+(\href{https://github.com/codingwithrk/password-manager}{https://github.com/codingwithrk/password-manager})
+demonstrates another valid hybrid: Laravel, Livewire, FluxUI, Tailwind, Alpine.js, and SQLite
+are combined with paid native plugins for biometrics and secure storage.
+
+\begin{table}[!ht]
+  \centering
+  \scriptsize
+  \begin{tabularx}{\textwidth}{|p{0.22\textwidth}|X|X|}
+    \hline
+    \textbf{Architecture decision} & \textbf{Pros / cons of the alternative pattern} &
+    \textbf{Our implementation and trade-off} \\
+    \hline
+    \textbf{ADR-1: Hybrid shell plus WebView} &
+    A WebView-heavy UI is fast to port and shares PHP/Blade code with web. SuperStack follows this
+    direction with native routes and browser fallback. It is less costly than building every view
+    in Swift/Kotlin, but nested navigation and JavaScript-to-native state can become difficult. &
+    \q{NavigationLayout} owns a small native tab surface and \q{HomeShell} loads Blade routes in
+    an embedded WebView. This is ideal for a ported desktop-like game, but native-only animation,
+    gesture fidelity, and platform-specific detail are limited. \\
+    \hline
+    \textbf{ADR-2: Bespoke routes first, generic fallback second} &
+    Requiring an explicit controller and Blade view for every upstream route is safer and more
+    predictable, but it makes initial migration prohibitively large. A fallback-only application
+    is quick to build, yet hides layout and security regressions under a generic view. &
+    \q{routes/web.php} declares adapted game workflows explicitly and sends unknown routes through
+    \q{GenericController}. Pros: incremental delivery and no 404 dead ends; cons: fallback markup
+    can silently diverge from the desktop site and legacy routes need periodic conversion. \\
+    \hline
+    \textbf{ADR-3: Laravel storage with a compatibility wrapper} &
+    Device keychain/Keystore plugins provide platform-native secret isolation, as shown by the
+    password-manager example, and biometrics can protect access. Their cons are paid or
+    platform-specific packages, an additional registration step, and emulator or account
+    requirements. & \q{SecureStorage} uses Laravel encryption over files in \q{storage/}. The
+    implementation is free, portable, and testable across Android, iOS, and desktop. Its cons are
+    that it depends on \q{APP\_KEY}, key rotation needs care, and it is an application wrapper
+    rather than OS-backed hardware-protected storage. \\
+    \hline
+    \textbf{ADR-4: Explicit native plugin allow-list} &
+    Auto-registering plugins reduces setup and matches conventional Laravel package discovery,
+    which is convenient for starters. It can also increase the bundle and native attack surface
+    because unrelated transitive packages become native capabilities. &
+    \q{NativeServiceProvider::plugins()} explicitly enables the UI and Screen providers. This
+    reduces surprise native dependencies and makes permission/capability reviews visible, while
+    imposing a maintenance step whenever a new plugin is added. \\
+    \hline
+    \textbf{ADR-5: Generation-guarded Laravel queue jobs} &
+    Using platform-native background APIs gives strong scheduling and lifecycle integration, but
+    cancellation, permissions, and implementation details vary by OS. A raw Laravel queued loop
+    is portable but cannot cancel an already queued instance by itself. &
+    \q{ListenStream} uses a random cache generation, database-backed queueing, and delayed
+    re-dispatch. Pros: restart/re-authentication invalidates stale chains, and desktop tests do not
+    need Android jobs; cons: queue service lifecycle is host-dependent and 5-second rescheduling
+    increases scheduling jitter. \\
+    \hline
+    \textbf{ADR-6: Laravel-first testing and web parity} &
+    Device-only UI and native integration tests provide the highest fidelity but require simulators,
+    certificates, and slow builds. Livewire/Flux and SuperNative approaches reduce client
+    duplication differently, but both still need platform smoke tests. &
+    Stateless services, overridable storage, native facade mocks, and PHPUnit cover most
+    transformations and policies in seconds. Pros: fast feedback and CI-friendly regressions;
+    cons: WebView HTTP, shell process, WebView cookies, and actual OS permissions are only proven
+    after an APK or IPA run. \\
+    \hline
+  \end{tabularx}
+  \caption{ADR-style comparison of architecture choices}
+  \label{tbl:architecture-adrs}
+\end{table}
+
+The cross-project comparison suggests that none of the examined applications uses a monolithic
+``native UI everywhere'' policy. The official starter optimizes for a lean baseline, SuperStack
+optimizes for convention-led native and admin surfaces, and the password-manager example optimizes
+for secure native capabilities. Our implementation follows the same Laravel-first principle, but
+adapts it to an existing remote game: native code is restricted to navigation and platform
+facades, while the bulk of feature behavior remains Blade, Laravel, SQLite, and stateless PHP.
+This ADR is not a claim that all routes should remain in the generic fallback forever. The
+boundary should move toward bespoke screens as a route becomes frequently used, performance
+sensitive, security sensitive, or unsuitable for WebView behavior.
+
 Putting these decisions into day-to-day practice comes down to six concrete guidelines:
 
 \begin{enumerate}
