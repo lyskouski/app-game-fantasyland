@@ -258,4 +258,24 @@ class ArenaParser extends UserParser
             'groups' => $groups,
         ];
     }
+
+    public function getMarathonSingle(string $html): array {
+        $clean = function (string $text): string {
+            $text = preg_replace('~<br\s*/?>~i', ' ', $text);
+            $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            return trim(preg_replace('~\s+~u', ' ', $text));
+        };
+        $about = '';
+        if (preg_match('~arenaContent\s*=\s*"(.*?)(?:<form\b|<table\b|";)~isu', $html, $match)) {
+            $about = $clean($match[1]);
+        }
+        $step = '';
+        if (preg_match('~arenaContent\s*=\s*".*</table>(.*?)";~isu', $html, $match)) {
+            $step = $clean($match[1]);
+        }
+        return [
+            'about' => $about,
+            'step' => $step,
+        ];
+    }
 }

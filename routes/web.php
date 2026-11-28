@@ -72,6 +72,7 @@ Route::get('/cgi/train_continue', [ArenaController::class, 'trainContinue']);
 Route::get('/cgi/tribune_work.php', [ArenaController::class, 'lodgeStart']);
 Route::get('/cgi/lodge_continue', [ArenaController::class, 'lodgeContinue']);
 Route::get('/cgi/arena_marathon.php', [ArenaMarathonController::class, 'index']);
+Route::post('/cgi/marathon_do.php', [ArenaMarathonController::class, 'startSingle']);
 
 // Fight
 Route::get('/cgi/combat.php', [FightController::class, 'combat']);

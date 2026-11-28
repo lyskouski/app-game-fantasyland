@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Services\ArenaParser;
 use App\Services\LocationParser;
 
@@ -36,12 +37,13 @@ final class ArenaMarathonController extends ArenaController
         } elseif (str_contains($html, 'train_stop.php')) {
             return redirect('/cgi/train_continue');
         }
-        $w = $this->get('cgi/w.JS', []);
         switch ($data['current']) {
-            //case 1: // Single
-            //    $arena = $parser->getRingGroups($html, $w);
-            //    return view('arena_ring', [...$data, ...$arena]);
+            case 1: // Single
+                $data['captcha'] = $this->captcha(time());
+                $arena = $parser->getMarathonSingle($html);
+                return view('arena_marathon_ring', [...$data, ...$arena]);
             //case 2: // Group
+            //    $w = $this->get('cgi/w.JS', []);
             //    $group = $parser->getGroupGroups($html, $w);
             //    return view('arena_group', [...$data, ...$group]);
             case 5: // Train
@@ -51,5 +53,14 @@ final class ArenaMarathonController extends ArenaController
             default:
                 return view('main_arena_marathon', $data);
         }
+    }
+
+    public function startSingle() {
+        $html = $this->post('/cgi/marathon_do.php');
+        Notification::addIfExists($html);
+        if (str_contains($html, "parent.document.location.href = 'combat.php'")) {
+            return redirect('/cgi/combat.php');
+        }
+        return $this->index();
     }
 }
