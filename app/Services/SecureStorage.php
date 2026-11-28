@@ -4,6 +4,8 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Encryption\DecryptException;
+
 class SecureStorage
 {
     public static string $storagePath = 'secure_storage_';
@@ -22,7 +24,17 @@ class SecureStorage
             return null;
         }
         $encrypted = file_get_contents($path);
-        return $encrypted ? decrypt($encrypted) : null;
+        if (!$encrypted) {
+            return null;
+        }
+        try {
+            return decrypt($encrypted);
+        } catch (DecryptException) {
+            // Encrypted with a different APP_KEY
+            // before NativePHP moved keys to the device keystore
+            unlink($path);
+            return null;
+        }
     }
 
     public static function delete(string $key): void
