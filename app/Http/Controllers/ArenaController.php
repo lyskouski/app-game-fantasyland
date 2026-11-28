@@ -101,6 +101,7 @@ class ArenaController extends Controller
         $htmlStop = $this->get('/cgi/train_stop.php');
         Notification::addIfExists($htmlStop);
         $data = $this->mainPage();
+        $isMarathon = $data['isMarathon'] ?? false;
         $data['current'] = 9;
         if (!$data['unit_id'] && preg_match('/unit_id_moo\s*=\s*(\d+)/', $htmlStop, $m)) {
             $data['unit_id'] = (int) $m[1];
@@ -110,14 +111,20 @@ class ArenaController extends Controller
         $parser = new ArenaParser();
         if (preg_match("/parent\.no_combat\.ReloadFrame\('&rws=(\d+)'\);/", $htmlStop, $matches)) {
             $rws = (int) $matches[1];
-            $htmlStart = $this->get('/cgi/arena.php', ['rld' => 1, 'rws' => $rws]);
+            $htmlStart = $this->get(
+                $isMarathon ? '/cgi/arena_marathon.php' : '/cgi/arena.php',
+                ['rld' => 1, 'rws' => $rws]
+            );
             if ($rws) {
                 $start = $parser->timer($htmlStart);
                 return view('arena_train_start', [...$data, ...$start]);
             }
         }
         Device::vibrate();
-        $htmlArena = $this->get('/cgi/arena.php', ['g' => $data['current']]);
+        $htmlArena = $this->get(
+            $isMarathon ? '/cgi/arena_marathon.php' : '/cgi/arena.php',
+            ['g' => $data['current']]
+        );
         $arena = $parser->train($htmlArena);
         if (sizeof($arena['train']) > 0) {
             $data['captcha'] = $this->captcha(time());

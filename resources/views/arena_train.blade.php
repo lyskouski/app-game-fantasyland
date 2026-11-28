@@ -29,7 +29,13 @@
             </div>
             <div class="main_middle">
                 @foreach ($map as $location)
-                <form method="GET" action="/cgi/arena.php" style="margin-bottom: 8px;">
+                <form method="GET"
+                        @if($isMarathon)
+                        action="/cgi/arena_marathon.php"
+                        @else
+                        action="/cgi/arena.php"
+                        @endif
+                        style="margin-bottom: 8px;">
                     @csrf
                     <input type="hidden" name="g" value="{{ $location['id'] }}" />
                     <input type="submit" @if($location['id'] == $current) disabled @endif value="{{ $location['loc'] }}" style="width: 100%;" />

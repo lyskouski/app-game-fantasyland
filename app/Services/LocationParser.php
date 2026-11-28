@@ -153,6 +153,7 @@ class LocationParser
             'map' => $map,
             'place' => $place,
             'current' => 0,
+            'isMarathon' => str_contains($html, 'cgi/arena_marathon.php'),
         ];
     }
 
